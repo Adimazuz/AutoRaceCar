@@ -1,19 +1,20 @@
 #include<Servo.h>
 #include "timer.h"
 
-//speed between -30 to 30
-//angle between -30 to 30
+//speed between -0 to 20
+//angle between -65 to 125
 
 class RaceCar {
-	static constexpr int TOP_SPEED = 15;
-	static constexpr int MIN_ANGLE = 70;
-	static constexpr int MAX_ANGLE = 120;
+	static constexpr int TOP_SPEED = 20;
+	static constexpr int MIN_ANGLE = 65;
+	static constexpr int MAX_ANGLE = 125;
 	static constexpr int NATURAL_SPEED = 90;
 	static constexpr int COMMAND_DELAY = 50;
 
 	char input;
 	int speed;
 	int angle;
+	bool flag = false;
 	Servo engine;
 	Servo steering;
 	Timer engineTimer;
@@ -36,12 +37,20 @@ void setup(){
 }
 void drive(){
 	engine.write(NATURAL_SPEED + speed);
+	//Serial.print("Drive inst: ");
+	//Serial.println(NATURAL_SPEED + speed);
 	steering.write(angle);
 	delay(40);
 }
 void increaseSpeed(){
 	if(speed<TOP_SPEED && engineTimer.getElapsedTime()>COMMAND_DELAY) {
+		if(speed ==0){
+			speed =10;
+		}else if(speed ==-5){
+			speed=0;
+		}else{
 		speed++;
+			}
 		Serial.print("speed: ");
 		Serial.println(speed);
 		engineTimer.reset();
@@ -51,7 +60,14 @@ void increaseSpeed(){
 }
 void decreseSpeed(){
 	if(speed>-TOP_SPEED && engineTimer.getElapsedTime()>COMMAND_DELAY){
+		if(speed ==0){
+			neutral();
+			speed =-5;
+		}else if (speed ==10){
+			speed =0;
+		}else{
 		speed--;
+			}		
 		Serial.print("speed: ");
 		Serial.println(speed);
 		engineTimer.reset();
@@ -101,7 +117,14 @@ void IncreaseSpeedPrint(){
 		}
 	//drive();
 	}
-	
+void neutral(){
+ for(int i=91;i<95;i++)
+ {
+   engine.write(i);
+   delay(40);
+ }
+ speed =0;
+}
 void handleInput(){
 	input = Serial.read();
 	switch (input) {
@@ -123,6 +146,10 @@ void handleInput(){
 		}
 		case 'r' :{ 
 			steerRight();
+			break;
+		}
+		case 'b' : {
+		neutral();
 			break;
 		}
 		default : drive();
