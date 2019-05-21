@@ -9,7 +9,7 @@ class RaceCar {
 	static constexpr int MIN_ANGLE = 65;
 	static constexpr int MAX_ANGLE = 125;
 	static constexpr int NATURAL_SPEED = 90;
-	static constexpr int COMMAND_DELAY = 50;
+	static constexpr int COMMAND_DELAY = 0;
 
 	char input;
 	int speed;
@@ -24,6 +24,19 @@ class RaceCar {
 RaceCar():speed(0),angle(90){}
 
 //attach PWM's and arm engine.
+void decreseToRest(){
+	if(angle>90) {
+		angle--;
+	}else if (angle<90){
+		angle++;
+	}
+	if(speed>0) {
+		speed--;
+	}else if(speed<0) {
+		speed++;
+	}
+	drive();
+}
 void setup(){
 		  engine.attach(9);
 		  steering.attach(10);
@@ -81,7 +94,7 @@ void steerRight(){
 		Serial.println(angle);
 		steeringTimer.reset();
 	}
-	steering.write(angle);
+	drive();
 
 }
 void steerLeft(){
@@ -91,11 +104,16 @@ void steerLeft(){
 		Serial.println(angle);
 		steeringTimer.reset();
 	}
-	steering.write(angle);
+	drive();
 }
 void stop(){
 	speed=0;
 	angle=90;
+	drive();
+}
+void rest(){
+	speed=0;
+	drive();
 }
 void setSpeed(int wanted_speed){
 	speed=wanted_speed;
@@ -152,7 +170,7 @@ void handleInput(){
 		neutral();
 			break;
 		}
-		default : drive();
+		default : decreseToRest();
 	}
 }
 };
