@@ -1,6 +1,6 @@
-#include "RaceCar.h"
+#include "RaceCarArd.h"
 
-RaceCar car;
+RaceCarArd car;
 
 void setup() {
   // put your setup code here, to run once:
@@ -13,5 +13,6 @@ char c;
 void loop() {
   // put your main code here, to run repeatedly:
   car.updateTimers();
-  car.handleInput();
+  car.getKeyBoardInput();
+  //car.getDriveCommand();
 }
