@@ -7,7 +7,6 @@ set(SOURCE_FILES
         raceCar.h
         raceCar.cpp
         MotorController.cpp
-        MotorController.hpp
-        main.cpp)
+        MotorController.hpp)
 
 add_executable(${SOURCE_FILES})
