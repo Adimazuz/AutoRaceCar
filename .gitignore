@@ -2,3 +2,5 @@ cmake-build-debug/**
 .idea/**
 motorAPI/cmake-build-debug/**
 motorAPI/.idea/**
+build-cameraAPI-Desktop_Qt_5_10_1_GCC_64bit-Default/
+
