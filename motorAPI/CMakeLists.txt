@@ -7,6 +7,11 @@ set(SOURCE_FILES
         raceCar.h
         raceCar.cpp
         MotorController.cpp
-        MotorController.hpp)
+        MotorController.hpp
+        Serial/ISerial.h
+        Serial/ISerial.cpp
+        Serial/Serial.cpp
+        Serial/Serial.h
+        Serial/Serial_types.h)
 
 add_executable(${SOURCE_FILES})

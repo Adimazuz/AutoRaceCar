@@ -9,11 +9,10 @@
 class MotorController
 {
     /**
-     *
-     * @param serial - serial number to connect to
-     * @return true for success
+     * throw exception if fails
+     * @return this
      */
-    virtual bool connect(int serial) = 0;
+    virtual MotorController &connect() = 0;
     /**
      * stops the car and set the wheels to a 90 degree angle
      * @return this
