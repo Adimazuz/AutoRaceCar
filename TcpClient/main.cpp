@@ -8,13 +8,14 @@ int main()
     {
         std::shared_ptr<ITcpClient> client = ITcpClient::create();
 
-        client->connect("192.168.1.101", 1234);
+        client->connect("192.168.70.21", 1234);
 
-        client->send("hello im client");
+        client->send("yo yo this is anter");
 
-        std::vector<char> msg = client->receive(1024);
+        auto data = client->receive(1024);
 
-        std::cout << msg.data() << std::endl;
+        std::cout << data.data() << std::endl;
+
     }
     catch (std::exception& e)
     {

@@ -28,7 +28,7 @@ public:
 
     void send(const string& data) const noexcept override;
 
-    ~TcpClient();
+    virtual ~TcpClient();
 
 private: //functions
     TcpClient &createSocket();
