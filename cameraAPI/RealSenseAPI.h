@@ -2,6 +2,7 @@
 #define REALSENSEAPI_H
 
 #include <librealsense2/rs.hpp>
+#include <Image.h>
 
 enum Status {
     SUCCESS,
@@ -47,15 +48,16 @@ public:
         get_extrinsics:
         // If the device/sensor that you are using contains more than a single stream, and it was calibrated
         // then the SDK provides a way of getting the transformation between any two streams (if such exists)
-
        */
 
 
+
+
 private:
-      rs2::device m_camera;
-      rs2::sensor m_sensor1; //TODO change name of the sensors
-      rs2::sensor m_sensor1;
-      rs2::sensor m_sensor1;
+      rs2::device _camera;
+      rs2::sensor _sensor1; //TODO change name of the sensors
+      rs2::sensor _sensor1;
+      rs2::sensor _sensor1;
 
 
 }
