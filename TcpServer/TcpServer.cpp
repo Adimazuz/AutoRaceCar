@@ -48,7 +48,7 @@ TcpServer &TcpServer::createSocket()
 
 TcpServer &TcpServer::doBind()
 {
-    int res = bind(_socket, (sockaddr*)& _address, sizeof(_address));
+    int res = bind(_socket, reinterpret_cast<sockaddr*>(& _address), sizeof(_address));
     if(res < 0)
     {
         throw ITcpServerCannotBind(_ip, _port);
@@ -77,7 +77,7 @@ TcpServer::~TcpServer()
 #endif
 }
 
-std::vector<char> TcpServer::receive(const Socket &socket, const unsigned int &len) const noexcept
+std::vector<char> TcpServer::receive(const Socket &socket, const uint &len) const noexcept
 {
     std::vector<char> data(len);
 
@@ -86,8 +86,10 @@ std::vector<char> TcpServer::receive(const Socket &socket, const unsigned int &l
     return data;
 }
 
-Socket TcpServer::waitForConnections(Address &address) const
+Socket TcpServer::waitForConnections() const
 {
+    Address address = {};
+
     sockaddr_in client = buildAddress(address.ip, address.port);
 
     Socket client_socket = doAccept(client);
@@ -100,24 +102,33 @@ Socket TcpServer::waitForConnections(Address &address) const
     return client_socket;
 }
 
-void TcpServer::send(const Socket &socket, const std::vector<char> &data,
-                     const unsigned int& len) const noexcept
+void TcpServer::send(const Socket &socket, const std::vector<char> &data) const noexcept
 {
-    int bytes_sent = 0;
-    while (bytes_sent < len)
+    uint bytes_sent = 0;
+    while (bytes_sent < data.size())
     {
-        int tmp_len = ::send(socket, data.data() + bytes_sent, len - bytes_sent, 0);
+        auto tmp_len = ::send(socket, data.data() + bytes_sent, data.size() - bytes_sent, 0);
         bytes_sent += tmp_len;
     }
 }
 
 void TcpServer::send(const Socket &socket, const string &message) const noexcept
 {
-    int bytes_sent = 0;
-    int len = static_cast<int>(message.size());
+    uint bytes_sent = 0;
+    uint len = static_cast<uint>(message.size());
     while (bytes_sent < message.size())
     {
-        int tmp_len = ::send(socket, message.c_str() + bytes_sent, len - bytes_sent, 0);
+        auto tmp_len = ::send(socket, message.c_str() + bytes_sent, len - bytes_sent, 0);
+        bytes_sent += tmp_len;
+    }
+}
+
+void TcpServer::send(const Socket &socket, const char *data, const uint &len) const noexcept
+{
+    uint bytes_sent = 0;
+    while (bytes_sent < len)
+    {
+        auto tmp_len = ::send(socket, data + bytes_sent, len - bytes_sent, 0);
         bytes_sent += tmp_len;
     }
 }
@@ -136,10 +147,9 @@ sockaddr_in TcpServer::buildAddress(const string &ip, const unsigned short &port
     address.sin_port = htons(port);
 
     return address;
-
 }
 
-Socket TcpServer::doAccept(const sockaddr_in& client) const
+Socket TcpServer::doAccept(sockaddr_in& client) const
 {
 
 #ifdef _WIN32
@@ -148,5 +158,5 @@ Socket TcpServer::doAccept(const sockaddr_in& client) const
     unsigned int client_address_size = sizeof(client);
 #endif
 
-    return accept(_socket, (sockaddr*)& client, &client_address_size);
+    return accept(_socket, reinterpret_cast<sockaddr*>(& client), &client_address_size);
 }

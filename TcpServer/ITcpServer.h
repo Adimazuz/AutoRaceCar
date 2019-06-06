@@ -1,24 +1,75 @@
 #ifndef SERVERSOCKET_ITCPSERVER_H
 #define SERVERSOCKET_ITCPSERVER_H
 
-#include "TcpSocket_types.h"
+/**
+  ITcpServer is an interface for opening server with TCP communication.
+
+  example of opening connection, wait for client and receive data:
+
+        std::shared_ptr<ITcpServer> server = ITcpServer::create("127.0.0.1", 5555, 5);
+
+        Socket new_client = server->waitForConnections();
+
+        std::vector<char> rec = server->receive(new_client, 10);
+  */
+
+#include "TcpServer_types.h"
 
 class ITcpServer
 {
 public:
 
+    /**
+     * @brief create an instance of the interface
+     * @param ip - the ip of the host(can be reach by type in terminal "ifconfig")
+     * @param port - an arbitrary port defined by the host
+     * @param max_num_of_clients - the maximum number of clients which can be connect to the server
+     * @return
+     */
     static std::shared_ptr<ITcpServer> create(const string &ip, const int &port,
                                                const int &max_num_of_clients);
 
-    virtual Socket waitForConnections(Address &address) const = 0;
+    /**
+     * @brief waitForConnections is a blocking function which is waiting for new client connection
+     * @return Socket(typedef for uint) which can be used to reach the connected client
+     */
+    virtual Socket waitForConnections() const = 0;
 
+    /**
+     * @brief receive data from a client
+     * @param socket - the id of the client
+     * @param len - the length of the data[bytes]
+     * @return vector of data
+     */
     virtual std::vector<char> receive(const Socket &socket,
-            const unsigned int &len) const noexcept = 0;
+            const uint &len) const noexcept = 0;
 
-    virtual void send(const Socket& socket, const std::vector<char>& data,
-            const unsigned int& len) const noexcept = 0;
+    /**
+     * @brief send data to a client
+     * @param socket - the id of the client
+     * @param data - vector of data
+     */
+    virtual void send(const Socket& socket, const std::vector<char>& data) const noexcept = 0;
 
+    /**
+     * @brief send string to a client
+     * @param socket - the id of the client
+     * @param message - the message to be sent
+     */
     virtual void send(const Socket& socket, const string& message) const noexcept = 0;
+
+    /**
+     * @brief send data to a client
+     * @param socket - the id of the client
+     * @param data - pointer to the data to be sent
+     * @param len - the length of the data[bytes]
+     */
+    virtual void send(const Socket& socket, const char *data, const uint &len) const noexcept = 0;
+
+    /**
+      * @brief destructor
+      */
+    virtual ~ITcpServer() noexcept = default ;
 };
 
 
