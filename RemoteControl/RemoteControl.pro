@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = RemoteControl
 TEMPLATE = app
+CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -28,18 +29,16 @@ SOURCES += \
     MainWindow.cpp \
     ../TcpClient/ITcpClient.cpp \
     ../TcpClient/TcpClient.cpp \
-    Serial/Serial.cpp
 
 HEADERS += \
     MainWindow.h \
     ../TcpClient/Exceptions.h \
     ../TcpClient/ITcpClient.h \
     ../TcpClient/TcpClient.h \
-    Serial/Serial.h \
-    Serial/Exceptions.h
 
 FORMS += \
     MainWindow.ui
 
 INCLUDEPATH += \
     $$PWD/../TcpClient
+    $$PWD/../TcpServer

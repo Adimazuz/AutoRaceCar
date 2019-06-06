@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'MainWindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.0
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -17,6 +17,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
@@ -30,6 +31,7 @@ public:
     QWidget *centralWidget;
     QGridLayout *gridLayout;
     QLabel *lbl_img;
+    QPushButton *btn_camera;
     QMenuBar *menuBar;
     QMenu *menufile;
     QToolBar *mainToolBar;
@@ -39,7 +41,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(653, 347);
+        MainWindow->resize(702, 381);
         acn_exit = new QAction(MainWindow);
         acn_exit->setObjectName(QStringLiteral("acn_exit"));
         centralWidget = new QWidget(MainWindow);
@@ -56,10 +58,15 @@ public:
 
         gridLayout->addWidget(lbl_img, 0, 0, 1, 1);
 
+        btn_camera = new QPushButton(centralWidget);
+        btn_camera->setObjectName(QStringLiteral("btn_camera"));
+
+        gridLayout->addWidget(btn_camera, 1, 0, 1, 1);
+
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 653, 22));
+        menuBar->setGeometry(QRect(0, 0, 702, 22));
         menufile = new QMenu(menuBar);
         menufile->setObjectName(QStringLiteral("menufile"));
         MainWindow->setMenuBar(menuBar);
@@ -83,6 +90,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         acn_exit->setText(QApplication::translate("MainWindow", "exit", nullptr));
         lbl_img->setText(QString());
+        btn_camera->setText(QApplication::translate("MainWindow", "show camera", nullptr));
         menufile->setTitle(QApplication::translate("MainWindow", "file", nullptr));
     } // retranslateUi
 

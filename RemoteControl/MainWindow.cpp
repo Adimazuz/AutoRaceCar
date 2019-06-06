@@ -1,15 +1,15 @@
-#include "MainWindow.h"
-#include "ui_MainWindow.h"
-
 #include <QDebug>
 #include <QKeyEvent>
+
+#include "MainWindow.h"
+#include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     _keys(),
     _client(nullptr),
-    _serial()
+    _is_stream_on(false)
 {
     ui->setupUi(this);
     showMaximized();
@@ -17,11 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&_key_timer, SIGNAL(timeout()), this, SLOT(handleKey()));
     _key_timer.start();
 
-    QImage image("/home/asaf/Desktop/Park/images/background.jpg");
-    ui->lbl_img->setPixmap(QPixmap::fromImage(image).scaled(ui->lbl_img->width(), ui->lbl_img->height()));
     _client = ITcpClient::create();
-//    _client->connect("127.0.0.1", 1234);
-//    _serial.connect();
+    _client->connect("127.0.0.1", 5555);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -51,9 +48,7 @@ void MainWindow::handleKey()
     {
         if(isArrowKey(key))
         {
-//            _client->send(keyToString(key));
-//            _serial.write(keyToString(key));
-            qDebug() << key << "pressed";
+            _client->send(keyToString(key));
         }
     }
 }
@@ -85,4 +80,17 @@ bool MainWindow::isArrowKey(const int &key)
 {
     return key == KEY_LEFT || key == KEY_RIGHT ||
             key == KEY_UP || key == KEY_DOWN;
+}
+
+void MainWindow::on_btn_camera_clicked()
+{
+    _is_stream_on = !_is_stream_on;
+
+    while(_is_stream_on)
+    {
+        auto data = _client->receive(500*500);
+        QImage image(reinterpret_cast<unsigned char*>(data.data()), 500, 500, QImage::Format_Indexed8);
+        ui->lbl_img->setPixmap(QPixmap::fromImage(image));
+        QCoreApplication::processEvents();
+    }
 }

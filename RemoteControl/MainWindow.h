@@ -7,7 +7,6 @@
 #include <QTimer>
 
 #include "ITcpClient.h"
-#include "Serial/Serial.h"
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +30,8 @@ private slots:
     string keyToString(const int &key);
     bool isArrowKey(const int &key);
 
+    void on_btn_camera_clicked();
+
 private:
     static constexpr int KEY_LEFT = 16777234;
     static constexpr int KEY_RIGHT = 16777236;
@@ -40,8 +41,8 @@ private:
     Ui::MainWindow *ui;
     QVector<int> _keys;
     std::shared_ptr<ITcpClient> _client;
-    Serial _serial;
     QTimer _key_timer;
+    bool _is_stream_on;
 };
 
 #endif // MAINWINDOW_H

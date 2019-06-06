@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>653</width>
-    <height>347</height>
+    <width>702</width>
+    <height>381</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,6 +31,13 @@
       </property>
      </widget>
     </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="btn_camera">
+      <property name="text">
+       <string>show camera</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -38,7 +45,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>653</width>
+     <width>702</width>
      <height>22</height>
     </rect>
    </property>
