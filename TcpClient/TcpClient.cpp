@@ -32,7 +32,7 @@ void TcpClient::connect(const string& ip, const unsigned short& port) const
 {
     sockaddr_in server_address = buildAddress(ip, port);
 
-    int res = ::connect(_socket, (sockaddr*)& server_address, sizeof(server_address));
+    int res = ::connect(_socket, reinterpret_cast<sockaddr*>(& server_address), sizeof(server_address));
 
     if(res < 0)
     {
@@ -56,7 +56,7 @@ std::vector<char> TcpClient::receive(const unsigned int &len) const
 {
     std::vector<char> data(len);
 
-    int bytes_received = recv(_socket, data.data(), len, 0);
+    long bytes_received = recv(_socket, data.data(), len, 0);
 
     if (bytes_received <= 0)
     {
@@ -66,23 +66,33 @@ std::vector<char> TcpClient::receive(const unsigned int &len) const
     return data;
 }
 
-void TcpClient::send(const std::vector<char> &data, const unsigned int &len) const noexcept
+void TcpClient::send(const std::vector<char> &data) const noexcept
 {
-    int bytes_sent = 0;
-    while (bytes_sent < len)
+    uint bytes_sent = 0;
+    while (bytes_sent < data.size())
     {
-        int tmp_len = ::send(_socket, data.data() + bytes_sent, len - bytes_sent, 0);
+        auto tmp_len = ::send(_socket, data.data() + bytes_sent, data.size() - bytes_sent, 0);
         bytes_sent += tmp_len;
     }
 }
 
 void TcpClient::send(const string &message) const noexcept
 {
-    int bytes_sent = 0;
-    int len = static_cast<int>(message.size());
+    uint bytes_sent = 0;
+    uint len = static_cast<uint>(message.size());
     while (bytes_sent < message.size())
     {
-        int tmp_len = ::send(_socket, message.c_str() + bytes_sent, len - bytes_sent, 0);
+        auto tmp_len = ::send(_socket, message.c_str() + bytes_sent, len - bytes_sent, 0);
+        bytes_sent += tmp_len;
+    }
+}
+
+void TcpClient::send(const char *data, const uint &len) const noexcept
+{
+    uint bytes_sent = 0;
+    while (bytes_sent < len)
+    {
+        auto tmp_len = ::send(_socket, data + bytes_sent, len - bytes_sent, 0);
         bytes_sent += tmp_len;
     }
 }

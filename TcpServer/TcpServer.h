@@ -20,25 +20,34 @@ public:
 
     TcpServer(const string &ip, const unsigned short &port, const int &max_num_of_clients) noexcept;
 
-    std::vector<char> receive(const Socket &socket, const unsigned int &len) const noexcept override;
+    virtual std::vector<char> receive(const Socket &socket, const uint &len) const noexcept override;
 
-    void send(const Socket& socket, const std::vector<char>& data,
-            const unsigned int& len) const noexcept override;
+    virtual void send(const Socket& socket, const std::vector<char>& data) const noexcept override;
 
-    void send(const Socket& socket, const string& message) const noexcept override;
+    virtual void send(const Socket& socket, const string& message) const noexcept override;
 
-    Socket waitForConnections(Address &address) const override;
-    ~TcpServer();
+    virtual void send(const Socket& socket, const char *data, const uint &len) const noexcept override;
+
+    virtual Socket waitForConnections() const override;
+
+    virtual ~TcpServer() override;
 
 private: //functions
 
     TcpServer &createSocket();
     TcpServer &doBind();
     TcpServer &doListen();
-    Socket doAccept(const sockaddr_in& client) const;
+    Socket doAccept(sockaddr_in &client) const;
     sockaddr_in buildAddress(const string& ip, const unsigned short& port) const noexcept;
 
 private: //members
+
+    struct Address
+    {
+        unsigned short port;
+        string ip;
+    };
+
     string _ip;
     unsigned short _port;
     int _max_num_of_clients;

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "ITcpClient.h"
+#include <chrono>
 
 int main()
 {
@@ -8,13 +9,16 @@ int main()
     {
         std::shared_ptr<ITcpClient> client = ITcpClient::create();
 
-        client->connect("192.168.1.101", 1234);
+        client->connect("127.0.0.1", 5555);
 
-        client->send("hello im client");
+        char *data = new char[2000000];
+        for(uint i = 0; i < 2000000; i++)
+        {
+            data[i] = 'a';
+        }
 
-        std::vector<char> msg = client->receive(1024);
+        client->send(data, 2000000);
 
-        std::cout << msg.data() << std::endl;
     }
     catch (std::exception& e)
     {

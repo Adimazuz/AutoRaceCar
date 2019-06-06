@@ -20,15 +20,17 @@ public:
 
     TcpClient() noexcept;
 
-    void connect(const string& ip, const unsigned short& port) const override;
+    virtual void connect(const string& ip, const unsigned short& port) const override;
 
-    std::vector<char> receive(const unsigned int &len) const override;
+    virtual std::vector<char> receive(const unsigned int &len) const override;
 
-    void send(const std::vector<char>& data, const unsigned int& len) const noexcept override;
+    virtual void send(const std::vector<char>& data) const noexcept override;
 
-    void send(const string& data) const noexcept override;
+    virtual void send(const string& data) const noexcept override;
 
-    ~TcpClient();
+    virtual void send(const char* data, const uint &len) const noexcept override;
+
+    virtual ~TcpClient() override;
 
 private: //functions
     TcpClient &createSocket();

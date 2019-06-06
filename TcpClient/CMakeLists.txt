@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.5)
 project(TcpClient)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -9,7 +9,8 @@ set(SOURCE_FILES
         TcpClient.h
         Exceptions.h
         ITcpClient.cpp
-        TcpClient.cpp)
+        TcpClient.cpp
+        TcpClient_types.h)
 
 
 add_executable(TcpClient ${SOURCE_FILES})
