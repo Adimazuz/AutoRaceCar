@@ -78,12 +78,24 @@ TcpServer::~TcpServer()
 }
 
 std::vector<char> TcpServer::receive(const Socket &socket, const uint &len) const noexcept
-{
+{ 
     std::vector<char> data(len);
 
-    recv(socket, data.data(), len, 0);
+    uint bytes_received = 0;
+
+    while(bytes_received < len)
+    {
+        auto tmp_len = recv(socket, data.data() + bytes_received, len - bytes_received, 0);
+        bytes_received += tmp_len;
+    }
 
     return data;
+
+//    std::vector<char> data(len);
+
+//    recv(socket, data.data(), len, 0);
+
+//    return data;
 }
 
 Socket TcpServer::waitForConnections() const
