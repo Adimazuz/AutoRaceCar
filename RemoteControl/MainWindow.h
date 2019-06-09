@@ -7,6 +7,7 @@
 #include <QTimer>
 
 #include "ITcpClient.h"
+#include "../TcpServer/ITcpServer.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,7 +18,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     ~MainWindow() override;
@@ -33,6 +34,9 @@ private slots:
     void on_btn_camera_clicked();
 
 private:
+    unsigned long receiveDataSize();
+
+private:
     static constexpr int KEY_LEFT = 16777234;
     static constexpr int KEY_RIGHT = 16777236;
     static constexpr int KEY_UP = 16777235;
@@ -40,9 +44,11 @@ private:
 
     Ui::MainWindow *ui;
     QVector<int> _keys;
-    std::shared_ptr<ITcpClient> _client;
     QTimer _key_timer;
     bool _is_stream_on;
+    Socket _client_sock;
+    bool _is_connected;
+    std::shared_ptr<ITcpServer> _server;
 };
 
 #endif // MAINWINDOW_H

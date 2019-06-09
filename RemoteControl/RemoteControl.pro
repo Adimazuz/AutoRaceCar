@@ -29,12 +29,13 @@ SOURCES += \
     MainWindow.cpp \
     ../TcpClient/ITcpClient.cpp \
     ../TcpClient/TcpClient.cpp \
+    ../TcpServer/ITcpServer.cpp \
+    ../TcpServer/TcpServer.cpp
 
 HEADERS += \
     MainWindow.h \
-    ../TcpClient/Exceptions.h \
     ../TcpClient/ITcpClient.h \
-    ../TcpClient/TcpClient.h \
+    ../TcpServer/ITcpServer.h \
 
 FORMS += \
     MainWindow.ui
@@ -42,3 +43,5 @@ FORMS += \
 INCLUDEPATH += \
     $$PWD/../TcpClient
     $$PWD/../TcpServer
+
+LIBS += -lz

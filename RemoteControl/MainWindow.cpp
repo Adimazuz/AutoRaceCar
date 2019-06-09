@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QKeyEvent>
+#include <zlib.h>
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
@@ -8,8 +9,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     _keys(),
-    _client(nullptr),
-    _is_stream_on(false)
+    _key_timer(),
+    _is_stream_on(false),
+    _client_sock(-1),
+    _is_connected(false),
+    _server(nullptr)
 {
     ui->setupUi(this);
     showMaximized();
@@ -17,8 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&_key_timer, SIGNAL(timeout()), this, SLOT(handleKey()));
     _key_timer.start();
 
-    _client = ITcpClient::create();
-    _client->connect("127.0.0.1", 5555);
+    _server = ITcpServer::create("132.68.36.54", 5560, 5);
+    qDebug() << "bind success";
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -27,14 +31,19 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     {
         _keys.push_back(event->key());
     }
+
+    setFocus();
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
     if(event->isAutoRepeat()){
+        setFocus();
         return;
     }
     _keys.removeOne(event->key());
+
+    setFocus();
 }
 
 MainWindow::~MainWindow()
@@ -48,7 +57,8 @@ void MainWindow::handleKey()
     {
         if(isArrowKey(key))
         {
-            _client->send(keyToString(key));
+//            _server->send(_client_sock, keyToString(key));
+            qDebug() << key;
         }
     }
 }
@@ -84,13 +94,38 @@ bool MainWindow::isArrowKey(const int &key)
 
 void MainWindow::on_btn_camera_clicked()
 {
+    if(!_is_connected)
+    {
+       _client_sock = _server->waitForConnections();
+       qDebug() << "someone connected";
+       _is_connected = true;
+    }
+
     _is_stream_on = !_is_stream_on;
+
+    unsigned long size = 640*480*3;
 
     while(_is_stream_on)
     {
-        auto data = _client->receive(500*500);
-        QImage image(reinterpret_cast<unsigned char*>(data.data()), 500, 500, QImage::Format_Indexed8);
-        ui->lbl_img->setPixmap(QPixmap::fromImage(image));
+        auto len = receiveDataSize();
+
+        auto data = _server->receive(_client_sock, static_cast<uint>(len));
+
+        std::vector<unsigned char> uncompressed_data(size);
+
+        uncompress(uncompressed_data.data(), &size, reinterpret_cast<unsigned char*>(data.data()), len);
+
+        QImage image(reinterpret_cast<unsigned char*>(uncompressed_data.data()), 640, 480, QImage::Format_RGB888);
+        QPixmap pixamp = QPixmap::fromImage(image);
+        ui->lbl_img->setPixmap(pixamp.scaled(640, 480, Qt::AspectRatioMode::KeepAspectRatio));
         QCoreApplication::processEvents();
     }
+}
+
+unsigned long MainWindow::receiveDataSize()
+{
+    auto len_data = _server->receive(_client_sock, sizeof(unsigned long));
+    unsigned long* len = reinterpret_cast<unsigned long*>(len_data.data());
+
+    return *len;
 }
