@@ -7,23 +7,24 @@
 enum Status {
     SUCCESS,
     CAMERA_NOT_CONNECTED,
-    ONE_OF_THE_SENSORS_FAIL
+    ONE_OF_THE_SENSORS_FAIL,
+    RESS_NOT_FITTING_WITH_FPS
 };
 
 
 class RealSense{
 
 public:
-        enum sensor_name //TODO update names
+        enum class sensor_name //TODO update names
         {
-            SENSOR1,
-            SENSOR2,
-            SENSOR3
+            SRERIO_MODULE,
+            RGB_CAMERA,
+            MOTION_MODULE
         };
 
         //TODO hidden rs2_stream_profile & rs2_frame_format ?
         //TODO check if data type must go with specific ress&fps
-        typedef enum rs2_stream_profile
+        enum class rs2_stream_profile
         {
             STREAM_ANY,
             STREAM_DEPTH                            , /**< Native stream of depth data produced by RealSense device */
@@ -36,9 +37,9 @@ public:
             STREAM_POSE                             , /**< 6 Degrees of Freedom pose data, calculated by RealSense device */
             STREAM_CONFIDENCE                       , /**< 4 bit per-pixel depth confidence level */
             STREAM_COUNT
-        } rs2_stream_profile;
+        };
 
-        typedef enum rs2_frame_format
+        enum rs2FrameFormat
         {
             ORMAT_ANY             , /**< When passed to enable stream, librealsense will try to provide best suited format */
             FORMAT_Z16             , /**< 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value. */
@@ -49,7 +50,7 @@ public:
             FORMAT_BGR8            , /**< 8-bit blue, green, and red channels -- suitable for OpenCV */
             FORMAT_RGBA8           , /**< 8-bit red, green and blue channels + constant alpha channel equal to FF */
             FORMAT_BGRA8           , /**< 8-bit blue, green, and red channels + constant alpha channel equal to FF */
-            FORMAT_Y8              , /**< 8-bit per-pixel grayscale image */
+            FORMAT_Y8              , /**< 8-bit per-pixel grayscars2_stream_profilele image */
             FORMAT_Y16             , /**< 16-bit per-pixel grayscale image */
             FORMAT_RAW10           , /**< Four 10 bits per pixel luminance values packed into a 5-byte macropixel */
             FORMAT_RAW16           , /**< 16-bit raw image */
@@ -63,16 +64,30 @@ public:
             FORMAT_Y10BPACK        , /**< 16-bit per-pixel grayscale image unpacked from 10 bits per pixel packed ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6 zero bits */
             FORMAT_DISTANCE        , /**< 32-bit float-point depth distance value.  */
             FORMAT_COUNT             /**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
-        } rs2_frame_format;
+        };
 
 
-        //TODO check which ress&fps supported
-        typedef enum rs2_ressolution_and_fps
+        enum class rs2ColorRessolution
         {
-            ONE,
-            TWO
+            R_1920x1080,
+            R_1280x720,
+            R_960_540,
+            R_848_480,
+            R_640x480,
+            R_640x360,
+            R_424x240,
+            R_320x240,
+            R_320x180
+        };
 
-        } rs2_ressolution_and_fps;
+        enum class rs2fps
+        {
+            F_60hz,
+            F_30hz,
+            F_15hz,
+            F_6hz
+        };
+
 
 
        RealSense();
@@ -106,19 +121,37 @@ public:
 
        //TODO right resulotions per fps
        //TODO which formats support
-        Image getInfraredImage(rs2_frame_format format,rs2_ressolution_and_fps ress_fps_set);
+//        Status setupInfraredImage(rs2FrameFormat format,rs2_ressolution_and_fps ress_fps_set);
 
         //TODO which formats support
-        Image getDepthImage(rs2_frame_format format,rs2_ressolution_and_fps ress_fps_set);
+//        Status setupDepthImage(rs2FrameFormat format,rs2_ressolution_and_fps ress_fps_set);
+
+
+       /**
+         * @brief setupColorImage - setup the camera to steam wanted frames.
+         * notice that color camera cant stream at ress: 1920x1080 or 1280x720 at 60 fps
+         * and cant stream at ress: 320x240 or 320x180 at 15 fps
+         * @param format
+         * @param ressolution
+         * @param fps
+         * @return
+         */
+        Status setupColorImage(rs2FrameFormat format,rs2ColorRessolution ressolution,rs2fps fps);
+
 
 
 
 private:
-      rs2::device _camera;
-      rs2::sensor _sensor1; //TODO change name of the sensors
-      rs2::sensor _sensor2;
-      rs2::sensor _sensor3;
 
+        //TODO add capture
+      rs2::device _camera;
+      //for config settings
+      rs2::sensor _stereo_module;
+      rs2::sensor _rgb_camera;
+      rs2::sensor _motion_module;
+
+      rs2::pipeline _pipe;
+      rs2::config _config;
 
 };
 

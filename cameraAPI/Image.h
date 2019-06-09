@@ -33,6 +33,23 @@ public:
 
     ~Image(){}
 
+    char* getDate(){
+        return _data;
+    }
+
+    uint getWidth(){
+        return _width;
+    }
+
+    uint getHeight(){
+        return _height;
+    }
+
+    uint getSize(){
+        return _size;
+    }
+
+
 private:
     char *_data;
     uint _width;
