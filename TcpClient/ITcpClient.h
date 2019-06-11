@@ -1,6 +1,8 @@
 #ifndef TCPSOCKET_ITCPCLIENT_H
 #define TCPSOCKET_ITCPCLIENT_H
 
+#define TCP_CLIENT_API __attribute__((visibilty ("default")))
+
 /**
   ITcpClient is an interface for opening client TCP communication and communicate with a TCP server.
 
@@ -24,7 +26,7 @@
 
 #include "TcpClient_types.h"
 
-class ITcpClient {
+class TCP_CLIENT_API ITcpClient {
 public:
 
     /**

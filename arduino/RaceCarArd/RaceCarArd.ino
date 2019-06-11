@@ -13,6 +13,6 @@ char c;
 void loop() {
   // put your main code here, to run repeatedly:
   car.updateTimers();
-  car.getKeyBoardInput();
-  //car.getDriveCommand();
+  //car.getKeyBoardInput();
+  car.getDriveCommand();
 }

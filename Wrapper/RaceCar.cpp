@@ -1,5 +1,6 @@
 #include "RaceCar.h"
 #include <vector>
+
 RaceCar::RaceCar()
 {
 	_arduino = std::make_shared<Arduino>();
@@ -12,25 +13,26 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port)
 	_tcp_client->connect(ip, port);
 	//TODO see if constructor changes
 	_camera.connectCamera();
-	_arduino->connect();
+    _arduino->connect();
+    return *this;
+
 }
 
 RaceCar &RaceCar::run()
 {
 	while (true)
 	{
-		std::string cmd = _tcp_client->receive;
+        std::vector<char> cmd = _tcp_client->receive(1);
 		
 	}
-
+    return *this;
 }
 
-RaceCar &RaceCar::parseCmdString(const string& cmd)
+RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 {
-	int string_size = cmd.size();
-	if (string_size < 1)
+    if (cmd.size() < 1)
 	{
-		return;
+        return *this;
 	}
 
 
@@ -96,7 +98,7 @@ RaceCar &RaceCar::parseCmdString(const string& cmd)
 	//		_arduino->changeSpeedBy(std::stoi(cmd_vec[1]));
 	//	}
 	//}
-
+    return *this;
 }
 
 static void splitString(const string &str, std::vector<string> &output)
@@ -123,11 +125,4 @@ static void splitString(const string &str, std::vector<string> &output)
 	output.push_back(str.substr(start));
 }
 
-int main() {
-	
-	RaceCar car;
-	car.connect();
-	car.run();
-	
-	
-}
+
