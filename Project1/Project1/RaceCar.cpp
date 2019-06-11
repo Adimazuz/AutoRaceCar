@@ -123,3 +123,11 @@ static void splitString(const string &str, std::vector<string> &output)
 	output.push_back(str.substr(start));
 }
 
+int main() {
+	
+	RaceCar car;
+	car.connect();
+	car.run();
+	
+	
+}
