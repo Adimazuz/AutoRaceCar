@@ -87,6 +87,11 @@ std::vector<char> TcpServer::receive(const Socket &socket, const uint &len) cons
     {
         auto tmp_len = recv(socket, data.data() + bytes_received, len - bytes_received, 0);
         bytes_received += tmp_len;
+
+        if(tmp_len == 0)
+        {
+            break;
+        }
     }
 
     return data;

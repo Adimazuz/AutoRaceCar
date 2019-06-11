@@ -13,13 +13,14 @@ Serial::Serial() :
 
 }
 
-Serial &Serial::connect(const string &path)
+bool Serial::connect(const string &path)
 {
     _path = path;
     _fd = open(_path.data(), O_RDWR | O_NOCTTY | O_NDELAY);
     if(_fd < 0)
     {
-        throw SerialCannotBeOpened(_path);
+        return false;
+//        throw SerialCannotBeOpened(_path);
     }
 
     struct termios config;
@@ -39,7 +40,7 @@ Serial &Serial::connect(const string &path)
 
     usleep(ARDUINO_REBOOT_MS);
 
-    return *this;
+    return true;
 }
 
 Serial &Serial::write(const string &msg)

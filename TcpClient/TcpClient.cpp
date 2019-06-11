@@ -28,7 +28,7 @@ TcpClient::TcpClient() noexcept :
     }
 }
 
-void TcpClient::connect(const string& ip, const unsigned short& port) const
+bool TcpClient::connect(const string& ip, const unsigned short& port) const
 {
     sockaddr_in server_address = buildAddress(ip, port);
 
@@ -36,7 +36,8 @@ void TcpClient::connect(const string& ip, const unsigned short& port) const
 
     if(res < 0)
     {
-        throw ITcpClientCannotConnect(ip, port);
+        return false;
+//        throw ITcpClientCannotConnect(ip, port);
     }
 }
 

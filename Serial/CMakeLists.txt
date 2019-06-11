@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 2.8)
 project(Serial)
 
 set(SOURCE_FILES
-    main.cpp
     Serial.h
     Serial.cpp
     ISerial.h
