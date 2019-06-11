@@ -7,12 +7,11 @@ using ullong = unsigned long long;
 class Image
 {
 public:
-    //TODO add bytes per pixel
     Image(const unsigned char *data, const uint &width, const uint &height, const ullong frame_num, const double timestamp_ms , const int bytes_per_pixel) :
         _data(data),
         _width(width),
         _height(height),
-        _size(width * height),
+        _size(width * height * bytes_per_pixel),
         _frame_num(frame_num),
         _timestamp_ms(timestamp_ms),
         _bytes_per_pixel(bytes_per_pixel){}
@@ -60,7 +59,7 @@ public:
     }
 
     unsigned long getSize() const{
-        return _size*_bytes_per_pixel;
+        return _size;
     }
 
     ullong getFrameNum() const{
