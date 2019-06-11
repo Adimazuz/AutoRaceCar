@@ -3,4 +3,5 @@ cmake-build-debug/**
 motorAPI/cmake-build-debug/**
 motorAPI/.idea/**
 build-cameraAPI-*/
+*.o
 
