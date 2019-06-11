@@ -2,31 +2,49 @@
 #include <vector>
 #include "Arduino.h"
 #include <thread>
+#include "zlib.h"
+
+#define SERVER_PORT
+#define SERVER_IP
 
 RaceCar::RaceCar()
 {
 	_arduino = std::make_shared<Arduino>();
 	_tcp_client->create();
-	//TODO add _camera later
+    //TODO add _camera later
+}
+
+RaceCar::~RaceCar()
+{
+    _camera_thread->join();
+    _serial_thread->join();
 }
 
 RaceCar &RaceCar::connect(const string& ip, const unsigned short& port)
 {
-	_tcp_client->connect(ip, port);
-	//TODO see if constructor changes
-    //_camera.connectCamera();
-    _arduino->connect();
-    return *this;
+    if(_tcp_client->connect(ip, port) && _camera.connectCamera())
+    {
+        _camera.setupColorImage(RealSense::rs2ColorRessolution::R_640x480, RealSense::rs2fps::F_30hz);
+        _camera.startCamera();
+        _camera_thread = std::make_shared<std::thread>(&RaceCar::getDriveCmd,this);
+        _is_running = true;
 
+    }
+    if(_arduino->connect() /* &&_tcp_server->connect(ip,port)*/)
+    {
+        //_tcp_server->connect(ip,port');
+      _serial_thread = std::make_shared<std::thread>(&RaceCar::getCameraInput,this);
+      _is_running = true;
+
+    }
+
+    return *this;
 }
 
 
 
 RaceCar &RaceCar::run()
 {
-    std::thread carInputThread(&RaceCar::getDriveCmd,this);
-    std::thread cameraInputThread(&RaceCar::getCameraInput,this);
-
 }
 
 RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
@@ -58,6 +76,10 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 		_arduino->changeAngleBy(5);
 		break;
 	}
+    case 'q': {
+        _is_running=false;
+        break;
+    }
 	default: _arduino->driveCurrentState();
 	}
 
@@ -104,10 +126,11 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 
 RaceCar &RaceCar::getDriveCmd()
 {
-    while (true)
+    while (_is_running)
     {
-        std::vector<char> cmd = _tcp_client->receive(1);
-        parseCmdString(cmd);
+//        std::vector<char> cmd = _tcp_server->receive(1);
+//        parseCmdString(cmd);
+        int koko = 7;
     }
     return *this;
 
@@ -115,6 +138,21 @@ RaceCar &RaceCar::getDriveCmd()
 
 RaceCar &RaceCar::getCameraInput()
 {
+    while (_is_running)
+    {
+//        _camera.captureFrame();
+//        Image image=_camera.getColorImage();
+//        auto len = image.getSize();
+//        auto len_orig=len;
+//        std::vector<unsigned char> compresed_image(len);
+//        compress(compresed_image.data(),&len,image.getData(),len_orig);
+        int koko = 7;
+
+//        _tcp_client->send(reinterpret_cast<char*>(&len),sizeof(ulong));
+//        _tcp_client->send(reinterpret_cast<char*>(compresed_image.data(),len));
+
+    }
+    return *this;
 
 }
 
