@@ -11,7 +11,7 @@
 
 class RaceCar {
 public:
-	RaceCar &connect(const string& ip, const unsigned short& port);
+    RaceCar &connect(const string& ip, const unsigned short& port,const string& server_ip);
 	RaceCar &run();
     RaceCar();
     ~RaceCar();
@@ -28,4 +28,5 @@ private:
     RaceCar &getCameraInput();
     std::shared_ptr<std::thread> _camera_thread;
     std::shared_ptr<std::thread> _serial_thread;
+    Socket _socket;
 };

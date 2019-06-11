@@ -6,7 +6,7 @@ using std::string;
 bool Arduino::connect()
 {
     m_serial = ISerial::create();
-    m_serial->connect();
+    return m_serial->connect();
 
 }
 Arduino &Arduino::drive(const int &wanted_speed, const int &wanted_angle)

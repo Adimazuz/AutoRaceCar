@@ -1,6 +1,8 @@
 #ifndef SERVERSOCKET_ITCPSERVER_H
 #define SERVERSOCKET_ITCPSERVER_H
 
+#define TCP_SERVER_API __attribute__((visibilty ("default")))
+
 /**
   ITcpServer is an interface for opening server with TCP communication.
 
@@ -15,7 +17,7 @@
 
 #include "TcpServer_types.h"
 
-class ITcpServer
+class TCP_SERVER_API ITcpServer
 {
 public:
 

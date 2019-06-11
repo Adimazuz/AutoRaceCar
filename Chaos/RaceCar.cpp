@@ -4,37 +4,54 @@
 #include <thread>
 #include "zlib.h"
 
-#define SERVER_PORT
-#define SERVER_IP
+#include "iostream"
 
+#define SERVER_PORT 5556
+#define MAX_NUM_USERS 5
 RaceCar::RaceCar()
 {
 	_arduino = std::make_shared<Arduino>();
-	_tcp_client->create();
-    //TODO add _camera later
+    _tcp_client = ITcpClient::create();
+    _camera_thread = nullptr;
+    _serial_thread = nullptr;
+    _is_running = true;
+
 }
 
 RaceCar::~RaceCar()
 {
-    _camera_thread->join();
-    _serial_thread->join();
+    if (!_camera_thread){
+         _camera_thread->join();
+     }
+    if (!_serial_thread){
+         _serial_thread->join();
+     }
 }
 
-RaceCar &RaceCar::connect(const string& ip, const unsigned short& port)
+RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const string& server_ip)
 {
+//    std::cout << "enter conect" <<std::endl;
+
     if(_tcp_client->connect(ip, port) && _camera.connectCamera())
     {
-        _camera.setupColorImage(RS2_FORMAT_RGB8,RealSense::rs2ColorRessolution::R_640x480, RealSense::rs2fps::F_30hz);
+        std::cout << "connect to sever and camera on" <<std::endl;
+        _camera.setupColorImage(RS2_FORMAT_RGB8,RealSense::rs2ColorRessolution::R_640x480, RealSense::rs2fps::F_15hz);
+        std::cout << "camera setuped" <<std::endl;
         _camera.startCamera();
-        _camera_thread = std::make_shared<std::thread>(&RaceCar::getDriveCmd,this);
-        _is_running = true;
+        std::cout << "camera started" <<std::endl;
+        _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraInput,this);
+        std::cout << "camera thread opened" <<std::endl;
 
     }
-    if(_arduino->connect() /* &&_tcp_server->connect(ip,port)*/)
+
+    if(_arduino->connect() )
     {
-        //_tcp_server->connect(ip,port');
-      _serial_thread = std::make_shared<std::thread>(&RaceCar::getCameraInput,this);
-      _is_running = true;
+        std::cout << "connect ardoino" <<std::endl;
+       _tcp_server = ITcpServer::create(server_ip,SERVER_PORT,MAX_NUM_USERS);
+       std::cout << "waiting for connection" << std::endl;
+       _socket = _tcp_server->waitForConnections();
+       std::cout << "someone connected" << std::endl;
+      _serial_thread = std::make_shared<std::thread>(&RaceCar::getDriveCmd,this);
 
     }
 
@@ -70,6 +87,7 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 	}
 	case 'l': {
 		_arduino->changeAngleBy(-5);
+        std::cout << "cmd " <<cmd[0]<< std::endl;
 		break;
 	}
 	case 'r': {
@@ -77,7 +95,7 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 		break;
 	}
     case 'q': {
-        _is_running=false;
+        //_is_running=false;
         break;
     }
 	default: _arduino->driveCurrentState();
@@ -115,7 +133,7 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 	//		_arduino->changeAngleBy(std::stoi(cmd_vec[1]));
 	//	}
 	//}
-	//else if (cmd_vec[0] == "changeSpeedBy")
+    //else if (cmd_vec[0] == "changeSpeedB1y")
 	//{
 	//	if (cmd_vec.size == 2) {
 	//		_arduino->changeSpeedBy(std::stoi(cmd_vec[1]));
@@ -128,9 +146,8 @@ RaceCar &RaceCar::getDriveCmd()
 {
     while (_is_running)
     {
-//        std::vector<char> cmd = _tcp_server->receive(1);
-//        parseCmdString(cmd);
-        int koko = 7;
+        std::vector<char> cmd = _tcp_server->receive(_socket, 1);
+        parseCmdString(cmd);
     }
     return *this;
 
@@ -138,19 +155,23 @@ RaceCar &RaceCar::getDriveCmd()
 
 RaceCar &RaceCar::getCameraInput()
 {
+    std::cout << "from camera thread " <<std::endl;
     while (_is_running)
     {
-//        _camera.captureFrame();
-//        Image image=_camera.getColorImage();
-//        auto len = image.getSize();
-//        auto len_orig=len;
-//        std::vector<unsigned char> compresed_image(len);
-//        compress(compresed_image.data(),&len,image.getData(),len_orig);
-        int koko = 7;
+//        std::cout << _is_running <<std::endl;
+        _camera.captureFrame();
+        Image image=_camera.getColorImage();
+        auto len = image.getSize();
+        auto len_orig=len;
+        std::vector<unsigned char> compresed_image(len);
+        compress(compresed_image.data(),&len,image.getData(),len_orig);
+        //std::cout << "org len: "<< len_orig <<" compresed len:"<< len <<std::endl;
 
-//        _tcp_client->send(reinterpret_cast<char*>(&len),sizeof(ulong));
-//        _tcp_client->send(reinterpret_cast<char*>(compresed_image.data(),len));
+        _tcp_client->send(reinterpret_cast<char*>(&len),sizeof(ulong));
+        //std::cout << "sent len" <<std::endl;
+        _tcp_client->send(reinterpret_cast<char*>(compresed_image.data()),len);
 
+        //std::cout << _is_running <<std::endl;
     }
     return *this;
 

@@ -33,12 +33,13 @@ bool TcpClient::connect(const string& ip, const unsigned short& port) const
     sockaddr_in server_address = buildAddress(ip, port);
 
     int res = ::connect(_socket, reinterpret_cast<sockaddr*>(& server_address), sizeof(server_address));
-
+    std::cout << "res:" << res << std::endl;
     if(res < 0)
     {
         return false;
 //        throw ITcpClientCannotConnect(ip, port);
     }
+    return true;
 }
 
 TcpClient &TcpClient::createSocket()
