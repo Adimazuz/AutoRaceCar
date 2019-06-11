@@ -10,7 +10,7 @@ public:
     /*
      * connects to Arduino controller
      */
-    virtual Arduino &connect() override;
+    virtual bool connect() override;
 
     virtual Arduino &stop() override;
 

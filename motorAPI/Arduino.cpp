@@ -3,7 +3,7 @@
 using std::string;
 
 
-Arduino &Arduino::connect()
+bool Arduino::connect()
 {
     m_serial = ISerial::create();
     m_serial->connect();

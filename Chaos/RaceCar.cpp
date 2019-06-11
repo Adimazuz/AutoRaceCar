@@ -24,7 +24,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port)
 {
     if(_tcp_client->connect(ip, port) && _camera.connectCamera())
     {
-        _camera.setupColorImage(RealSense::rs2ColorRessolution::R_640x480, RealSense::rs2fps::F_30hz);
+        _camera.setupColorImage(RS2_FORMAT_RGB8,RealSense::rs2ColorRessolution::R_640x480, RealSense::rs2fps::F_30hz);
         _camera.startCamera();
         _camera_thread = std::make_shared<std::thread>(&RaceCar::getDriveCmd,this);
         _is_running = true;

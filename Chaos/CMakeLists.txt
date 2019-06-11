@@ -18,6 +18,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/../motorAPI/MotorController.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI/RealSenseAPI.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI/RealSenseAPI.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI/Exceptions.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../TcpServer/ITcpServer.h)
 
 

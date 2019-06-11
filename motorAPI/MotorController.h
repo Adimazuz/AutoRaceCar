@@ -13,7 +13,7 @@ public:
      * throw exception if fails
      * @return this
      */
-    virtual MotorController &connect() = 0;
+    virtual bool connect() = 0;
     /**
      * stops the car and set the wheels to a 90 degree angle
      * @return this
