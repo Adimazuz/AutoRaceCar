@@ -26,7 +26,7 @@ public:
      * @param path - the path to the file descriptor
      * @return this
      */
-    virtual ISerial &connect(const string &path = "/dev/ttyACM0") = 0;
+    virtual bool connect(const string &path = "/dev/ttyACM0") = 0;
 
     /**
      * @brief write string to the file descriptor

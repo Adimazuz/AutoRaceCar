@@ -40,7 +40,7 @@ public:
      * @param ip - the ip address of the server
      * @param port - the port defined by the server
      */
-    virtual void connect(const string& ip, const unsigned short& port) const = 0;
+    virtual bool connect(const string& ip, const unsigned short& port) const = 0;
 
     /**
      * @brief receive data from the server

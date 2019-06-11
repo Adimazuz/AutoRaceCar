@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&_key_timer, SIGNAL(timeout()), this, SLOT(handleKey()));
     _key_timer.start();
 
-    _server = ITcpServer::create("132.68.36.54", 5560, 5);
+    _server = ITcpServer::create("132.68.36.54", 5555, 5);
     qDebug() << "bind success";
 }
 
