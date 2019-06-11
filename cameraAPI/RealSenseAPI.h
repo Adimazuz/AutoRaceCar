@@ -24,20 +24,20 @@ public:
 
         //TODO hidden rs2_stream_profile & rs2_frame_format ?
         //TODO check if data type must go with specific ress&fps
-        enum class rs2_stream_profile
-        {
-            STREAM_ANY,
-            STREAM_DEPTH                            , /**< Native stream of depth data produced by RealSense device */
-            STREAM_COLOR                            , /**< Native stream of color data captured by RealSense device */
-            STREAM_INFRARED                         , /**< Native stream of infrared data captured by RealSense device */
-            STREAM_FISHEYE                          , /**< Native stream of fish-eye (wide) data captured from the dedicate motion camera */
-            STREAM_GYRO                             , /**< Native stream of gyroscope motion data produced by RealSense device */
-            STREAM_ACCEL                            , /**< Native stream of accelerometer motion data produced by RealSense device */
-            STREAM_GPIO                             , /**< Signals from external device connected through GPIO */
-            STREAM_POSE                             , /**< 6 Degrees of Freedom pose data, calculated by RealSense device */
-            STREAM_CONFIDENCE                       , /**< 4 bit per-pixel depth confidence level */
-            STREAM_COUNT
-        };
+//        enum rs2_stream_profile
+//        {
+//            STREAM_ANY,
+//            STREAM_DEPTH                            , /**< Native stream of depth data produced by RealSense device */
+//            STREAM_COLOR                            , /**< Native stream of color data captured by RealSense device */
+//            STREAM_INFRARED                         , /**< Native stream of infrared data captured by RealSense device */
+//            STREAM_FISHEYE                          , /**< Native stream of fish-eye (wide) data captured from the dedicate motion camera */
+//            STREAM_GYRO                             , /**< Native stream of gyroscope motion data produced by RealSense device */
+//            STREAM_ACCEL                            , /**< Native stream of accelerometer motion data produced by RealSense device */
+//            STREAM_GPIO                             , /**< Signals from external device connected through GPIO */
+//            STREAM_POSE                             , /**< 6 Degrees of Freedom pose data, calculated by RealSense device */
+//            STREAM_CONFIDENCE                       , /**< 4 bit per-pixel depth confidence level */
+//            STREAM_COUNT
+//        };
 
         enum rs2FrameFormat
         {
@@ -90,7 +90,7 @@ public:
 
 
 
-       RealSense();
+       RealSense() = default;
 
 
 
@@ -131,19 +131,49 @@ public:
          * @brief setupColorImage - setup the camera to steam wanted frames.
          * notice that color camera cant stream at ress: 1920x1080 or 1280x720 at 60 fps
          * and cant stream at ress: 320x240 or 320x180 at 15 fps
-         * @param format
+         * @param format: supported formats:
+         * RS2_FORMAT_RGB8
+         * RS2_FORMAT_BGR8
+         * RS2_FORMAT_RGBA8
+         * RS2_FORMAT_BGRA8
+         * RS2_FORMAT_YUYV
+         * RS2_FORMAT_Y16
          * @param ressolution
          * @param fps
          * @return
          */
-        Status setupColorImage(rs2FrameFormat format,rs2ColorRessolution ressolution,rs2fps fps);
+        Status setupColorImage(/*rs2_format format,*/rs2ColorRessolution ressolution,rs2fps fps);
+
+
+        /**
+         * @brief startCamera - after setups all wanted frames and start
+         * streaming according to the configuraion
+         */
+        void startCamera();
+
+
+        /**
+         * @brief captureFrame - save frame for future use
+         * before getting data of specific frame need call this function.
+         * this function will wait setuped frames from the camera.
+         */
+        void captureFrame();
+
+
+        /**
+         * @brief getColorImage - get Color image (accordint the color setups) according
+         * the last capture.
+         * @return
+         */
+        Image getColorImage();
+
+
 
 
 
 
 private:
 
-        //TODO add capture
       rs2::device _camera;
       //for config settings
       rs2::sensor _stereo_module;
@@ -152,6 +182,9 @@ private:
 
       rs2::pipeline _pipe;
       rs2::config _config;
+
+      //TODO add capture
+      rs2::frameset _frames;
 
 };
 

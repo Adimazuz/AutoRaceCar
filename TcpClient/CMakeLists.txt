@@ -12,8 +12,16 @@ set(SOURCE_FILES
         TcpClient_types.h)
 
 
-add_executable(TcpClient ${SOURCE_FILES})
+#add_executable(TcpClient ${SOURCE_FILES})
 
 if(WIN32)
     target_link_libraries(TcpClient ws2_32)
 endif(WIN32)
+
+add_library(TcpClient SHARED
+    ITcpClient.h
+    TcpClient.h
+    Exceptions.h
+    ITcpClient.cpp
+    TcpClient.cpp
+    TcpClient_types.h)

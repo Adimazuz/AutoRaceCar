@@ -1,6 +1,8 @@
 #ifndef ISERIAL_H
 #define ISERIAL_H
 
+#define SERIAL_API __attribute__((visibilty ("default")))
+
 /**
   ISerial library for open serial connection and use read and write to a file descriptor.
   first need to call connect function and give the path to the file descriptor,
@@ -9,7 +11,7 @@
 
 #include "Serial_types.h"
 
-class ISerial
+class SERIAL_API ISerial
 {
 public:
 

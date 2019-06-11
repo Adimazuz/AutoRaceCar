@@ -14,7 +14,7 @@ static void convertFPStoInt(RealSense::rs2fps fps, int& f_int){
     }
 }
 
-static void convertRessToValues(RealSense::rs2ColorRessolution ressolution, int& w, int& h){
+static void convertRessToInt(RealSense::rs2ColorRessolution ressolution, int& w, int& h){
     if(ressolution == RealSense::rs2ColorRessolution::R_1920x1080){
         w = 1920;
         h = 1080;
@@ -75,24 +75,46 @@ Status RealSense::connectCamera(){
 
 
 
-Status RealSense::setupColorImage(RealSense::rs2FrameFormat format, RealSense::rs2ColorRessolution ressolution, RealSense::rs2fps fps)
+
+
+Status RealSense::setupColorImage(/*rs2_format format,*/ RealSense::rs2ColorRessolution ressolution, RealSense::rs2fps fps)
 {
 
     if(((ressolution == rs2ColorRessolution::R_1920x1080 || ressolution == rs2ColorRessolution::R_1280x720) && fps == rs2fps::F_60hz) ||
             (ressolution ==rs2ColorRessolution::R_320x180 || ressolution ==rs2ColorRessolution::R_320x240) && fps == rs2fps::F_15hz ){
         return RESS_NOT_FITTING_WITH_FPS;
     }
-    int w,h,f;
+    int w,h,freq;
     convertRessToInt(ressolution, w, h);
-    convertFPStoInt(fps,f);
-    _config.enable_stream(RS2_STREAM_COLOR,w,h, format, f);
+    convertFPStoInt(fps,freq);
+    _config.enable_stream(RS2_STREAM_COLOR,w,h, RS2_FORMAT_RGB8, freq);
     return SUCCESS;
 }
 
-Image RealSense::getInfraredImage(RealSense::rs2_frame_format format, RealSense::rs2_ressolution_and_fps ress_fps_set)
+
+void RealSense::startCamera()
 {
-
-
-
+    _pipe.start(_config);
 }
+
+
+
+void RealSense::captureFrame()
+{
+    _frames = _pipe.wait_for_frames();
+}
+
+Image RealSense::getColorImage()
+{
+    rs2::video_frame color_frame = _frames.get_color_frame();
+
+
+    Image cur_image(reinterpret_cast<const unsigned char*>(color_frame.get_data()),color_frame.get_width(),color_frame.get_height(),
+                    color_frame.get_frame_number(), color_frame.get_timestamp(), color_frame.get_bytes_per_pixel());
+
+
+    return cur_image;
+}
+
+
 

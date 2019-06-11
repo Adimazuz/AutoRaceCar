@@ -1,8 +1,8 @@
 #pragma once
-#include "../../motorAPI/MotorController.h"
-#include "../../motorAPI/Arduino.h"
-#include "../../cameraAPI/RealSenseAPI.h"
-#include "../../TcpClient/ITcpClient.h"
+#include "../motorAPI/MotorController.h"
+#include "../motorAPI/Arduino.h"
+#include "../cameraAPI/RealSenseAPI.h"
+#include "../TcpClient/ITcpClient.h"
 
 
 class RaceCar {
@@ -16,5 +16,5 @@ private:
 	std::shared_ptr<ITcpClient> _tcp_client;
 
 
-	RaceCar &parseCmdString(const string& cmd);
+    RaceCar &parseCmdString(const std::vector<char>& cmd);
 };
