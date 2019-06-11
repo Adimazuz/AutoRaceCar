@@ -56,9 +56,8 @@ public:
      */
     virtual MotorController &changeAngleBy(const int &delta) = 0;
 	
-	virtual MotorController &driveCurrentState();
+    virtual MotorController &driveCurrentState()=0;
 
 };
-
 
 #endif //UNTITLED_MOTORCONTROLLER_HPP

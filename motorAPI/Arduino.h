@@ -1,5 +1,5 @@
 #include <string>
-#include "Serial/ISerial.h"
+#include "ISerial.h"
 
 #include "MotorController.h"
 
