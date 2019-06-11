@@ -20,7 +20,7 @@ public:
 
     TcpClient() noexcept;
 
-    virtual void connect(const string& ip, const unsigned short& port) const override;
+    virtual bool connect(const string& ip, const unsigned short& port) const override;
 
     virtual std::vector<char> receive(const unsigned int &len) const override;
 

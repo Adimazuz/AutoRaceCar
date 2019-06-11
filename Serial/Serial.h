@@ -7,7 +7,7 @@ class Serial : public ISerial
 {
 public:
     Serial();
-    virtual Serial &connect(const string &path = "/dev/ttyACM0") override;
+    virtual bool connect(const string &path = "/dev/ttyACM0") override;
     virtual Serial &write(const string &msg) override;
     virtual string read(const uint &len) override;
     virtual ~Serial() override;
