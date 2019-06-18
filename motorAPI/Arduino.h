@@ -26,6 +26,8 @@ public:
 	
 	virtual Arduino &driveCurrentState();
 
+   ~Arduino();
+
     Arduino() = default;
 
 private:
@@ -33,8 +35,9 @@ private:
     int m_current_speed=0;
     int m_current_angle=90;
     static constexpr int TOP_SPEED = 30;
-    static constexpr int MIN_ANGLE = 65;
-    static constexpr int MAX_ANGLE = 125;
+    static constexpr int MIN_ANGLE = 60;
+    static constexpr int MAX_ANGLE = 130;
     void sendDriveCommand();
+    bool _is_connected = false;
     std::string createCommandMsg(int speed,int angle);
 };
