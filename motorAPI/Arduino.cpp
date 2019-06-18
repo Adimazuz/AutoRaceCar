@@ -113,5 +113,15 @@ string Arduino::createCommandMsg(int speed, int angle){
 }
 void Arduino::sendDriveCommand(){
     string cmd_string = createCommandMsg(m_current_speed,m_current_angle);
+    std::cout <<"cmd:"<< cmd_string << std::endl;
     m_serial->write(cmd_string);
+}
+
+int main() {
+    Arduino car;
+    car.connect();
+    car.changeAngleBy(10);
+    car.changeAngleBy(-10);
+    car.changeSpeedBy(15);
+    car.changeSpeedBy(-15);
 }
