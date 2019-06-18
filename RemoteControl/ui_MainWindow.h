@@ -28,6 +28,8 @@ class Ui_MainWindow
 {
 public:
     QAction *acn_exit;
+    QAction *actionconnect_server;
+    QAction *actionconnect;
     QWidget *centralWidget;
     QGridLayout *gridLayout;
     QLabel *lbl_img;
@@ -44,6 +46,10 @@ public:
         MainWindow->resize(702, 381);
         acn_exit = new QAction(MainWindow);
         acn_exit->setObjectName(QStringLiteral("acn_exit"));
+        actionconnect_server = new QAction(MainWindow);
+        actionconnect_server->setObjectName(QStringLiteral("actionconnect_server"));
+        actionconnect = new QAction(MainWindow);
+        actionconnect->setObjectName(QStringLiteral("actionconnect"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout = new QGridLayout(centralWidget);
@@ -79,6 +85,8 @@ public:
 
         menuBar->addAction(menufile->menuAction());
         menufile->addAction(acn_exit);
+        menufile->addAction(actionconnect_server);
+        menufile->addAction(actionconnect);
 
         retranslateUi(MainWindow);
 
@@ -89,6 +97,8 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         acn_exit->setText(QApplication::translate("MainWindow", "exit", nullptr));
+        actionconnect_server->setText(QApplication::translate("MainWindow", "connect server", nullptr));
+        actionconnect->setText(QApplication::translate("MainWindow", "connect", nullptr));
         lbl_img->setText(QString());
         btn_camera->setText(QApplication::translate("MainWindow", "show camera", nullptr));
         menufile->setTitle(QApplication::translate("MainWindow", "file", nullptr));

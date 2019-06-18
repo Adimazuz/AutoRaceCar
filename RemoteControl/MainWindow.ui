@@ -54,6 +54,8 @@
      <string>file</string>
     </property>
     <addaction name="acn_exit"/>
+    <addaction name="actionconnect_server"/>
+    <addaction name="actionconnect"/>
    </widget>
    <addaction name="menufile"/>
   </widget>
@@ -69,6 +71,16 @@
   <action name="acn_exit">
    <property name="text">
     <string>exit</string>
+   </property>
+  </action>
+  <action name="actionconnect_server">
+   <property name="text">
+    <string>connect server</string>
+   </property>
+  </action>
+  <action name="actionconnect">
+   <property name="text">
+    <string>connect</string>
    </property>
   </action>
  </widget>

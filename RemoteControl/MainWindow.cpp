@@ -10,10 +10,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     _keys(),
     _key_timer(),
-    _is_stream_on(false),
+    _is_stream_on(true),
     _client_sock(-1),
     _is_connected(false),
-    _server(nullptr)
+    _server(nullptr),
+    _client(nullptr)
 {
     ui->setupUi(this);
     showMaximized();
@@ -21,8 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&_key_timer, SIGNAL(timeout()), this, SLOT(handleKey()));
     _key_timer.start();
 
-    _server = ITcpServer::create("132.68.36.54", 5555, 5);
-    qDebug() << "bind success";
+    _client = ITcpClient::create();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -57,7 +57,7 @@ void MainWindow::handleKey()
     {
         if(isArrowKey(key))
         {
-//            _server->send(_client_sock, keyToString(key));
+            _client->send(keyToString(key));
             qDebug() << key;
         }
     }
@@ -94,14 +94,29 @@ bool MainWindow::isArrowKey(const int &key)
 
 void MainWindow::on_btn_camera_clicked()
 {
+    _is_stream_on = !_is_stream_on;
+}
+
+unsigned long MainWindow::receiveDataSize()
+{
+    auto len_data = _server->receive(_client_sock, sizeof(unsigned long));
+    unsigned long* len = reinterpret_cast<unsigned long*>(len_data.data());
+
+    return *len;
+}
+
+void MainWindow::on_actionconnect_server_triggered()
+{
+    _server = ITcpServer::create("132.68.36.54", 5559, 5);
+
+    qDebug() << "bind success";
+
     if(!_is_connected)
     {
        _client_sock = _server->waitForConnections();
        qDebug() << "someone connected";
        _is_connected = true;
     }
-
-    _is_stream_on = !_is_stream_on;
 
     unsigned long size = 640*480*3;
 
@@ -122,10 +137,11 @@ void MainWindow::on_btn_camera_clicked()
     }
 }
 
-unsigned long MainWindow::receiveDataSize()
+void MainWindow::on_actionconnect_triggered()
 {
-    auto len_data = _server->receive(_client_sock, sizeof(unsigned long));
-    unsigned long* len = reinterpret_cast<unsigned long*>(len_data.data());
-
-    return *len;
+    bool is_connect = _client->connect("132.68.36.191", 5556);
+    if(is_connect)
+    {
+        qDebug() << "arduino connected successfully";
+    }
 }

@@ -1,7 +1,11 @@
 #ifndef SERVERSOCKET_ITCPSERVER_H
 #define SERVERSOCKET_ITCPSERVER_H
 
-#define TCP_SERVER_API __attribute__((visibilty ("default")))
+#ifdef EXPORTS
+    #define TCP_SERVER_API __attribute__((visibilty ("default")))
+#else
+    #define TCP_SERVER_API
+#endif
 
 /**
   ITcpServer is an interface for opening server with TCP communication.

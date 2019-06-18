@@ -12,14 +12,10 @@ set(SOURCE_FILES
 
 #add_executable(TcpServer ${SOURCE_FILES})
 
+add_library(TcpServer SHARED ${SOURCE_FILES})
+
 if(WIN32)
     target_link_libraries(TcpServer ws2_32)
 endif(WIN32)
 
-add_library(TcpServer SHARED
-    ITcpServer.h
-    ITcpServer.cpp
-    TcpServer.h
-    TcpServer.cpp
-    Exceptions.h
-    TcpServer_types.h)
+
