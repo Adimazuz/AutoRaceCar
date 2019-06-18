@@ -165,7 +165,7 @@ bool RealSense::connectCamera(){
     _camera = devices[0];
     std::vector<rs2::sensor> sensors = devices[0].query_sensors();
     if (sensors.size() < NUM_OF_RS_SENSORS){
-        throw IRealSenseSensorsFalls();
+        throw IRealSenseColorRessAndFreq();
     }
 
    _stereo_module = sensors[0];
@@ -186,22 +186,27 @@ void RealSense::setupColorImage(RealSense::ColorFrameFormat format, RealSense::C
 
     if(((ressolution == ColorRessolution::R_1920x1080 || ressolution == ColorRessolution::R_1280x720) && fps == ColorCamFps::F_60hz) ||
             (ressolution ==ColorRessolution::R_320x180 || ressolution ==ColorRessolution::R_320x240) && fps == ColorCamFps::F_15hz ){
-        throw IRealSenseRessAndFreq();
+        throw IRealSenseColorRessAndFreq();
     }
     int w,h,freq;
     convertColorRessToInt(ressolution, w, h);
     convertColorFPStoInt(fps,freq);
-    _config.enable_stream(RS2_STREAM_COLOR,w,h, converColorFrameFormat(format), freq);
+    _config.enable_stream(RS2_STREAM_COLOR, w, h, converColorFrameFormat(format), freq);
 }
 
 void RealSense::setupInfraredImage(RealSense::InfrarFrameFormat format, RealSense::InfrarRessolution ressolution, RealSense::InfrarCamFps fps,
                                    RealSense::InfrarCamera side)
 {
-    //TODO check inputs
+    if(ressolution == InfrarRessolution::R_1280x800 && !(fps == InfrarCamFps::F_30hz || fps == InfrarCamFps::F_25hz || fps == InfrarCamFps::F_15hz)){
+        throw IRealSenseInfraRessAndFreq();
+    }
+    if (format == InfrarFrameFormat::Y16 && !(fps == InfrarCamFps::F_25hz || fps == InfrarCamFps::F_15hz)){
+        throw IRealSenseInfraRessAndFreqY16();
+    }
     int w,h,freq;
     convertInfraRessToInt(ressolution, w, h);
     convertInfraFPStoInt(fps,freq);
-    _config.enable_stream(RS2_STREAM_INFRARED,converSide(side), w, h, converInfraFrameFormat(format),freq);
+    _config.enable_stream(RS2_STREAM_INFRARED, converSide(side), w, h, converInfraFrameFormat(format),freq);
 }
 
 
