@@ -4,4 +4,6 @@ motorAPI/cmake-build-debug/**
 motorAPI/.idea/**
 build-*/
 *.o
+*.53de481
+
 
