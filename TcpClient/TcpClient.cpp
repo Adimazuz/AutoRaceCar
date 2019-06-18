@@ -39,7 +39,6 @@ bool TcpClient::connect(const string& ip, const unsigned short& port) const
         return false;
 //        throw ITcpClientCannotConnect(ip, port);
     }
-    return true;
 }
 
 TcpClient &TcpClient::createSocket()

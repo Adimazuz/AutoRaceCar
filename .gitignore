@@ -5,5 +5,5 @@ motorAPI/.idea/**
 build-*/
 *.o
 *.53de481
-
+*.user
 

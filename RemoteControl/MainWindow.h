@@ -33,6 +33,10 @@ private slots:
 
     void on_btn_camera_clicked();
 
+    void on_actionconnect_server_triggered();
+
+    void on_actionconnect_triggered();
+
 private:
     unsigned long receiveDataSize();
 
@@ -49,6 +53,7 @@ private:
     Socket _client_sock;
     bool _is_connected;
     std::shared_ptr<ITcpServer> _server;
+    std::shared_ptr<ITcpClient> _client;
 };
 
 #endif // MAINWINDOW_H
