@@ -32,35 +32,44 @@ public:
 //            STREAM_COUNT
 //        };
 
-//        enum rs2FrameFormat
-//        {
-//            ORMAT_ANY             , /**< When passed to enable stream, librealsense will try to provide best suited format */
-//            FORMAT_Z16             , /**< 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value. */
-//            FORMAT_DISPARITY16     , /**< 16-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth. */
-//            FORMAT_XYZ32F          , /**< 32-bit floating point 3D coordinates. */
-//            FORMAT_YUYV            , /**< 32-bit y0, u, y1, v data for every two pixels. Similar to YUV422 but packed in a different order - https://en.wikipedia.org/wiki/YUV */
-//            FORMAT_RGB8            , /**< 8-bit red, green and blue channels */
-//            FORMAT_BGR8            , /**< 8-bit blue, green, and red channels -- suitable for OpenCV */
-//            FORMAT_RGBA8           , /**< 8-bit red, green and blue channels + constant alpha channel equal to FF */
-//            FORMAT_BGRA8           , /**< 8-bit blue, green, and red channels + constant alpha channel equal to FF */
-//            FORMAT_Y8              , /**< 8-bit per-pixel grayscars2_stream_profilele image */
-//            FORMAT_Y16             , /**< 16-bit per-pixel grayscale image */
-//            FORMAT_RAW10           , /**< Four 10 bits per pixel luminance values packed into a 5-byte macropixel */
-//            FORMAT_RAW16           , /**< 16-bit raw image */
-//            FORMAT_RAW8            , /**< 8-bit raw image */
-//            FORMAT_UYVY            , /**< Similar to the standard YUYV pixel format, but packed in a different order */
-//            FORMAT_MOTION_RAW      , /**< Raw data from the motion sensor */
-//            FORMAT_MOTION_XYZ32F   , /**< Motion data packed as 3 32-bit float values, for X, Y, and Z axis */
-//            FORMAT_GPIO_RAW        , /**< Raw data from the external sensors hooked to one of the GPIO's */
-//            FORMAT_6DOF            , /**< Pose data packed as floats array, containing translation vector, rotation quaternion and prediction velocities and accelerations vectors */
-//            FORMAT_DISPARITY32     , /**< 32-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth */
-//            FORMAT_Y10BPACK        , /**< 16-bit per-pixel grayscale image unpacked from 10 bits per pixel packed ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6 zero bits */
-//            FORMAT_DISTANCE        , /**< 32-bit float-point depth distance value.  */
-//            FORMAT_COUNT             /**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
-//        };
+        enum class FrameFormat
+        {
+            FORMAT_ANY             , /**< When passed to enable stream, librealsense will try to provide best suited format */
+            FORMAT_Z16             , /**< 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value. */
+            FORMAT_DISPARITY16     , /**< 16-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth. */
+            FORMAT_XYZ32F          , /**< 32-bit floating point 3D coordinates. */
+            FORMAT_YUYV            , /**< 32-bit y0, u, y1, v data for every two pixels. Similar to YUV422 but packed in a different order - https://en.wikipedia.org/wiki/YUV */
+            FORMAT_RGB8            , /**< 8-bit red, green and blue channels */
+            FORMAT_BGR8            , /**< 8-bit blue, green, and red channels -- suitable for OpenCV */
+            FORMAT_RGBA8           , /**< 8-bit red, green and blue channels + constant alpha channel equal to FF */
+            FORMAT_BGRA8           , /**< 8-bit blue, green, and red channels + constant alpha channel equal to FF */
+            FORMAT_Y8              , /**< 8-bit per-pixel grayscars2_stream_profilele image */
+            FORMAT_Y16             , /**< 16-bit per-pixel grayscale image */
+            FORMAT_RAW10           , /**< Four 10 bits per pixel luminance values packed into a 5-byte macropixel */
+            FORMAT_RAW16           , /**< 16-bit raw image */
+            FORMAT_RAW8            , /**< 8-bit raw image */
+            FORMAT_UYVY            , /**< Similar to the standard YUYV pixel format, but packed in a different order */
+            FORMAT_MOTION_RAW      , /**< Raw data from the motion sensor */
+            FORMAT_MOTION_XYZ32F   , /**< Motion data packed as 3 32-bit float values, for X, Y, and Z axis */
+            FORMAT_GPIO_RAW        , /**< Raw data from the external sensors hooked to one of the GPIO's */
+            FORMAT_6DOF            , /**< Pose data packed as floats array, containing translation vector, rotation quaternion and prediction velocities and accelerations vectors */
+            FORMAT_DISPARITY32     , /**< 32-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth */
+            FORMAT_Y10BPACK        , /**< 16-bit per-pixel grayscale image unpacked from 10 bits per pixel packed ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6 zero bits */
+            FORMAT_DISTANCE        , /**< 32-bit float-point depth distance value.  */
+            FORMAT_COUNT             /**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
+        };
 
+        enum class ColorFrameFormat
+        {
+            YUYV            , /**< 32-bit y0, u, y1, v data for every two pixels. Similar to YUV422 but packed in a different order - https://en.wikipedia.org/wiki/YUV */
+            RGB8            , /**< 8-bit red, green and blue channels */
+            BGR8            , /**< 8-bit blue, green, and red channels -- suitable for OpenCV */
+            RGBA8           , /**< 8-bit red, green and blue channels + constant alpha channel equal to FF */
+            BGRA8           , /**< 8-bit blue, green, and red channels + constant alpha channel equal to FF */
+            Y16             , /**< 16-bit per-pixel grayscale image */
+        };
 
-        enum class rs2ColorRessolution
+        enum class ColorRessolution
         {
             R_1920x1080,
             R_1280x720,
@@ -73,13 +82,47 @@ public:
             R_320x180
         };
 
-        enum class rs2fps
+        enum class ColorCamFps
         {
             F_60hz,
             F_30hz,
             F_15hz,
             F_6hz
         };
+
+        enum class InfrarFrameFormat
+        {
+            Y8, /**< 8-bit per-pixel grayscale image */
+            Y16 /**< 16-bit per-pixel grayscale image */
+        };
+
+        enum class InfrarRessolution
+        {
+            R_1280x800,
+            R_1280x720,
+            R_848_480,
+            R_640x480,
+            R_640x360,
+            R_480x270,
+            R_424x240
+        };
+
+        enum class InfrarCamera
+        {
+            LEFT,
+            RIGHT
+        };
+
+        enum class InfrarCamFps
+        {
+            F_90hz,
+            F_60hz,
+            F_30hz,
+            F_25hz,
+            F_15hz,
+            F_6hz
+        };
+
 
 
 
@@ -123,20 +166,37 @@ public:
 
        /**
          * @brief setupColorImage - setup the camera to steam wanted frames.
-         * notice that color camera cant stream at ress: 1920x1080 or 1280x720 at 60 fps
+         * notice that color camera can NOT stream at ress: 1920x1080 or 1280x720 at 60 fps
          * and cant stream at ress: 320x240 or 320x180 at 15 fps
          * @param format: supported formats:
-         * RS2_FORMAT_RGB8
-         * RS2_FORMAT_BGR8
-         * RS2_FORMAT_RGBA8
-         * RS2_FORMAT_BGRA8
-         * RS2_FORMAT_YUYV
-         * RS2_FORMAT_Y16
+         * RGB8
+         * BGR8
+         * RGBA8
+         * BGRA8
+         * YUYV
+         * Y16
          * @param ressolution
          * @param fps
          * @return
          */
-        void setupColorImage(rs2_format format,RealSense::rs2ColorRessolution ressolution,RealSense::rs2fps fps);
+        void setupColorImage(RealSense::ColorFrameFormat format,RealSense::ColorRessolution ressolution,RealSense::ColorCamFps fps);
+
+
+        /**
+         * @brief setupInfraredImage - setup one of 2 inferar cameras
+         * notice that
+         * 1). at ressolution 1280x800 camera can work only at 20/25/15 fps
+         * 2). format Y16 works only for resolutions: 1280x800 and 640x480 and only at rates 30/15/6
+         * @param format:
+         * Y8
+         * Y16
+         * @param ressolution
+         * @param fps
+         * @param side - Left or Right inferar camera
+         */
+        void setupInfraredImage(RealSense::InfrarFrameFormat format, RealSense::InfrarRessolution ressolution, RealSense::InfrarCamFps fps
+                                ,RealSense::InfrarCamera side);
+
 
         /**
          * @brief startCamera - after setups all wanted frames and start
