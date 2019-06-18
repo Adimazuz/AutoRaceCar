@@ -145,15 +145,17 @@ void updateTimers(){
   engineTimer.update();
     steeringTimer.update();
 }
-void IncreaseSpeedPrint(){
+void IncreaseSpeedPrint()
+{
     if(engineTimer.getElapsedTime()>COMMAND_DELAY) {
     //speed++;
     Serial.println(1);
     engineTimer.reset();
     }
   //drive();
-  }
-void neutral(){
+}
+void neutral()
+{
  for(int i=91;i<95;i++)
  {
    engine.write(i);
@@ -161,22 +163,54 @@ void neutral(){
  }
  speed =0;
 }
-void getDriveCommand(){
-    command = Serial.readString();
-    if(command.length() >3){
-        String wanted_speed = getValue(command, ' ', 0);
-        String wanted_angle = getValue(command, ' ', 1);
-        if (speed >= 0 && wanted_speed.toInt() < 0){
-            speed=0;
-            drive();
-            Serial.print(wanted_speed);
-            neutral();
-        }
-        speed = wanted_speed.toInt();
-        angle = wanted_angle.toInt();
+
+void getDriveCommand()
+{
+  String speed_string;
+  String angle_string;
+
+  //get speed
+  while (Serial.available()) {
+      char c = Serial.read();  //gets one byte from serial buffer
+      if(c== '/n' ){           //to know if this is end of former cmd
+        return;
+      }
+      speed_string += c; //makes the String speed_string
+      delay(2);  //slow looping to allow buffer to fill with next character
+      if(c == ' ') break; // go to get angle
     }
-    drive();
+    //get angle
+    while (Serial.available()) {
+      char c = Serial.read();  
+      angle_string += c; 
+      delay(2); 
+    }
+  
+    if (speed_string.length() > 0 && angle_string.length()) {
+  
+      int wanted_speed= speed_string.toInt(); 
+      int wanted_angle= angle_string.toInt(); 
+#ifdef DEBUG_MODE
+      Serial.print("speed:");
+      Serial.println(wanted_speed);  
+      Serial.print("angle:");  
+      Serial.println(wanted_angle);  
+#endif
+      //if we need to put in revese
+      if(speed >= 0 && wanted_speed < 0 )
+      {
+         speed=0;
+         drive();
+         neutral();
+      }
+      speed=wanted_speed;
+      angle=wanted_angle;
+    }
+    speed_string = "";
+    angle_string = "";
+  drive();
 }
+
 void getKeyBoardInput(){
   input = Serial.read();
   switch (input) {

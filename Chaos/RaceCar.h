@@ -11,7 +11,7 @@
 
 class RaceCar {
 public:
-    RaceCar &connect(const string& ip, const unsigned short& port,const string& server_ip);
+    RaceCar &connect(const string& client_ip, const unsigned short& client_port,const string& server_ip);
 	RaceCar &run();
     RaceCar();
     ~RaceCar();

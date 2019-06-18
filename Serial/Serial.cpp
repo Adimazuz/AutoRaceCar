@@ -2,7 +2,6 @@
 #include <fcntl.h>
 #include <vector>
 #include <termios.h>
-
 #include "Serial.h"
 #include "Exceptions.h"
 

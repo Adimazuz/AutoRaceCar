@@ -6,6 +6,7 @@
 
 #include "iostream"
 
+//#define DEBUG_MODE
 #define SERVER_PORT 5556
 #define MAX_NUM_USERS 5
 RaceCar::RaceCar()
@@ -30,11 +31,11 @@ RaceCar::~RaceCar()
 
 RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const string& server_ip)
 {
-//    std::cout << "enter conect" <<std::endl;
+    std::cout << "enter conect()" <<std::endl;
 
     if(_tcp_client->connect(ip, port) && _camera.connectCamera())
     {
-        std::cout << "connect to sever and camera on" <<std::endl;
+        std::cout << "connected to sever and camera on" <<std::endl;
         _camera.setupColorImage(RS2_FORMAT_RGB8,RealSense::rs2ColorRessolution::R_640x480, RealSense::rs2fps::F_15hz);
         std::cout << "camera setuped" <<std::endl;
         _camera.startCamera();
@@ -46,7 +47,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 
     if(_arduino->connect() )
     {
-        std::cout << "connect ardoino" <<std::endl;
+        std::cout << "connected to Arduino" <<std::endl;
        _tcp_server = ITcpServer::create(server_ip,SERVER_PORT,MAX_NUM_USERS);
        std::cout << "waiting for connection" << std::endl;
        _socket = _tcp_server->waitForConnections();
@@ -59,11 +60,6 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 }
 
 
-
-RaceCar &RaceCar::run()
-{
-}
-
 RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 {
     if (cmd.size() < 1)
@@ -73,73 +69,37 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 
 
 	switch (cmd[0]) {
+#ifdef DEBUG_MODE
+        std::cout << "cmd " <<cmd[0]<< std::endl;
+#endif
+
 	case 's': {
-		_arduino->stop();
+        _arduino->stop();
 		break;
 	}
 	case 'u': {
-		_arduino->changeSpeedBy(1);
-		break;
+        _arduino->changeSpeedBy(1);
+        break;
 	}
 	case 'd': {
-		_arduino->changeSpeedBy(-1);
+        _arduino->changeSpeedBy(-1);
 		break;
 	}
 	case 'l': {
-		_arduino->changeAngleBy(-5);
-        std::cout << "cmd " <<cmd[0]<< std::endl;
+        _arduino->changeAngleBy(-2);
 		break;
 	}
 	case 'r': {
-		_arduino->changeAngleBy(5);
+        _arduino->changeAngleBy(2);
 		break;
 	}
     case 'q': {
-        //_is_running=false;
+        _is_running=false;
         break;
     }
 	default: _arduino->driveCurrentState();
 	}
 
-/*	std::vector<string> cmd_vec;
-	splitString(cmd, cmd_vec)*/;
-
-	//if (cmd_vec[0] == "i")
-	//{
-	//	if (cmd_vec.size == 3) {
-	//		_arduino->drive(std::stoi(cmd_vec[1]), std::stoi(cmd_vec[2]));
-	//	}
-	//}
-	//else if (cmd_vec[0] == "stop")
-	//{ 
-	//	
-	//	_arduino->stop();
-	//}
-	//else if (cmd_vec[0] == "changeAngle")
-	//{
-	//	if (cmd_vec.size == 2) {
-	//		_arduino->changeAngle(std::stoi(cmd_vec[1]));
-	//	}
-	//}
-	//else if (cmd_vec[0] == "changeSpeed")
-	//{
-	//	if (cmd_vec.size == 2) {
-	//		_arduino->changeSpeed(std::stoi(cmd_vec[1]));
-	//	}
-	//}
-	//else if (cmd_vec[0] == "changeAngleBy")
-	//{
-	//	if (cmd_vec.size == 2) {
-	//		_arduino->changeAngleBy(std::stoi(cmd_vec[1]));
-	//	}
-	//}
-    //else if (cmd_vec[0] == "changeSpeedB1y")
-	//{
-	//	if (cmd_vec.size == 2) {
-	//		_arduino->changeSpeedBy(std::stoi(cmd_vec[1]));
-	//	}
-	//}
-    return *this;
 }
 
 RaceCar &RaceCar::getDriveCmd()

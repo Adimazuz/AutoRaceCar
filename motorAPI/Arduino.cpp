@@ -6,7 +6,8 @@ using std::string;
 bool Arduino::connect()
 {
     m_serial = ISerial::create();
-    return m_serial->connect();
+    _is_connected =  m_serial->connect();
+    return _is_connected;
 
 }
 Arduino &Arduino::drive(const int &wanted_speed, const int &wanted_angle)
@@ -20,7 +21,7 @@ Arduino &Arduino::drive(const int &wanted_speed, const int &wanted_angle)
     }
     else
     {
-        m_current_speed+=wanted_speed;
+        m_current_speed = wanted_speed;
     }
 
     if (wanted_angle  > MAX_ANGLE ){
@@ -32,7 +33,7 @@ Arduino &Arduino::drive(const int &wanted_speed, const int &wanted_angle)
     }
     else
     {
-        m_current_angle+=wanted_angle;
+        m_current_angle = wanted_angle;
     }
     sendDriveCommand();
 }
@@ -47,7 +48,7 @@ Arduino &Arduino::changeSpeed(const int &wanted_speed)
     }
     else
     {
-        m_current_speed+=wanted_speed;
+        m_current_speed = wanted_speed;
     }
     sendDriveCommand();}
 Arduino &Arduino::changeAngle(const int &wanted_angle)
@@ -73,10 +74,10 @@ Arduino &Arduino::stop()
 }
 Arduino& Arduino::changeAngleBy(const int &delta)
 {
-    if (m_current_angle + delta > MAX_ANGLE && delta > 0){
+    if (delta > 0 && m_current_angle + delta > MAX_ANGLE  ){
         m_current_angle = MAX_ANGLE;
     }
-    else if (m_current_angle - delta < MIN_ANGLE && delta < 0)
+    else if(delta < 0 && m_current_angle + delta < MIN_ANGLE )
     {
         m_current_angle = MIN_ANGLE;
     }
@@ -88,10 +89,10 @@ Arduino& Arduino::changeAngleBy(const int &delta)
 }
 Arduino& Arduino::changeSpeedBy(const int &delta)
 {
-    if (m_current_speed + delta > TOP_SPEED && delta > 0){
+    if (delta > 0 && m_current_speed + delta > TOP_SPEED ){
         m_current_speed = TOP_SPEED;
     }
-    else if (m_current_speed - delta < -TOP_SPEED && delta < 0)
+    else if (delta < 0 && m_current_speed + delta < -TOP_SPEED  )
     {
         m_current_speed = -TOP_SPEED;
     }
@@ -102,16 +103,35 @@ Arduino& Arduino::changeSpeedBy(const int &delta)
     sendDriveCommand();
 }
 Arduino &Arduino::driveCurrentState(){
-	sendDriveCommand();
+    sendDriveCommand();
+}
+
+Arduino::~Arduino()
+{
+    if(_is_connected)
+    {
+        drive(0,90);
+    }
 }
 
 //==========================private==================================
 
 string Arduino::createCommandMsg(int speed, int angle){
-    string cmd_string = (std::to_string(speed) + " " + std::to_string(angle));
+    string cmd_string = (std::to_string(speed) + " " + std::to_string(angle) + "/n" );
     return cmd_string;
 }
 void Arduino::sendDriveCommand(){
     string cmd_string = createCommandMsg(m_current_speed,m_current_angle);
     m_serial->write(cmd_string);
 }
+
+//int main() {
+//    Arduino car;
+//    bool flage=car.connect();
+//    car.changeAngleBy(40);
+//    car.changeAngleBy(-70);
+//    car.changeSpeedBy(15);
+//    car.changeSpeedBy(20);
+//    car.changeSpeedBy(-40);
+//    return 0;
+// }

@@ -23,7 +23,7 @@ RaceCar &RaceCar::run()
 	while (true)
 	{
         std::vector<char> cmd = _tcp_client->receive(1);
-		
+        parseCmdString(cmd);
 	}
     return *this;
 }
@@ -34,8 +34,6 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 	{
         return *this;
 	}
-
-
 	switch (cmd[0]) {
 	case 's': {
 		_arduino->stop();
