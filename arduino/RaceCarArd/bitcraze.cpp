@@ -8,7 +8,7 @@
 
 	void bitcraze::setup()
 	{
-		Bitcraze_PMW3901 flow(6);
+		Bitcraze_PMW3901 flow(10);
 		Serial.begin(9600);
 		if (!flow.begin()) {
 			Serial.println("Initialization of the flow sensor failed");
