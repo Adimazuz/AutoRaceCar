@@ -32,14 +32,19 @@ public:
      * @param max_num_of_clients - the maximum number of clients which can be connect to the server
      * @return
      */
-    static std::shared_ptr<ITcpServer> create(const string &ip, const int &port,
-                                               const int &max_num_of_clients);
+    static std::shared_ptr<ITcpServer> create();
+
+    virtual void bind(const string &ip, const unsigned short &port, const int &max_num_of_clients) = 0;
+
+    virtual bool isBind() const = 0;
+
+    virtual bool hasConnectionWithSocket(const Socket &socket) = 0;
 
     /**
      * @brief waitForConnections is a blocking function which is waiting for new client connection
      * @return Socket(typedef for uint) which can be used to reach the connected client
      */
-    virtual Socket waitForConnections() const = 0;
+    virtual Socket waitForConnections() = 0;
 
     /**
      * @brief receive data from a client
@@ -48,7 +53,7 @@ public:
      * @return vector of data
      */
     virtual std::vector<char> receive(const Socket &socket,
-            const uint &len) const noexcept = 0;
+            const uint &len) noexcept = 0;
 
     /**
      * @brief send data to a client

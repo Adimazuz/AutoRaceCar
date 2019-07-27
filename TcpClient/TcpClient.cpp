@@ -11,7 +11,8 @@
 
 TcpClient::TcpClient() noexcept :
         _socket(-1),
-        _address()
+        _address(),
+        _is_connected(false)
 {
 #ifdef _WIN32
     WSADATA wsa;
@@ -28,17 +29,18 @@ TcpClient::TcpClient() noexcept :
     }
 }
 
-bool TcpClient::connect(const string& ip, const unsigned short& port) const
+void TcpClient::connect(const string& ip, const unsigned short& port)
 {
     sockaddr_in server_address = buildAddress(ip, port);
 
     int res = ::connect(_socket, reinterpret_cast<sockaddr*>(& server_address), sizeof(server_address));
-    std::cout << "res:" << res << std::endl;
     if(res < 0)
     {
-        return false;
-//        throw ITcpClientCannotConnect(ip, port);
+        _is_connected = false;
+        return;
     }
+
+    _is_connected = true;
 }
 
 TcpClient &TcpClient::createSocket()
@@ -53,7 +55,7 @@ TcpClient &TcpClient::createSocket()
     return *this;
 }
 
-std::vector<char> TcpClient::receive(const unsigned int &len) const
+std::vector<char> TcpClient::receive(const unsigned int &len)
 {
     std::vector<char> data(len);
 
@@ -61,7 +63,8 @@ std::vector<char> TcpClient::receive(const unsigned int &len) const
 
     if (bytes_received <= 0)
     {
-        throw ITcpClientConnectionWithServerHasBeenClosed();
+        _is_connected = false;
+        data.clear();
     }
 
     return data;
