@@ -26,6 +26,7 @@ set(SOURCE_FILES
 
 set(INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/../TcpClient
+        ${CMAKE_CURRENT_SOURCE_DIR}/../TcpClientarduino/RaceCarArd
     ${CMAKE_CURRENT_SOURCE_DIR}/../TcpServer
     ${CMAKE_CURRENT_SOURCE_DIR}/../motorAPI
     ${CMAKE_CURRENT_SOURCE_DIR}/../arduino/RaceCarArd

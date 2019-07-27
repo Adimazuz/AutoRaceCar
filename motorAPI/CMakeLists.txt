@@ -15,7 +15,8 @@ set(SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/../Serial/Serial_types.h)
 
 set(INCLUDES
-    ${CMAKE_CURRENT_SOURCE_DIR}/../Serial)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Serial
+        ${CMAKE_CURRENT_SOURCE_DIR}/../arduino/RaceCarArd)
 
 INCLUDE_DIRECTORIES(${INCLUDES})
 

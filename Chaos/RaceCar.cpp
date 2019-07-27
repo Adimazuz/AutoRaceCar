@@ -3,7 +3,6 @@
 #include "Arduino.h"
 #include <thread>
 #include "zlib.h"
-
 #include "iostream"
 
 //#define DEBUG_MODE
@@ -40,7 +39,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
         std::cout << "camera setuped" <<std::endl;
         _camera.startCamera();
         std::cout << "camera started" <<std::endl;
-        _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraInput,this);
+        _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraOutput,this);
         std::cout << "camera thread opened" <<std::endl;
 
     }
@@ -102,18 +101,19 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 
 }
 
-RaceCar &RaceCar::getDriveCmd()
+RaceCar &RaceCar::arduinoCommunications()
 {
     while (_is_running)
     {
         std::vector<char> cmd = _tcp_server->receive(_socket, 1);
         parseCmdString(cmd);
+        sendFlowOutput();
     }
     return *this;
 
 }
 
-RaceCar &RaceCar::getCameraInput()
+RaceCar &RaceCar::getCameraOutput()
 {
     std::cout << "from camera thread " <<std::endl;
     while (_is_running)
@@ -137,6 +137,13 @@ RaceCar &RaceCar::getCameraInput()
 
 }
 
+Flow &RaceCar::sendFlowOutput()
+{
+    Flow output = _arduino->getFlowOutput();
+    //send to Client
+    char* data = (char*) &output;
+    _tcp_server->send(_socket,data,sizeof(Flow));
+}
 static void splitString(const string &str, std::vector<string> &output)
 {
 	string::size_type start = 0; // Where to start

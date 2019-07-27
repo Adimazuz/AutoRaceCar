@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include <iostream>
+#include <vector>
 using std::string;
 
 
@@ -104,6 +105,13 @@ Arduino& Arduino::changeSpeedBy(const int &delta)
 }
 Arduino &Arduino::driveCurrentState(){
     sendDriveCommand();
+}
+
+Flow &Arduino::getFlowOutput()
+{
+    std::vector<char> data = m_serial->read(sizeof(Flow));
+    Flow output = *reinterpret_cast<Flow*>(data.data());
+    return output;
 }
 
 Arduino::~Arduino()

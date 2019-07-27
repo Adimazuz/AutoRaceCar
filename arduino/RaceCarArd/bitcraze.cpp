@@ -43,11 +43,5 @@
    //send data
    Flow data(_deltaX,_deltaY,_range);
    char*  p_to_send = (char *) &data;
-   for( char c_Index = 0 ; c_Index < sizeof( Flow ) ; c_Index++)
-   {
-    Serial.write( p_to_send[ c_Index] );
-   }
-      Serial.print("\n");
-
-		delay(100);
+   Serial.write( p_to_send,sizeof(Flow));
 	}

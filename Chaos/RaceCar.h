@@ -2,12 +2,12 @@
 
 #include <thread>
 
+#include "flow.h"
 #include "MotorController.h"
 #include "RaceCar.h"
 #include "ITcpClient.h"
 #include "ITcpServer.h"
 #include "RealSenseAPI.h"
-
 
 class RaceCar {
 public:
@@ -24,8 +24,9 @@ private:
 	std::shared_ptr<ITcpClient> _tcp_client;
     std::shared_ptr<ITcpServer> _tcp_server;
     RaceCar &parseCmdString(const std::vector<char>& cmd);
-    RaceCar &getDriveCmd();
-    RaceCar &getCameraInput();
+    RaceCar &arduinoCommunications();
+    RaceCar &getCameraOutput();
+    Flow &sendFlowOutput();
     std::shared_ptr<std::thread> _camera_thread;
     std::shared_ptr<std::thread> _serial_thread;
     Socket _socket;

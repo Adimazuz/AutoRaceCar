@@ -1,6 +1,6 @@
 #include <string>
 #include "ISerial.h"
-
+#include "flow.h
 #include "MotorController.h"
 
 class Arduino : public MotorController
@@ -25,6 +25,9 @@ public:
     virtual Arduino &changeAngleBy(const int &delta) override;
 	
 	virtual Arduino &driveCurrentState();
+
+    virtual Flow &getFlowOutput();
+
 
    ~Arduino();
 
