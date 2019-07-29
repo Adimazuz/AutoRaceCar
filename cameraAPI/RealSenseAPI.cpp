@@ -2,6 +2,7 @@
 #include "Exceptions.h"
 #include <iostream>
 #include <string>
+#include "chrono"
 
 #define NUM_OF_RS_SENSORS 3
 
@@ -275,36 +276,54 @@ void RealSense::captureFrame()
     _frames = _pipe.wait_for_frames();
 }
 
-Image RealSense::getColorImage()
+Camera::ColorImage RealSense::getColorImage()
 {
     rs2::video_frame color_frame = _frames.get_color_frame();
+    auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
+    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    int w = color_frame.get_width();
+    int h = color_frame.get_height();
+    int byte_per_pixel = color_frame.get_bytes_per_pixel();
 
+    Camera::ColorImage cur_image = {color_frame.get_frame_number(), w*h*byte_per_pixel, time_stamp_ms, w, h,
+                                   reinterpret_cast<const unsigned char*>(color_frame.get_data())};
 
-    Image cur_image(reinterpret_cast<const unsigned char*>(color_frame.get_data()),color_frame.get_width(),color_frame.get_height(),
-                    color_frame.get_frame_number(), color_frame.get_timestamp(), color_frame.get_bytes_per_pixel());
-
-
+//            (reinterpret_cast<const unsigned char*>(color_frame.get_data()),color_frame.get_width(),color_frame.get_height(),
+//                    color_frame.get_frame_number(), color_frame.get_timestamp(), color_frame.get_bytes_per_pixel());
     return cur_image;
 }
 
-Image RealSense::getInfraredImage()
+Camera::ColorImage RealSense::getInfraredImage()
 {
     rs2::video_frame infrared_frame = _frames.get_infrared_frame();
+    auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
+    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    int w = infrared_frame.get_width();
+    int h = infrared_frame.get_height();
+    int byte_per_pixel = infrared_frame.get_bytes_per_pixel();
 
+    Camera::ColorImage cur_image = {infrared_frame.get_frame_number(), w*h*byte_per_pixel, time_stamp_ms, w, h,
+                                   reinterpret_cast<const unsigned char*>(infrared_frame.get_data())};
 
-    Image cur_image(reinterpret_cast<const unsigned char*>(infrared_frame.get_data()),infrared_frame.get_width(),infrared_frame.get_height(),
-                    infrared_frame.get_frame_number(), infrared_frame.get_timestamp(), infrared_frame.get_bytes_per_pixel());
-
+//    Image cur_image(reinterpret_cast<const unsigned char*>(infrared_frame.get_data()),infrared_frame.get_width(),infrared_frame.get_height(),
+//                    infrared_frame.get_frame_number(), time_stamp_ms, infrared_frame.get_bytes_per_pixel());
 
     return cur_image;
 }
 
-Image RealSense::getDepthImage()
+Camera::DepthImage RealSense::getDepthImage()
 {
     rs2::depth_frame depth_frame = _frames.get_depth_frame();
+    auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
+    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    int w = depth_frame.get_width();
+    int h = depth_frame.get_height();
+    int byte_per_pixel = depth_frame.get_bytes_per_pixel();
 
-    Image cur_image(reinterpret_cast<const unsigned char*>(depth_frame.get_data()),depth_frame.get_width(),depth_frame.get_height(),
-                    depth_frame.get_frame_number(), depth_frame.get_timestamp(), depth_frame.get_bytes_per_pixel());
+    Camera::DepthImage cur_image = {depth_frame.get_frame_number(), w*h*byte_per_pixel, time_stamp_ms, w, h,
+                                  get_depth_units(),reinterpret_cast<const unsigned char*>(depth_frame.get_data())};
+//    Image cur_image(reinterpret_cast<const unsigned char*>(depth_frame.get_data()),depth_frame.get_width(),depth_frame.get_height(),
+//                    depth_frame.get_frame_number(), depth_frame.get_timestamp(), depth_frame.get_bytes_per_pixel());
 
     return cur_image;
 

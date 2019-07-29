@@ -3,7 +3,7 @@
 
 #include <librealsense2/rs.hpp>
 #include "Image.h"
-#include "Data_types.h"
+#include "Camera_types.h"
 
 class RealSense{
 
@@ -243,19 +243,20 @@ public:
          * the last capture.
          * @return
          */
-        Image getColorImage();
+        Camera::ColorImage getColorImage();
 
         /**
          * @brief getInfraredImage - get Infrared image acording the setups
-         * @return
+         *
+         * @return same struct as colorImage
          */
-        Image getInfraredImage();
+        Camera::ColorImage getInfraredImage();
 
         /**
          * @brief getDepthImage - get Depth image according the setups
          * @return
          */
-        Image getDepthImage();
+        Camera::DepthImage getDepthImage();
         /**
          * @brief get_depth_units
          *         //A Depth stream contains an image that is composed of pixels with depth information.

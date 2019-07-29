@@ -18,23 +18,23 @@ using real64 = double;
 
 struct ColorImage
 {
-    uint64 _frame_num;
-    uint64 _size;
-    uint64 _timestamp_ms;
-    uint32 _width;
-    uint32 _height;
-    const unsigned char *_data;
+    uint64 frame_num;
+    uint64 size;
+    int64 timestamp_ms;
+    int32 width;
+    int32 height;
+    const unsigned char *data;
 };
 
 struct DepthImage
 {
-    uint64 _frame_num;
-    uint64 _size;
-    uint64 _timestamp_ms;
-    uint32 _width;
-    uint32 _height;
+    uint64 frame_num;
+    uint64 size;
+    int64 timestamp_ms;
+    int32 width;
+    int32 height;
     real32 depth_scale;
-    const unsigned char *_data;
+    const unsigned char *data;
 };
 
 #pragma pack(pop)
