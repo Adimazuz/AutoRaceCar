@@ -18,7 +18,7 @@ int main()
     camera.startCamera();
 //    std::fstream out("depth_image",std::ios::out | std::ios::binary);
 //    camera._stereo_module.get_option(RS2_OPTION_DEPTH_UNITS);
-    cout << sizeof(unsigned long int) << " " << sizeof(unsigned long long int) <<endl;
+    std::cout << sizeof(Camera::real32)  <<std::endl;
 
 //    while (1){
 //        camera.captureFrame();

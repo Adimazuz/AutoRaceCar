@@ -53,6 +53,7 @@ RaceCar &RaceCar::run()
 {
     if(_is_tcp_client_connected && _is_cammera_connected){
             _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_320x180, RealSense::ColorCamFps::F_6hz);
+            _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_6hz);
             std::cout << "camera setuped" <<std::endl;
             _camera.startCamera();
             std::cout << "camera started" <<std::endl;
@@ -133,15 +134,21 @@ RaceCar &RaceCar::getCameraInput()
 //        std::cout << _is_running <<std::endl;
         _camera.captureFrame();
         Camera::ColorImage image=_camera.getColorImage();
+        Camera::DepthImage depth_image = _camera.getDepthImage();
+
         auto len = image.size;
+        auto depth_len = depth_image.size;
+
+        std::cout << "image len:"<< depth_len <<std::endl;
+        std::cout << depth_image.depth_scale  <<std::endl;
 //        auto len_orig=len;
 //        std::vector<unsigned char> compresed_image(len);
 //        compress(compresed_image.data(),&len,image.data,len_orig);
         //std::cout << "org len: "<< len_orig <<" compresed len:"<< len <<std::endl;
 
-        _tcp_client->send(reinterpret_cast<char*>(&image),sizeof(image)-sizeof(char*));
+        _tcp_client->send(reinterpret_cast<char*>(&depth_image),sizeof(depth_image)-sizeof(depth_image.data));
         //std::cout << "sent len" <<std::endl;
-        _tcp_client->send(reinterpret_cast<char*>(image.data),len);
+        _tcp_client->send(reinterpret_cast<const char*>(depth_image.data),depth_len);
 
         //std::cout << _is_running <<std::endl;
     }
