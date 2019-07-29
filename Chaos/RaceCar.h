@@ -29,4 +29,7 @@ private:
     std::shared_ptr<std::thread> _camera_thread;
     std::shared_ptr<std::thread> _serial_thread;
     Socket _socket;
+    bool _is_tcp_client_connected;
+    bool _is_cammera_connected;
+    bool _is_arduino_connected;
 };

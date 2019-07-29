@@ -7,4 +7,9 @@ build-*/
 *.53de481
 *.user
 *.txt.user
+*.user.*
+TcpServer/CMakeLists.txt.user
+TcpClient/CMakeLists.txt.user
+cameraAPI/CMakeLists.txt.user
+Chaos/CMakeLists.txt.user
 

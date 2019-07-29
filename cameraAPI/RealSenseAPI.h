@@ -123,6 +123,24 @@ public:
             F_6hz
         };
 
+        enum class DepthRessolution
+        {
+            R_1280x720,
+            R_848_480,
+            R_640x480,
+            R_640x360,
+            R_480x270,
+            R_424x240
+        };
+
+        enum class DepthCamFps
+        {
+            F_90hz,
+            F_60hz,
+            F_30hz,
+            F_15hz,
+            F_6hz
+        };
 
 
 
@@ -199,6 +217,13 @@ public:
 
 
         /**
+         * @brief setupDepthImage - setup depth stream in format Z16
+         * Z16 = 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value.
+         * notice that
+         * at resolution 1280x720 camera cant work at 90/60 fps
+         */
+        void setupDepthImage(RealSense::DepthRessolution ressolution, RealSense::DepthCamFps fps);
+        /**
          * @brief startCamera - after setups all wanted frames and start
          * streaming according to the configuraion
          */
@@ -220,10 +245,32 @@ public:
          */
         Image getColorImage();
 
+        /**
+         * @brief getInfraredImage - get Infrared image acording the setups
+         * @return
+         */
+        Image getInfraredImage();
+
+        /**
+         * @brief getDepthImage - get Depth image according the setups
+         * @return
+         */
+        Image getDepthImage();
+        /**
+         * @brief get_depth_units
+         *         //A Depth stream contains an image that is composed of pixels with depth information.
+        //The value of each pixel is the distance from the camera, in some distance units.
+        //To get the distance in units of meters, each pixel's value should be multiplied by the sensor's depth scale
+        //Here is the way to grab this scale value for a "depth" sensor:
+         * @return
+         */
+        float get_depth_units();
 
 
 
-
+//        rs2::sensor _stereo_module;
+//        rs2::sensor _rgb_camera;
+//        rs2::sensor _motion_module;
 
 private:
 
