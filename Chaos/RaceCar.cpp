@@ -139,16 +139,26 @@ RaceCar &RaceCar::getCameraInput()
         auto len = image.size;
         auto depth_len = depth_image.size;
 
-        std::cout << "image len:"<< depth_len <<std::endl;
-        std::cout << depth_image.depth_scale  <<std::endl;
+        std::cout << "image len:"<< len <<std::endl;
+
+//        std::cout << "image len:"<< depth_len <<std::endl;
+//        std::cout << depth_image.depth_scale  <<std::endl;
+
+        //compresed send test
 //        auto len_orig=len;
 //        std::vector<unsigned char> compresed_image(len);
 //        compress(compresed_image.data(),&len,image.data,len_orig);
         //std::cout << "org len: "<< len_orig <<" compresed len:"<< len <<std::endl;
 
-        _tcp_client->send(reinterpret_cast<char*>(&depth_image),sizeof(depth_image)-sizeof(depth_image.data));
+        //color send test
+        _tcp_client->send(reinterpret_cast<char*>(&image),sizeof(image)-sizeof(image.data));
         //std::cout << "sent len" <<std::endl;
-        _tcp_client->send(reinterpret_cast<const char*>(depth_image.data),depth_len);
+        _tcp_client->send(reinterpret_cast<const char*>(image.data),len);
+
+//        //depth send test
+//        _tcp_client->send(reinterpret_cast<char*>(&depth_image),sizeof(depth_image)-sizeof(depth_image.data));
+//        //std::cout << "sent len" <<std::endl;
+//        _tcp_client->send(reinterpret_cast<const char*>(depth_image.data),depth_len);
 
         //std::cout << _is_running <<std::endl;
     }

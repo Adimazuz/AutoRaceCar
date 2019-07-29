@@ -145,7 +145,7 @@ public:
 
 
        RealSense() = default;
-
+       ~RealSense();
 
 
        /**
@@ -155,6 +155,15 @@ public:
         * false - if camera not connected
         */
        bool connectCamera();
+
+       /**
+        * @brief isConnect - check if camera connected
+        * @return
+        */
+       bool isConnect();
+
+
+       void resetCamera();
 
        /**TODO functions to:
         * get_depth_units :             //A Depth stream contains an image that is composed of pixels with depth information.

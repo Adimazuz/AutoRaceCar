@@ -20,6 +20,15 @@ int main()
 //    camera._stereo_module.get_option(RS2_OPTION_DEPTH_UNITS);
     std::cout << sizeof(Camera::real32)  <<std::endl;
 
+
+    while(1){
+        cout << camera.isConnect() << endl;
+
+    }
+
+
+
+
 //    while (1){
 //        camera.captureFrame();
 //        Camera::ColorImage color_test = camera.getColorImage();

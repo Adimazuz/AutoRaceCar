@@ -190,6 +190,13 @@ static int converSide(RealSense::InfrarCamera side){
     return 2;
 }
 
+RealSense::~RealSense()
+{
+    if(this->isConnect()){
+        resetCamera();
+    }
+}
+
 bool RealSense::connectCamera(){
 
     //TODO cheak if must
@@ -212,6 +219,26 @@ bool RealSense::connectCamera(){
    _motion_module = sensors[2];
 
    return true;
+}
+
+bool RealSense::isConnect()
+{
+//    rs2::context ctx;
+//    rs2::device_hub device_h(ctx);
+//    return device_h.is_connected(_camera);
+    rs2::context ctx;
+    rs2::device_list devices = ctx.query_devices();
+    if (devices.size() == 0){
+        return false;
+
+    }
+    return true;
+
+}
+
+void RealSense::resetCamera()
+{
+    _camera.hardware_reset();
 }
 
 
