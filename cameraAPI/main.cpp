@@ -1,7 +1,7 @@
 #include <iostream>
 #include <librealsense2/rs.hpp>
 #include <fstream>
-#include "datatypes.h"
+//#include "Camera_types.h"
 
 using namespace std;
 
@@ -20,11 +20,11 @@ int main()
 //    camera._stereo_module.get_option(RS2_OPTION_DEPTH_UNITS);
     while (1){
         camera.captureFrame();
-        Image color_test = camera.getColorImage();
-        Image depth_test = camera.getDepthImage();
+        Camera::ColorImage color_test = camera.getColorImage();
+        Camera::DepthImage depth_test = camera.getDepthImage();
 
-        const unsigned char *d = depth_test.getData();
-        const unsigned char *c = depth_test.getData();
+        const unsigned char *d = depth_test.data;
+        const unsigned char *c = depth_test.data;
 
 //        out.write(reinterpret_cast<const char*>(d),depth_test.getSize());
 
