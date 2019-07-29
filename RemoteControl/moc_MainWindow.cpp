@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[11];
-    char stringdata0[155];
+    char stringdata0[138];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -39,15 +39,15 @@ QT_MOC_LITERAL(4, 44, 11), // "keyToString"
 QT_MOC_LITERAL(5, 56, 6), // "string"
 QT_MOC_LITERAL(6, 63, 3), // "key"
 QT_MOC_LITERAL(7, 67, 10), // "isArrowKey"
-QT_MOC_LITERAL(8, 78, 33), // "on_actionconnect_server_trigg..."
-QT_MOC_LITERAL(9, 112, 23), // "on_actionshow_triggered"
-QT_MOC_LITERAL(10, 136, 18) // "on_connect_clicked"
+QT_MOC_LITERAL(8, 78, 23), // "on_actionshow_triggered"
+QT_MOC_LITERAL(9, 102, 18), // "on_connect_clicked"
+QT_MOC_LITERAL(10, 121, 16) // "checkConnections"
 
     },
     "MainWindow\0handleKey\0\0on_acn_exit_triggered\0"
     "keyToString\0string\0key\0isArrowKey\0"
-    "on_actionconnect_server_triggered\0"
-    "on_actionshow_triggered\0on_connect_clicked"
+    "on_actionshow_triggered\0on_connect_clicked\0"
+    "checkConnections"
 };
 #undef QT_MOC_LITERAL
 
@@ -97,9 +97,9 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             if (_a[0]) *reinterpret_cast< string*>(_a[0]) = std::move(_r); }  break;
         case 3: { bool _r = _t->isArrowKey((*reinterpret_cast< const int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
-        case 4: _t->on_actionconnect_server_triggered(); break;
-        case 5: _t->on_actionshow_triggered(); break;
-        case 6: _t->on_connect_clicked(); break;
+        case 4: _t->on_actionshow_triggered(); break;
+        case 5: _t->on_connect_clicked(); break;
+        case 6: _t->checkConnections(); break;
         default: ;
         }
     }

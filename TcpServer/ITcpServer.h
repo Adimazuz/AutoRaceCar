@@ -16,7 +16,15 @@
 
         Socket new_client = server->waitForConnections();
 
-        std::vector<char> rec = server->receive(new_client, 10);
+        if(server->hasConnectionWithSocket(new_client))
+        {
+            std::vector<char> rcv = server->receive(new_client, 10);
+            if(rcv.size() > 0)
+            {
+                //do something
+            }
+        }
+
   */
 
 #include "TcpServer_types.h"
@@ -27,17 +35,29 @@ public:
 
     /**
      * @brief create an instance of the interface
-     * @param ip - the ip of the host(can be reach by type in terminal "ifconfig")
-     * @param port - an arbitrary port defined by the host
-     * @param max_num_of_clients - the maximum number of clients which can be connect to the server
-     * @return
+     * @return pointer to the interface
      */
     static std::shared_ptr<ITcpServer> create();
 
+    /**
+     * @brief bind - established connection as a server
+     * @param ip - the ip of the host(can be reach by type in terminal "ifconfig")
+     * @param port - an arbitrary port defined by the host
+     * @param max_num_of_clients - the maximum number of clients which can be connect to the server
+     */
     virtual void bind(const string &ip, const unsigned short &port, const int &max_num_of_clients) = 0;
 
+    /**
+     * @brief isBind - check if the server is bind
+     * @return true if server is bind, otherwise return false
+     */
     virtual bool isBind() const = 0;
 
+    /**
+     * @brief hasConnectionWithSocket - check connection between server and one of his clients
+     * @param socket - the id of the client to check connection with
+     * @return true if there is connection between server and client, otherwise retrun false
+     */
     virtual bool hasConnectionWithSocket(const Socket &socket) = 0;
 
     /**
@@ -45,6 +65,12 @@ public:
      * @return Socket(typedef for uint) which can be used to reach the connected client
      */
     virtual Socket waitForConnections() = 0;
+
+    /**
+     * @brief getNumOfConnectedClients - receive the number of connected clients to this server
+     * @return number of connected clients to this server
+     */
+    virtual unsigned long getNumOfConnectedClients() const = 0;
 
     /**
      * @brief receive data from a client

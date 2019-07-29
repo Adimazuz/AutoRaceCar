@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     _keys(),
     _key_timer(),
+    _connections_timer(),
     _is_stream_on(true),
     _client_sock(-1),
     _is_controller_connected(false),
@@ -18,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     init();
+    checkConnections();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -107,7 +109,7 @@ void MainWindow::info(const string &msg)
 
 void MainWindow::bindServer()
 {
-    _server->bind("127.0.0.1", 5555, 5);
+    _server->bind("192.168.1.100", 5555, 5);
     if(_server->isBind())
     {
         info("bind success");
@@ -121,6 +123,7 @@ void MainWindow::bindServer()
 void MainWindow::signalConnections()
 {
     connect(&_key_timer, SIGNAL(timeout()), this, SLOT(handleKey()));
+    connect(&_connections_timer, SIGNAL(timeout()), this, SLOT(checkConnections()));
 }
 
 void MainWindow::initTimer(const int &interval)
@@ -186,18 +189,26 @@ void MainWindow::markControllerConnection(const bool &is_connected)
     ui->controller->setPalette(p);
 }
 
-void MainWindow::on_actionconnect_server_triggered()
+void MainWindow::on_actionshow_triggered()
 {
-    if(!_is_controller_connected)
+    if(ui->actionshow->isChecked())
     {
-       _client_sock = _server->waitForConnections();
-       info("someone connected");
-       _is_controller_connected = true;
+        _is_stream_on = !_is_stream_on;
+    }
+}
+
+void MainWindow::checkConnections()
+{
+    if(_server->getNumOfConnectedClients() == 0)
+    {
+        _client_sock = _server->waitForConnections();
+        info("camera connected");
+        markCameraConnection(true);
     }
 
-    unsigned long size = 640*480*3;
+    unsigned long size = 320*180*3;
 
-    while(_is_stream_on)
+    while(_server->hasConnectionWithSocket(_client_sock))
     {
         auto len = receiveDataSize();
 
@@ -207,18 +218,10 @@ void MainWindow::on_actionconnect_server_triggered()
 
         uncompress(uncompressed_data.data(), &size, reinterpret_cast<unsigned char*>(data.data()), len);
 
-        QImage image(reinterpret_cast<unsigned char*>(uncompressed_data.data()), 640, 480, QImage::Format_RGB888);
+        QImage image(reinterpret_cast<unsigned char*>(uncompressed_data.data()), 320, 180, QImage::Format_RGB888);
         QPixmap pixamp = QPixmap::fromImage(image);
-        ui->lbl_img->setPixmap(pixamp.scaled(640, 480, Qt::AspectRatioMode::KeepAspectRatio));
+        ui->lbl_img->setPixmap(pixamp.scaled(320, 180, Qt::AspectRatioMode::KeepAspectRatio));
         QCoreApplication::processEvents();
-    }
-}
-
-void MainWindow::on_actionshow_triggered()
-{
-    if(ui->actionshow->isChecked())
-    {
-        _is_stream_on = !_is_stream_on;
     }
 }
 

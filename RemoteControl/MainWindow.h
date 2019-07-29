@@ -30,10 +30,9 @@ private slots:
     void on_acn_exit_triggered();
     string keyToString(const int &key);
     bool isArrowKey(const int &key);
-    void on_actionconnect_server_triggered();
     void on_actionshow_triggered();
-
     void on_connect_clicked();
+    void checkConnections();
 
 private:
     unsigned long receiveDataSize();
@@ -48,6 +47,7 @@ private:
     void markCameraConnection(const bool &is_connected);
     void markControllerConnection(const bool &is_connected);
 
+
 private:
     static constexpr int KEY_LEFT = 16777234;
     static constexpr int KEY_RIGHT = 16777236;
@@ -57,6 +57,7 @@ private:
     Ui::MainWindow *ui;
     QVector<int> _keys;
     QTimer _key_timer;
+    QTimer _connections_timer;
     bool _is_stream_on;
     Socket _client_sock;
     bool _is_controller_connected;

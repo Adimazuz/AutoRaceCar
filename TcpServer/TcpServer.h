@@ -37,6 +37,8 @@ public:
 
     virtual Socket waitForConnections() override;
 
+    virtual unsigned long getNumOfConnectedClients() const override {return _clients_connection_state.size();}
+
     virtual ~TcpServer() override;
 
 private: //functions
