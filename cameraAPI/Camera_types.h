@@ -19,7 +19,7 @@ using real64 = double;
 struct ColorImage
 {
     uint64 frame_num;
-    uint64 size;
+    int32 size;
     int64 timestamp_ms;
     int32 width;
     int32 height;
@@ -29,7 +29,7 @@ struct ColorImage
 struct DepthImage
 {
     uint64 frame_num;
-    uint64 size;
+    int32 size;
     int64 timestamp_ms;
     int32 width;
     int32 height;
