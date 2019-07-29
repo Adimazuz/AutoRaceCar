@@ -9,14 +9,10 @@ set(SOURCE_FILES
     RealSenseAPI.cpp
     api_how_to.h
     Image.h
-    Exceptions.h
     Camera_types.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../Chaos/Data_types.h
+    Exceptions.h
     )
 
-set(INCLUDES
-    ${CMAKE_CURRENT_SOURCE_DIR}/../Chaos
-    )
 
 INCLUDE_DIRECTORIES(${INCLUDES})
 

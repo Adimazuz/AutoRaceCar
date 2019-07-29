@@ -18,19 +18,21 @@ int main()
     camera.startCamera();
 //    std::fstream out("depth_image",std::ios::out | std::ios::binary);
 //    camera._stereo_module.get_option(RS2_OPTION_DEPTH_UNITS);
-    while (1){
-        camera.captureFrame();
-        Camera::ColorImage color_test = camera.getColorImage();
-        Camera::DepthImage depth_test = camera.getDepthImage();
+    cout << sizeof(unsigned long int) << " " << sizeof(unsigned long long int) <<endl;
 
-        const unsigned char *d = depth_test.data;
-        const unsigned char *c = depth_test.data;
+//    while (1){
+//        camera.captureFrame();
+//        Camera::ColorImage color_test = camera.getColorImage();
+//        Camera::DepthImage depth_test = camera.getDepthImage();
 
-//        out.write(reinterpret_cast<const char*>(d),depth_test.getSize());
+//        const unsigned char *d = depth_test.data;
+//        const unsigned char *c = depth_test.data;
 
-        float dist_fix = camera.get_depth_units() ;
-        std::cout << "from option: " <<  dist_fix << std::endl;
-    }
+////        out.write(reinterpret_cast<const char*>(d),depth_test.getSize());
+
+//        float dist_fix = camera.get_depth_units() ;
+//        std::cout << "from option: " <<  dist_fix << std::endl;
+//    }
 
 
     return 0;

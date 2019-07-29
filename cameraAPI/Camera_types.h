@@ -10,7 +10,7 @@ using int64 = long long;
 using uint8 = unsigned char;
 using uint16 = unsigned short;
 using uint32 = unsigned int;
-using uint64 = unsigned long long;
+using uint64 = unsigned long;
 using real32 = float;
 using real64 = double;
 
@@ -19,20 +19,20 @@ using real64 = double;
 struct ColorImage
 {
     uint64 frame_num;
-    int32 size;
+    uint64 size;
     int64 timestamp_ms;
-    int32 width;
-    int32 height;
+    uint32 width;
+    uint32 height;
     const unsigned char *data;
 };
 
 struct DepthImage
 {
     uint64 frame_num;
-    int32 size;
+    uint64 size;
     int64 timestamp_ms;
-    int32 width;
-    int32 height;
+    uint32 width;
+    uint32 height;
     real32 depth_scale;
     const unsigned char *data;
 };

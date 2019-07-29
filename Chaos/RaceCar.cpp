@@ -132,16 +132,16 @@ RaceCar &RaceCar::getCameraInput()
     {
 //        std::cout << _is_running <<std::endl;
         _camera.captureFrame();
-        Image image=_camera.getColorImage();
-        auto len = image.getSize();
-        auto len_orig=len;
-        std::vector<unsigned char> compresed_image(len);
-        compress(compresed_image.data(),&len,image.getData(),len_orig);
+        Camera::ColorImage image=_camera.getColorImage();
+        auto len = image.size;
+//        auto len_orig=len;
+//        std::vector<unsigned char> compresed_image(len);
+//        compress(compresed_image.data(),&len,image.data,len_orig);
         //std::cout << "org len: "<< len_orig <<" compresed len:"<< len <<std::endl;
 
-        _tcp_client->send(reinterpret_cast<char*>(&len),sizeof(ulong));
+        _tcp_client->send(reinterpret_cast<char*>(&image),sizeof(image)-sizeof(char*));
         //std::cout << "sent len" <<std::endl;
-        _tcp_client->send(reinterpret_cast<char*>(compresed_image.data()),len);
+        _tcp_client->send(reinterpret_cast<char*>(image.data),len);
 
         //std::cout << _is_running <<std::endl;
     }
