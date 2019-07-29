@@ -6,4 +6,5 @@ build-*/
 *.o
 *.53de481
 *.user
+*.txt.user
 
