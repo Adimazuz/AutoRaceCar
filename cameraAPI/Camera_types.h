@@ -1,5 +1,7 @@
-#ifndef DATATYPES_H
-#define DATATYPES_H
+#ifndef CAMERA_TYPES_H
+#define CAMERA_TYPES_H
+
+namespace Camera {
 
 using int8 = char;
 using int16 = short;
@@ -35,12 +37,9 @@ struct DepthImage
     const unsigned char *_data;
 };
 
-struct Flow
-{
-    real32 dx;
-    real32 dy;
-    real32 range;
-}
 #pragma pack(pop)
 
-#endif // DATATYPES_H
+}
+
+
+#endif // CAMERA_TYPES_H

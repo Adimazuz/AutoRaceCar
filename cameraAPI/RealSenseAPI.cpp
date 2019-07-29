@@ -295,7 +295,6 @@ Image RealSense::getInfraredImage()
     Image cur_image(reinterpret_cast<const unsigned char*>(infrared_frame.get_data()),infrared_frame.get_width(),infrared_frame.get_height(),
                     infrared_frame.get_frame_number(), infrared_frame.get_timestamp(), infrared_frame.get_bytes_per_pixel());
 
-    s = {a ,bg, vc, f};
 
     return cur_image;
 }

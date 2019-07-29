@@ -2,9 +2,8 @@
 #define REALSENSEAPI_H
 
 #include <librealsense2/rs.hpp>
-//#include "Image.h"
-#include "datatypes.h"
-
+#include "Image.h"
+#include "Data_types.h"
 
 class RealSense{
 

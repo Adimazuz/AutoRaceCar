@@ -1,7 +1,7 @@
 #include <iostream>
 #include <librealsense2/rs.hpp>
 #include <fstream>
-#include "datatypes.h"
+#include "Data_types.h"
 
 using namespace std;
 
