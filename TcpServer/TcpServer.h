@@ -12,15 +12,20 @@
 #endif
 
 #include <vector>
+#include <map>
 #include "ITcpServer.h"
 
 class TcpServer : public ITcpServer
 {
 public:
 
-    TcpServer(const string &ip, const unsigned short &port, const int &max_num_of_clients) noexcept;
+    TcpServer() noexcept;
 
-    virtual std::vector<char> receive(const Socket &socket, const uint &len) const noexcept override;
+    virtual void bind(const string &ip, const unsigned short &port, const int &max_num_of_clients) override;
+
+    virtual bool isBind() const override {return _is_bind;}
+
+    virtual std::vector<char> receive(const Socket &socket, const uint &len) noexcept override;
 
     virtual void send(const Socket& socket, const std::vector<char>& data) const noexcept override;
 
@@ -28,7 +33,9 @@ public:
 
     virtual void send(const Socket& socket, const char *data, const uint &len) const noexcept override;
 
-    virtual Socket waitForConnections() const override;
+    virtual bool hasConnectionWithSocket(const Socket &socket) override;
+
+    virtual Socket waitForConnections() override;
 
     virtual ~TcpServer() override;
 
@@ -48,11 +55,19 @@ private: //members
         string ip;
     };
 
+    struct Client
+    {
+        Socket socket;
+        bool is_connected;
+    };
+
     string _ip;
     unsigned short _port;
     int _max_num_of_clients;
     Socket _socket;
+    std::map<Socket, bool> _clients_connection_state;
     sockaddr_in _address;
+    bool _is_bind;
 };
 
 
