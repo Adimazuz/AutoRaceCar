@@ -205,6 +205,7 @@ void MainWindow::cameraThread()
 
         QImage image(static_cast<unsigned char*>(color_image.data), static_cast<int>(color_image.width),
                      static_cast<int>(color_image.height), QImage::Format_RGB888);
+        delete [] color_image.data;
 
         emit imageReady(image);
     }
@@ -242,7 +243,6 @@ void MainWindow::handleCamera(QImage &image)
 {
     QPixmap pixamp = QPixmap::fromImage(image);
     ui->lbl_img->setPixmap(pixamp.scaled(image.width(), image.height(), Qt::AspectRatioMode::KeepAspectRatio));
-    QCoreApplication::processEvents();
 }
 
 void MainWindow::on_connect_clicked()
