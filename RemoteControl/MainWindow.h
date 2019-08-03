@@ -34,7 +34,7 @@ private slots:
     bool isArrowKey(const int &key);
     void on_connect_clicked();
     void checkConnections();
-    void handleCamera(QImage &image);
+    void handleCamera(QImage image);
 
 private:
     void info(const string &msg);
@@ -51,7 +51,7 @@ private:
     void cameraThread();
 
 signals:
-    void imageReady(QImage &image);
+    void imageReady(QImage image);
 
 
 private:

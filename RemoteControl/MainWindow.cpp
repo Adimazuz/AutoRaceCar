@@ -120,7 +120,7 @@ void MainWindow::signalConnections()
     qRegisterMetaType<QImage>("QImage&");
 
     connect(&_key_timer, SIGNAL(timeout()), this, SLOT(handleKey()));
-    connect(this, SIGNAL(imageReady(QImage&)), this, SLOT(handleCamera(QImage&)));
+    connect(this, SIGNAL(imageReady(QImage)), this, SLOT(handleCamera(QImage)));
 }
 
 void MainWindow::initTimer(const int &interval)
@@ -199,13 +199,14 @@ void MainWindow::cameraThread()
         QCoreApplication::processEvents();
 
         ColorImage color_image;
-        _server->receive(reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
-        color_image.data = new uint8[color_image.size];
-        _server->receive(reinterpret_cast<char*>(color_image.data), color_image.size);
+        color_image.width = 320;
+        color_image.height = 180;
+//        _server->receive(reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
+        color_image.data = new uint8[172800];
+        _server->receive(reinterpret_cast<char*>(color_image.data), 172800);
 
         QImage image(static_cast<unsigned char*>(color_image.data), static_cast<int>(color_image.width),
                      static_cast<int>(color_image.height), QImage::Format_RGB888);
-        delete [] color_image.data;
 
         emit imageReady(image);
     }
@@ -239,7 +240,7 @@ void MainWindow::checkConnections()
     //    }
 }
 
-void MainWindow::handleCamera(QImage &image)
+void MainWindow::handleCamera(QImage image)
 {
     QPixmap pixamp = QPixmap::fromImage(image);
     ui->lbl_img->setPixmap(pixamp.scaled(image.width(), image.height(), Qt::AspectRatioMode::KeepAspectRatio));
