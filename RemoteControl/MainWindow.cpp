@@ -4,18 +4,19 @@
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "RemoteControl_types.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     _keys(),
     _key_timer(),
-    _connections_timer(),
-    _is_stream_on(true),
     _client_sock(-1),
     _is_controller_connected(false),
     _server(nullptr),
-    _client(nullptr)
+    _client(nullptr),
+    _is_run(true),
+    _camera_thread(nullptr)
 {
     ui->setupUi(this);
     init();
@@ -51,6 +52,8 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 
 MainWindow::~MainWindow()
 {
+    _is_run = false;
+    _camera_thread->join();
     delete ui;
 }
 
@@ -94,14 +97,6 @@ bool MainWindow::isArrowKey(const int &key)
             key == KEY_UP || key == KEY_DOWN;
 }
 
-unsigned long MainWindow::receiveDataSize()
-{
-    auto len_data = _server->receive(_client_sock, sizeof(unsigned long));
-    unsigned long* len = reinterpret_cast<unsigned long*>(len_data.data());
-
-    return *len;
-}
-
 void MainWindow::info(const string &msg)
 {
     std::cout << msg << std::endl;
@@ -109,21 +104,23 @@ void MainWindow::info(const string &msg)
 
 void MainWindow::bindServer()
 {
-    _server->bind("192.168.1.100", 5555, 5);
-    if(_server->isBind())
-    {
-        info("bind success");
-    }
-    else
-    {
-        info("bind failed");
-    }
+//    _server->bind("192.168.1.100", 5555, 5);
+//    if(_server->isBind())
+//    {
+//        info("bind success");
+//    }
+//    else
+//    {
+//        info("bind failed");
+//    }
 }
 
 void MainWindow::signalConnections()
 {
+    qRegisterMetaType<QImage>("QImage&");
+
     connect(&_key_timer, SIGNAL(timeout()), this, SLOT(handleKey()));
-    connect(&_connections_timer, SIGNAL(timeout()), this, SLOT(checkConnections()));
+    connect(this, SIGNAL(imageReady(QImage&)), this, SLOT(handleCamera(QImage&)));
 }
 
 void MainWindow::initTimer(const int &interval)
@@ -139,7 +136,7 @@ void MainWindow::initClient()
 
 void MainWindow::initServer()
 {
-    _server = ITcpServer::create();
+    _server = IUdpServer::create("192.168.1.75", 5555);
     bindServer();
 }
 
@@ -147,6 +144,11 @@ void MainWindow::initDesign()
 {
     markCameraConnection(false);
     markControllerConnection(false);
+}
+
+void MainWindow::initThreads()
+{
+    _camera_thread = std::make_shared<std::thread>(&MainWindow::cameraThread, this);
 }
 
 void MainWindow::init()
@@ -157,6 +159,7 @@ void MainWindow::init()
     initTimer(150);
     initClient();
     initServer();
+    initThreads();
 }
 
 void MainWindow::markCameraConnection(const bool &is_connected)
@@ -189,40 +192,57 @@ void MainWindow::markControllerConnection(const bool &is_connected)
     ui->controller->setPalette(p);
 }
 
-void MainWindow::on_actionshow_triggered()
+void MainWindow::cameraThread()
 {
-    if(ui->actionshow->isChecked())
+    while(_is_run)
     {
-        _is_stream_on = !_is_stream_on;
+        QCoreApplication::processEvents();
+
+        ColorImage color_image;
+        _server->receive(reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
+        color_image.data = new uint8[color_image.size];
+        _server->receive(reinterpret_cast<char*>(color_image.data), color_image.size);
+
+        QImage image(static_cast<unsigned char*>(color_image.data), static_cast<int>(color_image.width),
+                     static_cast<int>(color_image.height), QImage::Format_RGB888);
+
+        emit imageReady(image);
     }
 }
 
 void MainWindow::checkConnections()
 {
-    if(_server->getNumOfConnectedClients() == 0)
-    {
-        _client_sock = _server->waitForConnections();
-        info("camera connected");
-        markCameraConnection(true);
-    }
+//    if(_server->getNumOfConnectedClients() == 0)
+//    {
+//        _client_sock = _server->waitForConnections();
+//        info("camera connected");
+//        markCameraConnection(true);
+//    }
 
-    unsigned long size = 320*180*3;
+//    unsigned long size = 320*180*3;
 
-    while(_server->hasConnectionWithSocket(_client_sock))
-    {
-        auto len = receiveDataSize();
+//    while(_server->hasConnectionWithSocket(_client_sock))
+//    {
+//        auto len = receiveDataSize();
 
-        auto data = _server->receive(_client_sock, static_cast<uint>(len));
+//        auto data = _server->receive(_client_sock, static_cast<uint>(len));
 
-        std::vector<unsigned char> uncompressed_data(size);
+//        std::vector<unsigned char> uncompressed_data(size);
 
-        uncompress(uncompressed_data.data(), &size, reinterpret_cast<unsigned char*>(data.data()), len);
+//        uncompress(uncompressed_data.data(), &size, reinterpret_cast<unsigned char*>(data.data()), len);
 
-        QImage image(reinterpret_cast<unsigned char*>(uncompressed_data.data()), 320, 180, QImage::Format_RGB888);
-        QPixmap pixamp = QPixmap::fromImage(image);
-        ui->lbl_img->setPixmap(pixamp.scaled(320, 180, Qt::AspectRatioMode::KeepAspectRatio));
-        QCoreApplication::processEvents();
-    }
+//        QImage image(reinterpret_cast<unsigned char*>(uncompressed_data.data()), 320, 180, QImage::Format_RGB888);
+//        QPixmap pixamp = QPixmap::fromImage(image);
+//        ui->lbl_img->setPixmap(pixamp.scaled(320, 180, Qt::AspectRatioMode::KeepAspectRatio));
+//        QCoreApplication::processEvents();
+    //    }
+}
+
+void MainWindow::handleCamera(QImage &image)
+{
+    QPixmap pixamp = QPixmap::fromImage(image);
+    ui->lbl_img->setPixmap(pixamp.scaled(image.width(), image.height(), Qt::AspectRatioMode::KeepAspectRatio));
+    QCoreApplication::processEvents();
 }
 
 void MainWindow::on_connect_clicked()
