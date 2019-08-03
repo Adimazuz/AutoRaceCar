@@ -23,13 +23,12 @@ private:
     RealSense _camera;
 	std::shared_ptr<ITcpClient> _tcp_client;
     std::shared_ptr<ITcpServer> _tcp_server;
-    RaceCar &parseCmdString(const std::vector<char>& cmd);
-    RaceCar &getDriveCmd();
-    RaceCar &getCameraInput();
     std::shared_ptr<std::thread> _camera_thread;
     std::shared_ptr<std::thread> _serial_thread;
     Socket _socket;
-    bool _is_tcp_client_connected;
-    bool _is_cammera_connected;
-    bool _is_arduino_connected;
+	
+	RaceCar &parseCmdString(const std::vector<char>& cmd);
+    RaceCar &arduinoCommunications();
+    RaceCar &getCameraOutput();
+    RaceCar &sendFlowOutput();
 };
