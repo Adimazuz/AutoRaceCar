@@ -172,7 +172,7 @@ void getDriveCommand()
   //get speed
   while (Serial.available()) {
       char c = Serial.read();  //gets one byte from serial buffer
-      if(c== '/n' ){           //to know if this is end of former cmd
+      if(c== '\n' ){           //to know if this is end of former cmd
         return;
       }
       speed_string += c; //makes the String speed_string
