@@ -29,13 +29,14 @@ SOURCES += \
     MainWindow.cpp \
     ../TcpClient/ITcpClient.cpp \
     ../TcpClient/TcpClient.cpp \
-    ../UdpServer/IUdpServer.cpp \
-    ../UdpServer/UdpServer.cpp
+    ../TcpServer/ITcpServer.cpp \
+    ../TcpServer/TcpServer.cpp
 
 HEADERS += \
     MainWindow.h \
     ../TcpClient/ITcpClient.h \
-    ../UdpServer/IUdpServer.h \
+    ../TcpServer/ITcpServer.h \
+    ../TcpServer/TcpServer.h \
     RemoteControl_types.h
 
 FORMS += \

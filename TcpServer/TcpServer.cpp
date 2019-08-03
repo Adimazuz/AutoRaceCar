@@ -110,6 +110,24 @@ std::vector<char> TcpServer::receive(const Socket &socket, const uint &len) noex
     return data;
 }
 
+void TcpServer::receive(const Socket &socket, char *dst, const uint &len)
+{
+    uint bytes_received = 0;
+
+    while(bytes_received < len)
+    {
+        auto tmp_len = recv(socket, dst + bytes_received, len - bytes_received, 0);
+
+        if(tmp_len <= 0)
+        {
+            _clients_connection_state[socket] = false;
+            return;
+        }
+
+        bytes_received += tmp_len;
+    }
+}
+
 Socket TcpServer::waitForConnections()
 {
     Address address = {};

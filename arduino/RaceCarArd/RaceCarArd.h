@@ -56,8 +56,8 @@ void decreseToRest(){
   drive();
 }
 void setup(){
-      engine.attach(9);
-      steering.attach(10);
+      engine.attach(5);
+      steering.attach(6);
   for(int i=70;i<95;i++)
   {
     engine.write(i);
@@ -172,7 +172,7 @@ void getDriveCommand()
   //get speed
   while (Serial.available()) {
       char c = Serial.read();  //gets one byte from serial buffer
-      if(c== '/n' ){           //to know if this is end of former cmd
+      if(c== '\n' ){           //to know if this is end of former cmd
         return;
       }
       speed_string += c; //makes the String speed_string

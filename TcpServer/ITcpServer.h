@@ -81,6 +81,8 @@ public:
     virtual std::vector<char> receive(const Socket &socket,
             const uint &len) noexcept = 0;
 
+    virtual void receive(const Socket &socket, char *dst, const uint &len) = 0;
+
     /**
      * @brief send data to a client
      * @param socket - the id of the client

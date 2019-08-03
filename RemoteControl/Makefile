@@ -54,14 +54,14 @@ SOURCES       = main.cpp \
 		MainWindow.cpp \
 		../TcpClient/ITcpClient.cpp \
 		../TcpClient/TcpClient.cpp \
-		../UdpServer/IUdpServer.cpp \
-		../UdpServer/UdpServer.cpp moc_MainWindow.cpp
+		../TcpServer/ITcpServer.cpp \
+		../TcpServer/TcpServer.cpp moc_MainWindow.cpp
 OBJECTS       = main.o \
 		MainWindow.o \
 		ITcpClient.o \
 		TcpClient.o \
-		IUdpServer.o \
-		UdpServer.o \
+		ITcpServer.o \
+		TcpServer.o \
 		moc_MainWindow.o
 DIST          = ../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/features/spec_pre.prf \
 		../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/common/unix.conf \
@@ -253,13 +253,14 @@ DIST          = ../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/features/spec_pre.prf
 		../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/features/lex.prf \
 		RemoteControl.pro MainWindow.h \
 		../TcpClient/ITcpClient.h \
-		../UdpServer/IUdpServer.h \
+		../TcpServer/ITcpServer.h \
+		../TcpServer/TcpServer.h \
 		RemoteControl_types.h main.cpp \
 		MainWindow.cpp \
 		../TcpClient/ITcpClient.cpp \
 		../TcpClient/TcpClient.cpp \
-		../UdpServer/IUdpServer.cpp \
-		../UdpServer/UdpServer.cpp
+		../TcpServer/ITcpServer.cpp \
+		../TcpServer/TcpServer.cpp
 QMAKE_TARGET  = RemoteControl
 DESTDIR       = 
 TARGET        = RemoteControl
@@ -671,8 +672,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents MainWindow.h ../TcpClient/ITcpClient.h ../UdpServer/IUdpServer.h RemoteControl_types.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp MainWindow.cpp ../TcpClient/ITcpClient.cpp ../TcpClient/TcpClient.cpp ../UdpServer/IUdpServer.cpp ../UdpServer/UdpServer.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents MainWindow.h ../TcpClient/ITcpClient.h ../TcpServer/ITcpServer.h ../TcpServer/TcpServer.h RemoteControl_types.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp MainWindow.cpp ../TcpClient/ITcpClient.cpp ../TcpClient/TcpClient.cpp ../TcpServer/ITcpServer.cpp ../TcpServer/TcpServer.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents MainWindow.ui $(DISTDIR)/
 
 
@@ -819,8 +820,8 @@ moc_MainWindow.cpp: ../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QMainWi
 		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/qbasictimer.h \
 		../TcpClient/ITcpClient.h \
 		../TcpClient/TcpClient_types.h \
-		../UdpServer/IUdpServer.h \
-		../UdpServer/UdpServer_types.h \
+		../TcpServer/ITcpServer.h \
+		../TcpServer/TcpServer_types.h \
 		MainWindow.h \
 		moc_predefs.h \
 		../../../../Qt5.11.0/5.11.0/gcc_64/bin/moc
@@ -966,8 +967,8 @@ main.o: main.cpp ../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QApplicati
 		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/qbasictimer.h \
 		../TcpClient/ITcpClient.h \
 		../TcpClient/TcpClient_types.h \
-		../UdpServer/IUdpServer.h \
-		../UdpServer/UdpServer_types.h
+		../TcpServer/ITcpServer.h \
+		../TcpServer/TcpServer_types.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 MainWindow.o: MainWindow.cpp ../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/QKeyEvent \
@@ -1083,47 +1084,9 @@ MainWindow.o: MainWindow.cpp ../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/QK
 		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/qbasictimer.h \
 		../TcpClient/ITcpClient.h \
 		../TcpClient/TcpClient_types.h \
-		../UdpServer/IUdpServer.h \
-		../UdpServer/UdpServer_types.h \
+		../TcpServer/ITcpServer.h \
+		../TcpServer/TcpServer_types.h \
 		ui_MainWindow.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/QVariant \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QAction \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qaction.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QApplication \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qapplication.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/qeventloop.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qguiapplication.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qinputmethod.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QGridLayout \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlayout.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QLabel \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlabel.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qframe.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QLineEdit \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qtextcursor.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qtextformat.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qpen.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qtextoption.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QMenu \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qmenu.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QMenuBar \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QPushButton \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QStatusBar \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qstatusbar.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QToolBar \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qtoolbar.h \
-		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QWidget \
 		RemoteControl_types.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o MainWindow.cpp
 
@@ -1138,16 +1101,16 @@ TcpClient.o: ../TcpClient/TcpClient.cpp ../TcpClient/Exceptions.h \
 		../TcpClient/TcpClient_types.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o TcpClient.o ../TcpClient/TcpClient.cpp
 
-IUdpServer.o: ../UdpServer/IUdpServer.cpp ../UdpServer/UdpServer.h \
-		../UdpServer/IUdpServer.h \
-		../UdpServer/UdpServer_types.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o IUdpServer.o ../UdpServer/IUdpServer.cpp
+ITcpServer.o: ../TcpServer/ITcpServer.cpp ../TcpServer/TcpServer.h \
+		../TcpServer/ITcpServer.h \
+		../TcpServer/TcpServer_types.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ITcpServer.o ../TcpServer/ITcpServer.cpp
 
-UdpServer.o: ../UdpServer/UdpServer.cpp ../UdpServer/UdpServer.h \
-		../UdpServer/IUdpServer.h \
-		../UdpServer/UdpServer_types.h \
-		../TcpClient/Exceptions.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o UdpServer.o ../UdpServer/UdpServer.cpp
+TcpServer.o: ../TcpServer/TcpServer.cpp ../TcpClient/Exceptions.h \
+		../TcpServer/TcpServer.h \
+		../TcpServer/ITcpServer.h \
+		../TcpServer/TcpServer_types.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o TcpServer.o ../TcpServer/TcpServer.cpp
 
 moc_MainWindow.o: moc_MainWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MainWindow.o moc_MainWindow.cpp

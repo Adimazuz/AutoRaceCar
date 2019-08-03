@@ -64,6 +64,7 @@ void MainWindow::handleKey()
         if(isArrowKey(key))
         {
             _client->send(keyToString(key));
+//            std::cout << key << std::endl;
         }
     }
 }
@@ -104,15 +105,15 @@ void MainWindow::info(const string &msg)
 
 void MainWindow::bindServer()
 {
-//    _server->bind("192.168.1.100", 5555, 5);
-//    if(_server->isBind())
-//    {
-//        info("bind success");
-//    }
-//    else
-//    {
-//        info("bind failed");
-//    }
+    _server->bind("192.168.1.75", 5555, 5);
+    if(_server->isBind())
+    {
+        info("bind success");
+    }
+    else
+    {
+        info("bind failed");
+    }
 }
 
 void MainWindow::signalConnections()
@@ -136,7 +137,7 @@ void MainWindow::initClient()
 
 void MainWindow::initServer()
 {
-    _server = IUdpServer::create("192.168.1.75", 5555);
+    _server = ITcpServer::create();
     bindServer();
 }
 
@@ -156,7 +157,7 @@ void MainWindow::init()
     showMaximized();
     initDesign();
     signalConnections();
-    initTimer(150);
+    initTimer(100);
     initClient();
     initServer();
     initThreads();
@@ -194,17 +195,26 @@ void MainWindow::markControllerConnection(const bool &is_connected)
 
 void MainWindow::cameraThread()
 {
+    if(_server->getNumOfConnectedClients() == 0)
+    {
+        _client_sock = _server->waitForConnections();
+        info("camera connected");
+        markCameraConnection(true);
+    }
+
     while(_is_run)
     {
         QCoreApplication::processEvents();
 
         ColorImage color_image;
-        _server->receive(reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
+        _server->receive(_client_sock, reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
         color_image.data = new uint8[color_image.size];
-        _server->receive(reinterpret_cast<char*>(color_image.data), color_image.size);
+        _server->receive(_client_sock, reinterpret_cast<char*>(color_image.data), static_cast<uint32>(color_image.size));
 
         QImage image(static_cast<unsigned char*>(color_image.data), static_cast<int>(color_image.width),
                      static_cast<int>(color_image.height), QImage::Format_RGB888);
+
+        delete [] color_image.data;
 
         emit imageReady(image);
     }
@@ -242,7 +252,6 @@ void MainWindow::handleCamera(QImage &image)
 {
     QPixmap pixamp = QPixmap::fromImage(image);
     ui->lbl_img->setPixmap(pixamp.scaled(image.width(), image.height(), Qt::AspectRatioMode::KeepAspectRatio));
-    QCoreApplication::processEvents();
 }
 
 void MainWindow::on_connect_clicked()
@@ -250,13 +259,15 @@ void MainWindow::on_connect_clicked()
     if(!ui->controller_ip->text().isEmpty())
     {
         string controller_ip = ui->controller_ip->text().toStdString();
-        unsigned short controller_port = ui->camera_port->text().toUShort();
+        unsigned short controller_port = ui->controller_port->text().toUShort();
 
         _client->connect(controller_ip, controller_port);
         if(_client->isConnected())
         {
             info("controller connection established successfully");
+            _is_controller_connected = true;
             markControllerConnection(true);
         }
     }
+    setFocus();
 }

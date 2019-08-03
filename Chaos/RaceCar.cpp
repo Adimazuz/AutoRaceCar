@@ -188,6 +188,13 @@ RaceCar &RaceCar::getCameraInput()
 
 }
 
+RaceCar  &RaceCar::sendFlowOutput()
+{
+    Flow output = _arduino->getFlowOutput();
+    //send to Client
+    char* data = (char*) &output;
+    _tcp_server->send(_socket,data,sizeof(Flow));
+}
 static void splitString(const string &str, std::vector<string> &output)
 {
 	string::size_type start = 0; // Where to start

@@ -1,5 +1,6 @@
 #include "UdpServer.h"
 #include "Exceptions.h"
+#include <iostream>
 
 UdpServer::UdpServer(const string &ip, const ushort &port) :
     _socket(-1),
@@ -58,6 +59,7 @@ void UdpServer::receive(char *dst, const unsigned long &len)
     {
         auto rcv_bytes = recvfrom(_socket, dst + tot_rcv_bytes, len - tot_rcv_bytes, 0, 
                                   reinterpret_cast<sockaddr*>(&_client_address), &address_size);
+        std::cout << rcv_bytes << std::endl;
         tot_rcv_bytes += rcv_bytes;
     }
 }

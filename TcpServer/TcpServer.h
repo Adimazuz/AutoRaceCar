@@ -27,6 +27,8 @@ public:
 
     virtual std::vector<char> receive(const Socket &socket, const uint &len) noexcept override;
 
+    virtual void receive(const Socket &socket, char *dst, const uint &len) override;
+
     virtual void send(const Socket& socket, const std::vector<char>& data) const noexcept override;
 
     virtual void send(const Socket& socket, const string& message) const noexcept override;
