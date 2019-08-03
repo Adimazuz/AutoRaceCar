@@ -1,5 +1,6 @@
 #include "UdpClient.h"
 #include "Exceptions.h"
+#include <iostream>
 
 UdpClient::UdpClient(const string &ip, const ushort &port) :
     _socket(-1),
@@ -44,6 +45,7 @@ void UdpClient::send(const char *data, const uint &len)
             to_sent = 65507;
         }
         auto s = sendto(_socket, data, to_sent, 0, reinterpret_cast<sockaddr*>(&_server_addres), sizeof(_server_addres));
+        std::cout << s << std::endl;
         tot_bytes_sent += s;
     }
 }

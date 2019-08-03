@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[13];
-    char stringdata0[144];
+    QByteArrayData data[14];
+    char stringdata0[152];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,22 +34,24 @@ static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_MainWindow = {
 QT_MOC_LITERAL(0, 0, 10), // "MainWindow"
 QT_MOC_LITERAL(1, 11, 10), // "imageReady"
 QT_MOC_LITERAL(2, 22, 0), // ""
-QT_MOC_LITERAL(3, 23, 5), // "image"
-QT_MOC_LITERAL(4, 29, 9), // "handleKey"
-QT_MOC_LITERAL(5, 39, 21), // "on_acn_exit_triggered"
-QT_MOC_LITERAL(6, 61, 11), // "keyToString"
-QT_MOC_LITERAL(7, 73, 6), // "string"
-QT_MOC_LITERAL(8, 80, 3), // "key"
-QT_MOC_LITERAL(9, 84, 10), // "isArrowKey"
-QT_MOC_LITERAL(10, 95, 18), // "on_connect_clicked"
-QT_MOC_LITERAL(11, 114, 16), // "checkConnections"
-QT_MOC_LITERAL(12, 131, 12) // "handleCamera"
+QT_MOC_LITERAL(3, 23, 7), // "QImage&"
+QT_MOC_LITERAL(4, 31, 5), // "image"
+QT_MOC_LITERAL(5, 37, 9), // "handleKey"
+QT_MOC_LITERAL(6, 47, 21), // "on_acn_exit_triggered"
+QT_MOC_LITERAL(7, 69, 11), // "keyToString"
+QT_MOC_LITERAL(8, 81, 6), // "string"
+QT_MOC_LITERAL(9, 88, 3), // "key"
+QT_MOC_LITERAL(10, 92, 10), // "isArrowKey"
+QT_MOC_LITERAL(11, 103, 18), // "on_connect_clicked"
+QT_MOC_LITERAL(12, 122, 16), // "checkConnections"
+QT_MOC_LITERAL(13, 139, 12) // "handleCamera"
 
     },
-    "MainWindow\0imageReady\0\0image\0handleKey\0"
-    "on_acn_exit_triggered\0keyToString\0"
-    "string\0key\0isArrowKey\0on_connect_clicked\0"
-    "checkConnections\0handleCamera"
+    "MainWindow\0imageReady\0\0QImage&\0image\0"
+    "handleKey\0on_acn_exit_triggered\0"
+    "keyToString\0string\0key\0isArrowKey\0"
+    "on_connect_clicked\0checkConnections\0"
+    "handleCamera"
 };
 #undef QT_MOC_LITERAL
 
@@ -70,25 +72,25 @@ static const uint qt_meta_data_MainWindow[] = {
        1,    1,   54,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    0,   57,    2, 0x0a /* Public */,
-       5,    0,   58,    2, 0x08 /* Private */,
-       6,    1,   59,    2, 0x08 /* Private */,
-       9,    1,   62,    2, 0x08 /* Private */,
-      10,    0,   65,    2, 0x08 /* Private */,
-      11,    0,   66,    2, 0x08 /* Private */,
-      12,    1,   67,    2, 0x08 /* Private */,
+       5,    0,   57,    2, 0x0a /* Public */,
+       6,    0,   58,    2, 0x08 /* Private */,
+       7,    1,   59,    2, 0x08 /* Private */,
+      10,    1,   62,    2, 0x08 /* Private */,
+      11,    0,   65,    2, 0x08 /* Private */,
+      12,    0,   66,    2, 0x08 /* Private */,
+      13,    1,   67,    2, 0x08 /* Private */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::QImage,    3,
+    QMetaType::Void, 0x80000000 | 3,    4,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
-    0x80000000 | 7, QMetaType::Int,    8,
-    QMetaType::Bool, QMetaType::Int,    8,
+    0x80000000 | 8, QMetaType::Int,    9,
+    QMetaType::Bool, QMetaType::Int,    9,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QImage,    3,
+    QMetaType::Void, 0x80000000 | 3,    4,
 
        0        // eod
 };
@@ -114,7 +116,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (MainWindow::*)(QImage );
+            using _t = void (MainWindow::*)(QImage & );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&MainWindow::imageReady)) {
                 *result = 0;
                 return;
@@ -160,7 +162,7 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void MainWindow::imageReady(QImage _t1)
+void MainWindow::imageReady(QImage & _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

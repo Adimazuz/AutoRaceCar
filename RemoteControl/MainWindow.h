@@ -8,7 +8,7 @@
 #include <thread>
 
 #include "ITcpClient.h"
-#include "../UdpServer/IUdpServer.h"
+#include "../TcpServer/ITcpServer.h"
 
 
 namespace Ui {
@@ -34,7 +34,7 @@ private slots:
     bool isArrowKey(const int &key);
     void on_connect_clicked();
     void checkConnections();
-    void handleCamera(QImage image);
+    void handleCamera(QImage &image);
 
 private:
     void info(const string &msg);
@@ -51,7 +51,7 @@ private:
     void cameraThread();
 
 signals:
-    void imageReady(QImage image);
+    void imageReady(QImage &image);
 
 
 private:
@@ -65,7 +65,7 @@ private:
     QTimer _key_timer;
     Socket _client_sock;
     bool _is_controller_connected;
-    std::shared_ptr<IUdpServer> _server;
+    std::shared_ptr<ITcpServer> _server;
     std::shared_ptr<ITcpClient> _client;
     bool _is_run;
     std::shared_ptr<std::thread> _camera_thread;
