@@ -137,7 +137,7 @@ RaceCar &RaceCar::getCameraOutput()
 
 }
 
-Flow &RaceCar::sendFlowOutput()
+RaceCar  &RaceCar::sendFlowOutput()
 {
     Flow output = _arduino->getFlowOutput();
     //send to Client
