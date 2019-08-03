@@ -276,6 +276,13 @@ public:
          */
         float get_depth_units();
 
+        /**
+         * @brief getDepthCamIntrinsics -
+         * @return
+         */
+        Camera::Intrinsics getDepthCamIntrinsics();
+        Camera::Intrinsics getColorCamIntrinsics();
+        Camera::MotionIntrinsics getMotionCamIntrinsics();
 
 
 //        rs2::sensor _stereo_module;

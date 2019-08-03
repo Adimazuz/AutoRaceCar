@@ -24,6 +24,7 @@ int main()
     while(1){
         cout << camera.isConnect() << endl;
 
+
     }
 
 

@@ -63,4 +63,13 @@ public:
     }
 };
 
+class IRealSenseDepthIntrinsic : public IRealSenseExceptions
+{
+public:
+    const char* what() const noexcept override
+    {
+        return "Can't get intrinsics from Depth camera";
+    }
+};
+
 #endif //TCPCLIENT_EXCEPTIONS_H

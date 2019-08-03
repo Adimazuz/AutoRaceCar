@@ -370,5 +370,22 @@ float RealSense::get_depth_units()
 
 }
 
+Camera::Intrinsics RealSense::getDepthCamIntrinsics()
+{
+    rs2::stream_profile stream_color=choose_a_streaming_profile(_stereo_module,19);
+    auto video_stream = stream_color.as<rs2::video_stream_profile>();
+    try
+    {
+        //If the stream is indeed a video stream, we can now simply call get_intrinsics()
+        rs2_intrinsics intrinsics = video_stream.get_intrinsics();
+
+    }
+    catch (const std::exception& e)
+    {
+        throw IRealSenseDepthIntrinsic();
+    }
+
+}
+
 
 
