@@ -20,9 +20,11 @@ public:
 
     TcpClient() noexcept;
 
-    virtual bool connect(const string& ip, const unsigned short& port) const override;
+    virtual void connect(const string& ip, const unsigned short& port) override;
 
-    virtual std::vector<char> receive(const unsigned int &len) const override;
+    virtual bool isConnected() const override {return _is_connected;}
+
+    virtual std::vector<char> receive(const unsigned int &len) override;
 
     virtual void send(const std::vector<char>& data) const noexcept override;
 
@@ -39,6 +41,7 @@ private: //functions
 private:
     Socket _socket;
     sockaddr_in _address;
+    bool _is_connected;
 };
 
 

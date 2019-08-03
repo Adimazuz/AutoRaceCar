@@ -1,4 +1,4 @@
-#include <QDebug>
+#include <iostream>
 #include <QKeyEvent>
 #include <zlib.h>
 
@@ -12,38 +12,39 @@ MainWindow::MainWindow(QWidget *parent) :
     _key_timer(),
     _is_stream_on(true),
     _client_sock(-1),
-    _is_connected(false),
+    _is_controller_connected(false),
     _server(nullptr),
     _client(nullptr)
 {
     ui->setupUi(this);
-    showMaximized();
-    _key_timer.setInterval(50);
-    connect(&_key_timer, SIGNAL(timeout()), this, SLOT(handleKey()));
-    _key_timer.start();
-
-    _client = ITcpClient::create();
+    init();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if(!_keys.contains(event->key()))
+    if(_is_controller_connected)
     {
-        _keys.push_back(event->key());
-    }
+        if(!_keys.contains(event->key()))
+        {
+            _keys.push_back(event->key());
+        }
 
-    setFocus();
+        setFocus();
+    }
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
-    if(event->isAutoRepeat()){
-        setFocus();
-        return;
-    }
-    _keys.removeOne(event->key());
+    if(_is_controller_connected)
+    {
+        if(event->isAutoRepeat()){
+            setFocus();
+            return;
+        }
+        _keys.removeOne(event->key());
 
-    setFocus();
+        setFocus();
+    }
 }
 
 MainWindow::~MainWindow()
@@ -58,7 +59,6 @@ void MainWindow::handleKey()
         if(isArrowKey(key))
         {
             _client->send(keyToString(key));
-            qDebug() << key;
         }
     }
 }
@@ -92,11 +92,6 @@ bool MainWindow::isArrowKey(const int &key)
             key == KEY_UP || key == KEY_DOWN;
 }
 
-void MainWindow::on_btn_camera_clicked()
-{
-    _is_stream_on = !_is_stream_on;
-}
-
 unsigned long MainWindow::receiveDataSize()
 {
     auto len_data = _server->receive(_client_sock, sizeof(unsigned long));
@@ -105,17 +100,99 @@ unsigned long MainWindow::receiveDataSize()
     return *len;
 }
 
+void MainWindow::info(const string &msg)
+{
+    std::cout << msg << std::endl;
+}
+
+void MainWindow::bindServer()
+{
+    _server->bind("127.0.0.1", 5555, 5);
+    if(_server->isBind())
+    {
+        info("bind success");
+    }
+    else
+    {
+        info("bind failed");
+    }
+}
+
+void MainWindow::signalConnections()
+{
+    connect(&_key_timer, SIGNAL(timeout()), this, SLOT(handleKey()));
+}
+
+void MainWindow::initTimer(const int &interval)
+{
+    _key_timer.setInterval(interval);
+    _key_timer.start();
+}
+
+void MainWindow::initClient()
+{
+    _client = ITcpClient::create();
+}
+
+void MainWindow::initServer()
+{
+    _server = ITcpServer::create();
+    bindServer();
+}
+
+void MainWindow::initDesign()
+{
+    markCameraConnection(false);
+    markControllerConnection(false);
+}
+
+void MainWindow::init()
+{
+    showMaximized();
+    initDesign();
+    signalConnections();
+    initTimer(150);
+    initClient();
+    initServer();
+}
+
+void MainWindow::markCameraConnection(const bool &is_connected)
+{
+    QPalette p;
+    if(is_connected)
+    {
+        p.setColor(QPalette::ColorRole::Foreground, QColor(Qt::green));
+    }
+    else
+    {
+        p.setColor(QPalette::ColorRole::Foreground, QColor(Qt::red));
+    }
+
+    ui->camera->setPalette(p);
+}
+
+void MainWindow::markControllerConnection(const bool &is_connected)
+{
+    QPalette p;
+    if(is_connected)
+    {
+        p.setColor(QPalette::ColorRole::Foreground, QColor(Qt::green));
+    }
+    else
+    {
+        p.setColor(QPalette::ColorRole::Foreground, QColor(Qt::red));
+    }
+
+    ui->controller->setPalette(p);
+}
+
 void MainWindow::on_actionconnect_server_triggered()
 {
-    _server = ITcpServer::create("132.68.36.54", 5559, 5);
-
-    qDebug() << "bind success";
-
-    if(!_is_connected)
+    if(!_is_controller_connected)
     {
        _client_sock = _server->waitForConnections();
-       qDebug() << "someone connected";
-       _is_connected = true;
+       info("someone connected");
+       _is_controller_connected = true;
     }
 
     unsigned long size = 640*480*3;
@@ -137,11 +214,26 @@ void MainWindow::on_actionconnect_server_triggered()
     }
 }
 
-void MainWindow::on_actionconnect_triggered()
+void MainWindow::on_actionshow_triggered()
 {
-    bool is_connect = _client->connect("132.68.36.191", 5556);
-    if(is_connect)
+    if(ui->actionshow->isChecked())
     {
-        qDebug() << "arduino connected successfully";
+        _is_stream_on = !_is_stream_on;
+    }
+}
+
+void MainWindow::on_connect_clicked()
+{
+    if(!ui->controller_ip->text().isEmpty())
+    {
+        string controller_ip = ui->controller_ip->text().toStdString();
+        unsigned short controller_port = ui->camera_port->text().toUShort();
+
+        _client->connect(controller_ip, controller_port);
+        if(_client->isConnected())
+        {
+            info("controller connection established successfully");
+            markControllerConnection(true);
+        }
     }
 }

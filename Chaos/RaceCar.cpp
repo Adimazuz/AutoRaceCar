@@ -31,31 +31,44 @@ RaceCar::~RaceCar()
 RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const string& server_ip)
 {
     std::cout << "enter conect()" <<std::endl;
-
-    if(_tcp_client->connect(ip, port) && _camera.connectCamera())
-    {
-        std::cout << "connected to sever and camera on" <<std::endl;
-        _camera.setupColorImage(RS2_FORMAT_RGB8,RealSense::rs2ColorRessolution::R_640x480, RealSense::rs2fps::F_15hz);
-        std::cout << "camera setuped" <<std::endl;
-        _camera.startCamera();
-        std::cout << "camera started" <<std::endl;
-        _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraOutput,this);
-        std::cout << "camera thread opened" <<std::endl;
-
+    _tcp_client->connect(ip, port);
+    if(_tcp_client->isConnected()){
+        _is_tcp_client_connected = true;
+        std::cout << "connected to sever" <<std::endl;
+    }
+    if(_camera.connectCamera()){
+        _is_cammera_connected = true;
+        std::cout << "camera on" <<std::endl;
     }
 
-    if(_arduino->connect() )
-    {
+    if(_arduino->connect()){
+        _is_arduino_connected = true;
         std::cout << "connected to Arduino" <<std::endl;
-       _tcp_server = ITcpServer::create(server_ip,SERVER_PORT,MAX_NUM_USERS);
-       std::cout << "waiting for connection" << std::endl;
-       _socket = _tcp_server->waitForConnections();
-       std::cout << "someone connected" << std::endl;
-      _serial_thread = std::make_shared<std::thread>(&RaceCar::getDriveCmd,this);
-
     }
-
     return *this;
+}
+
+RaceCar &RaceCar::run()
+{
+    if(_is_tcp_client_connected && _is_cammera_connected){
+            _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_320x180, RealSense::ColorCamFps::F_6hz);
+            _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_6hz);
+            std::cout << "camera setuped" <<std::endl;
+            _camera.startCamera();
+            std::cout << "camera started" <<std::endl;
+            _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraInput,this);
+            std::cout << "camera thread opened" <<std::endl;
+    }
+//    if(_is_arduino_connected){
+//             std::cout << "connected to Arduino" <<std::endl;
+//            _tcp_server = ITcpServer::create(server_ip,SERVER_PORT,MAX_NUM_USERS);
+//            std::cout << "waiting for connection" << std::endl;
+//            _socket = _tcp_server->waitForConnections();
+//            std::cout << "someone connected" << std::endl;
+//           _serial_thread = std::make_shared<std::thread>(&RaceCar::getDriveCmd,this);
+//    }
+
+
 }
 
 
@@ -120,16 +133,22 @@ RaceCar &RaceCar::getCameraOutput()
     {
 //        std::cout << _is_running <<std::endl;
         _camera.captureFrame();
-        Image image=_camera.getColorImage();
-        auto len = image.getSize();
-        auto len_orig=len;
-        std::vector<unsigned char> compresed_image(len);
-        compress(compresed_image.data(),&len,image.getData(),len_orig);
+        Camera::ColorImage image=_camera.getColorImage();
+        Camera::DepthImage depth_image = _camera.getDepthImage();
+
+        auto len = image.size;
+        auto depth_len = depth_image.size;
+
+        std::cout << "image len:"<< depth_len <<std::endl;
+        std::cout << depth_image.depth_scale  <<std::endl;
+//        auto len_orig=len;
+//        std::vector<unsigned char> compresed_image(len);
+//        compress(compresed_image.data(),&len,image.data,len_orig);
         //std::cout << "org len: "<< len_orig <<" compresed len:"<< len <<std::endl;
 
-        _tcp_client->send(reinterpret_cast<char*>(&len),sizeof(ulong));
+        _tcp_client->send(reinterpret_cast<char*>(&depth_image),sizeof(depth_image)-sizeof(depth_image.data));
         //std::cout << "sent len" <<std::endl;
-        _tcp_client->send(reinterpret_cast<char*>(compresed_image.data()),len);
+        _tcp_client->send(reinterpret_cast<const char*>(depth_image.data),depth_len);
 
         //std::cout << _is_running <<std::endl;
     }

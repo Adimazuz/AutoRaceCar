@@ -54,4 +54,13 @@ public:
     }
 };
 
+class IRealSenseDepthRessAndFreq : public IRealSenseExceptions
+{
+public:
+    const char* what() const noexcept override
+    {
+        return "RealSense exception: resolution 1280x720 not supported on such fps";
+    }
+};
+
 #endif //TCPCLIENT_EXCEPTIONS_H

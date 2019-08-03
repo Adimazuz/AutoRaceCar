@@ -1,7 +1,11 @@
 #ifndef TCPSOCKET_ITCPCLIENT_H
 #define TCPSOCKET_ITCPCLIENT_H
 
-#define TCP_CLIENT_API __attribute__((visibilty ("default")))
+#ifdef EXPORTS
+    #define TCP_CLIENT_API __attribute__((visibilty ("default")))
+#else
+    #define TCP_CLIENT_API
+#endif
 
 /**
   ITcpClient is an interface for opening client TCP communication and communicate with a TCP server.
@@ -12,8 +16,12 @@
 
         client->connect("127.0.0.1", 5555);
 
-        char *data = new char[10];
-        client->send(data, 10);
+        if(client->isConnected())
+        {
+            char *data = new char[10];
+            client->send(data, 10);
+        }
+
 
   example of receiving data:
 
@@ -21,7 +29,14 @@
 
         client->connect("127.0.0.1", 5555);
 
-        std::vector<char> rec = client->receive(10);
+        if(client->isConnected())
+        {
+            std::vector<char> rcv = client->receive(10);
+            if(rcv.size() > 0)
+            {
+                //do something
+            }
+        }
   */
 
 #include "TcpClient_types.h"
@@ -40,14 +55,21 @@ public:
      * @param ip - the ip address of the server
      * @param port - the port defined by the server
      */
-    virtual bool connect(const string& ip, const unsigned short& port) const = 0;
+    virtual void connect(const string& ip, const unsigned short& port) = 0;
+
+    /**
+     * @brief isConnected - check if client is connected
+     * @return true if client is connected, otherwise return false
+     */
+
+    virtual bool isConnected() const = 0;
 
     /**
      * @brief receive data from the server
      * @param len - the length of the data[bytes]
      * @return a vector of chars contains the data
      */
-    virtual std::vector<char> receive(const unsigned int &len) const = 0;
+    virtual std::vector<char> receive(const unsigned int &len) = 0;
 
     /**
      * @brief send data to the server

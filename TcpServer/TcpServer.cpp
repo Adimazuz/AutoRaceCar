@@ -9,11 +9,12 @@
     #include <unistd.h>
 #endif
 
-TcpServer::TcpServer(const string &ip, const unsigned short &port, const int &max_num_of_clients) noexcept :
-    _ip(ip),
-    _port(port),
-    _max_num_of_clients(max_num_of_clients),
+TcpServer::TcpServer() noexcept :
+    _ip(""),
+    _port(0),
+    _max_num_of_clients(0),
     _socket(-1),
+    _clients_connection_state(),
     _address()
 {
 #ifdef _WIN32
@@ -21,17 +22,6 @@ TcpServer::TcpServer(const string &ip, const unsigned short &port, const int &ma
     WSAStartup(MAKEWORD(2, 0), &wsa);
 #endif
 
-    _address = buildAddress(ip, port);
-    try
-    {
-        createSocket();
-        doBind();
-        doListen();
-    }
-    catch(std::exception& e)
-    {
-        std::cout << e.what() << std::endl;
-    }
 }
 
 TcpServer &TcpServer::createSocket()
@@ -48,10 +38,14 @@ TcpServer &TcpServer::createSocket()
 
 TcpServer &TcpServer::doBind()
 {
-    int res = bind(_socket, reinterpret_cast<sockaddr*>(& _address), sizeof(_address));
+    int res = ::bind(_socket, reinterpret_cast<sockaddr*>(& _address), sizeof(_address));
     if(res < 0)
     {
-        throw ITcpServerCannotBind(_ip, _port);
+        _is_bind = false;
+    }
+    else
+    {
+        _is_bind = true;
     }
 
     return *this;
@@ -77,7 +71,23 @@ TcpServer::~TcpServer()
 #endif
 }
 
-std::vector<char> TcpServer::receive(const Socket &socket, const uint &len) const noexcept
+void TcpServer::bind(const string &ip, const unsigned short &port, const int &max_num_of_clients)
+{
+    _address = buildAddress(ip, port);
+    _max_num_of_clients = max_num_of_clients;
+    try
+    {
+        createSocket();
+        doBind();
+        doListen();
+    }
+    catch(std::exception& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+}
+
+std::vector<char> TcpServer::receive(const Socket &socket, const uint &len) noexcept
 { 
     std::vector<char> data(len);
 
@@ -86,24 +96,21 @@ std::vector<char> TcpServer::receive(const Socket &socket, const uint &len) cons
     while(bytes_received < len)
     {
         auto tmp_len = recv(socket, data.data() + bytes_received, len - bytes_received, 0);
-        bytes_received += tmp_len;
 
-        if(tmp_len == 0)
+        if(tmp_len <= 0)
         {
+            _clients_connection_state[socket] = false;
+            data.clear();
             break;
         }
+
+        bytes_received += tmp_len;
     }
 
     return data;
-
-//    std::vector<char> data(len);
-
-//    recv(socket, data.data(), len, 0);
-
-//    return data;
 }
 
-Socket TcpServer::waitForConnections() const
+Socket TcpServer::waitForConnections()
 {
     Address address = {};
 
@@ -116,11 +123,12 @@ Socket TcpServer::waitForConnections() const
         throw ITcpServerCannotAccept();
     }
 
+    _clients_connection_state.insert(std::pair<Socket, bool>(client_socket, true));
     return client_socket;
 }
 
 void TcpServer::send(const Socket &socket, const std::vector<char> &data) const noexcept
-{
+{  
     uint bytes_sent = 0;
     while (bytes_sent < data.size())
     {
@@ -148,6 +156,11 @@ void TcpServer::send(const Socket &socket, const char *data, const uint &len) co
         auto tmp_len = ::send(socket, data + bytes_sent, len - bytes_sent, 0);
         bytes_sent += tmp_len;
     }
+}
+
+bool TcpServer::hasConnectionWithSocket(const Socket &socket)
+{
+    return _clients_connection_state[socket];
 }
 
 sockaddr_in TcpServer::buildAddress(const string &ip, const unsigned short &port) const noexcept

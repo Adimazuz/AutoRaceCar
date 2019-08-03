@@ -1,5 +1,8 @@
 #include "RealSenseAPI.h"
 #include "Exceptions.h"
+#include <iostream>
+#include <string>
+#include "chrono"
 
 #define NUM_OF_RS_SENSORS 3
 
@@ -88,6 +91,20 @@ static void convertInfraFPStoInt(RealSense::InfrarCamFps fps, int& f_int){
     }
 }
 
+static void convertDepthFPStoInt(RealSense::DepthCamFps fps, int& f_int){
+    if(fps == RealSense::DepthCamFps::F_90hz){
+        f_int = 90;
+    }else if(fps == RealSense::DepthCamFps::F_60hz){
+        f_int = 60;
+    }else if(fps == RealSense::DepthCamFps::F_30hz){
+        f_int = 30;
+    }else if(fps == RealSense::DepthCamFps::F_15hz){
+        f_int = 15;
+    }else if(fps == RealSense::DepthCamFps::F_6hz){
+        f_int = 6;
+    }
+}
+
 static void convertColorRessToInt(RealSense::ColorRessolution ressolution, int& w, int& h){
     if(ressolution == RealSense::ColorRessolution::R_1920x1080){
         w = 1920;
@@ -142,6 +159,28 @@ static void convertInfraRessToInt(RealSense::InfrarRessolution ressolution, int&
         w = 424;
         h = 240;
     }
+}
+
+static void converDepthRessToInt(RealSense::DepthRessolution ressolution, int& w, int& h){
+    if(ressolution == RealSense::DepthRessolution::R_1280x720){
+            w = 1280;
+            h = 720;
+        }else if(ressolution == RealSense::DepthRessolution::R_848_480){
+            w = 848;
+            h = 480;
+        }else if(ressolution == RealSense::DepthRessolution::R_640x480){
+            w = 640;
+            h = 480;
+        }else if(ressolution == RealSense::DepthRessolution::R_640x360){
+            w = 640;
+            h = 360;
+        }else if(ressolution == RealSense::DepthRessolution::R_480x270){
+            w = 480;
+            h = 270;
+        }else if(ressolution == RealSense::DepthRessolution::R_424x240){
+            w = 424;
+            h = 240;
+        }
 }
 
 static int converSide(RealSense::InfrarCamera side){
@@ -209,6 +248,19 @@ void RealSense::setupInfraredImage(RealSense::InfrarFrameFormat format, RealSens
     _config.enable_stream(RS2_STREAM_INFRARED, converSide(side), w, h, converInfraFrameFormat(format),freq);
 }
 
+void RealSense::setupDepthImage(RealSense::DepthRessolution ressolution, RealSense::DepthCamFps fps)
+{
+    if(ressolution == DepthRessolution::R_1280x720 && (fps == DepthCamFps::F_90hz || fps == DepthCamFps::F_60hz)){
+        throw IRealSenseDepthRessAndFreq();
+    }
+    int w,h,freq;
+    converDepthRessToInt(ressolution, w, h);
+    convertDepthFPStoInt(fps,freq); //same fps as infra
+    _config.enable_stream(RS2_STREAM_DEPTH,w,h,RS2_FORMAT_Z16,freq);
+
+}
+
+
 
 
 
@@ -224,16 +276,71 @@ void RealSense::captureFrame()
     _frames = _pipe.wait_for_frames();
 }
 
-Image RealSense::getColorImage()
+Camera::ColorImage RealSense::getColorImage()
 {
     rs2::video_frame color_frame = _frames.get_color_frame();
+    auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
+    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    uint32_t w = color_frame.get_width();
+    uint32_t h = color_frame.get_height();
+    uint32_t byte_per_pixel = color_frame.get_bytes_per_pixel();
 
+    uint64_t size = w*h*byte_per_pixel;
 
-    Image cur_image(reinterpret_cast<const unsigned char*>(color_frame.get_data()),color_frame.get_width(),color_frame.get_height(),
-                    color_frame.get_frame_number(), color_frame.get_timestamp(), color_frame.get_bytes_per_pixel());
+    Camera::ColorImage cur_image = {color_frame.get_frame_number(), size , time_stamp_ms, w, h,
+                                   reinterpret_cast<const unsigned char*>(color_frame.get_data())};
 
+//            (reinterpret_cast<const unsigned char*>(color_frame.get_data()),color_frame.get_width(),color_frame.get_height(),
+//                    color_frame.get_frame_number(), color_frame.get_timestamp(), color_frame.get_bytes_per_pixel());
+    return cur_image;
+}
+
+Camera::ColorImage RealSense::getInfraredImage()
+{
+    rs2::video_frame infrared_frame = _frames.get_infrared_frame();
+    auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
+    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    uint32_t w = infrared_frame.get_width();
+    uint32_t h = infrared_frame.get_height();
+    uint32_t byte_per_pixel = infrared_frame.get_bytes_per_pixel();
+
+    uint64_t size = w*h*byte_per_pixel;
+
+    Camera::ColorImage cur_image = {infrared_frame.get_frame_number(), size, time_stamp_ms, w, h,
+                                   reinterpret_cast<const unsigned char*>(infrared_frame.get_data())};
+
+//    Image cur_image(reinterpret_cast<const unsigned char*>(infrared_frame.get_data()),infrared_frame.get_width(),infrared_frame.get_height(),
+//                    infrared_frame.get_frame_number(), time_stamp_ms, infrared_frame.get_bytes_per_pixel());
 
     return cur_image;
+}
+
+Camera::DepthImage RealSense::getDepthImage()
+{
+    rs2::depth_frame depth_frame = _frames.get_depth_frame();
+    auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
+    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    uint32_t w = depth_frame.get_width();
+    uint32_t h = depth_frame.get_height();
+    uint32_t byte_per_pixel = depth_frame.get_bytes_per_pixel();
+
+    uint64_t size = w*h*byte_per_pixel;
+
+    Camera::DepthImage cur_image = {depth_frame.get_frame_number(), size, time_stamp_ms, w, h,
+                                  get_depth_units(),reinterpret_cast<const unsigned char*>(depth_frame.get_data())};
+//    Image cur_image(reinterpret_cast<const unsigned char*>(depth_frame.get_data()),depth_frame.get_width(),depth_frame.get_height(),
+//                    depth_frame.get_frame_number(), depth_frame.get_timestamp(), depth_frame.get_bytes_per_pixel());
+
+    return cur_image;
+
+}
+
+float RealSense::get_depth_units()
+{
+        float scale = _stereo_module.get_option(RS2_OPTION_DEPTH_UNITS);
+//        std::cout << "is depth_sensor " << scale<< std::endl;
+        return scale;
+
 }
 
 

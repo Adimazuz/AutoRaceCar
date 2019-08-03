@@ -19,7 +19,9 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI/RealSenseAPI.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI/RealSenseAPI.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI/Exceptions.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../TcpServer/ITcpServer.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../TcpServer/ITcpServer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI/Camera_types.h
+    )
 
 
 
@@ -31,7 +33,8 @@ set(INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/../motorAPI
     ${CMAKE_CURRENT_SOURCE_DIR}/../arduino/RaceCarArd
     ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI
-    ${CMAKE_CURRENT_SOURCE_DIR}/../Serial)
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Serial
+    )
 
 
 INCLUDE_DIRECTORIES(${INCLUDES})

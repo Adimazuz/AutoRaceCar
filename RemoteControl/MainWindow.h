@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -30,15 +30,23 @@ private slots:
     void on_acn_exit_triggered();
     string keyToString(const int &key);
     bool isArrowKey(const int &key);
-
-    void on_btn_camera_clicked();
-
     void on_actionconnect_server_triggered();
+    void on_actionshow_triggered();
 
-    void on_actionconnect_triggered();
+    void on_connect_clicked();
 
 private:
     unsigned long receiveDataSize();
+    void info(const string &msg);
+    void bindServer();
+    void signalConnections();
+    void initTimer(const int &interval);
+    void initClient();
+    void initServer();
+    void initDesign();
+    void init();
+    void markCameraConnection(const bool &is_connected);
+    void markControllerConnection(const bool &is_connected);
 
 private:
     static constexpr int KEY_LEFT = 16777234;
@@ -51,7 +59,7 @@ private:
     QTimer _key_timer;
     bool _is_stream_on;
     Socket _client_sock;
-    bool _is_connected;
+    bool _is_controller_connected;
     std::shared_ptr<ITcpServer> _server;
     std::shared_ptr<ITcpClient> _client;
 };
