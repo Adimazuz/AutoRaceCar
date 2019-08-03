@@ -183,6 +183,31 @@ static void converDepthRessToInt(RealSense::DepthRessolution ressolution, int& w
         }
 }
 
+static rs2_stream convertStream(RealSense::Stream stream){
+    if(stream == RealSense::Stream::ANY){
+        return RS2_STREAM_ANY;
+    } else if (stream == RealSense::Stream::DEPTH){
+        return RS2_STREAM_DEPTH;
+    }else if (stream == RealSense::Stream::COLOR){
+        return RS2_STREAM_COLOR;
+    }else if (stream == RealSense::Stream::INFRARED){
+        return RS2_STREAM_INFRARED;
+    }else if (stream == RealSense::Stream::FISHEYE){
+        return RS2_STREAM_FISHEYE;
+    }else if (stream == RealSense::Stream::GYRO){
+        return RS2_STREAM_GYRO;
+    }else if (stream == RealSense::Stream::ACCEL){
+        return RS2_STREAM_ACCEL;
+    }else if (stream == RealSense::Stream::GPIO){
+        return RS2_STREAM_GPIO;
+    }else if (stream == RealSense::Stream::POSE){
+        return RS2_STREAM_POSE;
+    }else if (stream == RealSense::Stream::CONFIDENCE){
+        return RS2_STREAM_CONFIDENCE;
+    }else if (stream == RealSense::Stream::COUNT){
+        return RS2_STREAM_COUNT;
+    }
+}
 static int converSide(RealSense::InfrarCamera side){
     if (side == RealSense::InfrarCamera::LEFT){
         return 1;
@@ -293,7 +318,7 @@ void RealSense::setupDepthImage(RealSense::DepthRessolution ressolution, RealSen
 
 void RealSense::startCamera()
 {
-    _pipe.start(_config);
+     _pipe_profile = _pipe.start(_config);
 }
 
 
@@ -354,7 +379,7 @@ Camera::DepthImage RealSense::getDepthImage()
     uint64_t size = w*h*byte_per_pixel;
 
     Camera::DepthImage cur_image = {depth_frame.get_frame_number(), size, time_stamp_ms, w, h,
-                                  get_depth_units(),reinterpret_cast<const unsigned char*>(depth_frame.get_data())};
+                                  getDepthUnits(),reinterpret_cast<const unsigned char*>(depth_frame.get_data())};
 //    Image cur_image(reinterpret_cast<const unsigned char*>(depth_frame.get_data()),depth_frame.get_width(),depth_frame.get_height(),
 //                    depth_frame.get_frame_number(), depth_frame.get_timestamp(), depth_frame.get_bytes_per_pixel());
 
@@ -362,7 +387,7 @@ Camera::DepthImage RealSense::getDepthImage()
 
 }
 
-float RealSense::get_depth_units()
+float RealSense::getDepthUnits()
 {
         float scale = _stereo_module.get_option(RS2_OPTION_DEPTH_UNITS);
 //        std::cout << "is depth_sensor " << scale<< std::endl;
@@ -370,22 +395,108 @@ float RealSense::get_depth_units()
 
 }
 
-Camera::Intrinsics RealSense::getDepthCamIntrinsics()
-{
-    rs2::stream_profile stream_color=choose_a_streaming_profile(_stereo_module,19);
-    auto video_stream = stream_color.as<rs2::video_stream_profile>();
+
+static Camera::Intrinsics getIntrinsicsPerStream(rs2_stream stream_type, rs2::pipeline_profile& pipe_p ){
+    rs2::stream_profile stream = pipe_p.get_stream(stream_type);
+    Camera::Intrinsics intr;
+
+    auto video_stream = stream.as<rs2::video_stream_profile>();
     try
     {
-        //If the stream is indeed a video stream, we can now simply call get_intrinsics()
-        rs2_intrinsics intrinsics = video_stream.get_intrinsics();
+         rs2_intrinsics intrinsics = video_stream.get_intrinsics();
+         intr.ppy = intrinsics.ppy;
+         intr.ppx = intrinsics.ppx;
+         intr.fy = intrinsics.fy;
+         intr.fx = intrinsics.fx;
+         intr.coeffs[0] = intrinsics.coeffs[0];
+         intr.coeffs[1] = intrinsics.coeffs[1];
+         intr.coeffs[2] = intrinsics.coeffs[2];
+         intr.coeffs[3] = intrinsics.coeffs[3];
+         intr.coeffs[4] = intrinsics.coeffs[4];
 
     }
     catch (const std::exception& e)
     {
-        throw IRealSenseDepthIntrinsic();
+        throw IRealSenseIntrinsic();
     }
 
+    return intr;
 }
+
+Camera::Intrinsics RealSense::getDepthCamIntrinsics()
+{
+    return getIntrinsicsPerStream(RS2_STREAM_DEPTH, _pipe_profile);
+}
+
+Camera::Intrinsics RealSense::getColorCamIntrinsics()
+{
+    return getIntrinsicsPerStream(RS2_STREAM_COLOR, _pipe_profile);
+}
+
+Camera::Intrinsics RealSense::getIfraRedCamIntrinsics()
+{
+    return getIntrinsicsPerStream(RS2_STREAM_INFRARED, _pipe_profile);
+}
+
+
+
+Camera::MotionIntrinsics RealSense::getMotionCamIntrinsics()
+{
+    rs2::stream_profile stream = _pipe_profile.get_stream(RS2_STREAM_GYRO); //how much streams from there??
+    Camera::MotionIntrinsics mot_intr;
+
+    auto motion_stream = stream.as<rs2::motion_stream_profile>();
+    try
+    {
+         rs2_motion_device_intrinsic intrinsics = motion_stream.get_motion_intrinsics();
+         for (int i=0; i<3; ++i){
+             for (int j=0; j<4; ++j){
+                mot_intr.data[i][j] = intrinsics.data[i][j];
+             }
+         }
+         for(int i=0; i<3; ++i){
+             mot_intr.bias_variances[i] = intrinsics.bias_variances[i];
+         }
+         for(int i=0; i<3; ++i){
+             mot_intr.noise_variances[i] = intrinsics.noise_variances[i];
+         }
+
+    }
+    catch (const std::exception& e)
+    {
+        throw IRealSenseMotionIntrinsic();
+    }
+
+    return mot_intr;
+}
+
+
+
+Camera::Extrinsics RealSense::getExtrinsics(RealSense::Stream from_stream, RealSense::Stream to_stream)
+{
+    rs2_stream from_stream_rs = convertStream(from_stream);
+    rs2_stream to_stream_rs = convertStream(to_stream);
+    rs2::stream_profile from_stream_profile = _pipe_profile.get_stream(from_stream_rs);
+    rs2::stream_profile to_stream_profile = _pipe_profile.get_stream(to_stream_rs);
+    Camera::Extrinsics my_extrins;
+    try
+    {
+        rs2_extrinsics extrinsics = from_stream_profile.get_extrinsics_to(to_stream_profile);
+        for(int i=0; i<9; ++i){
+            my_extrins.rotation[i] = extrinsics.rotation[i];
+        }
+        for(int i=0; i<3; ++i){
+            my_extrins.translation[i] = extrinsics.translation[i];
+        }
+    }
+    catch (const std::exception& e)
+    {
+        throw IRealSenseMotionExtrinsic();
+    }
+    return my_extrins;
+}
+
+
 
 
 

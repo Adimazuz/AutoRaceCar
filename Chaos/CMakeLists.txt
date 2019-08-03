@@ -11,6 +11,9 @@ set(SOURCE_FILES
     RaceCar.cpp
     RaceCar.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../TcpClient/ITcpClient.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/../TcpClient/TcpClient.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/../TcpClient/TcpClient.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../TcpClient/ITcpClient.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../motorAPI/Arduino.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../motorAPI/Arduino.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../motorAPI/MotorController.h
@@ -20,10 +23,11 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI/RealSenseAPI.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI/Exceptions.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../TcpServer/ITcpServer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/../TcpServer/ITcpServer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../TcpServer/TcpServer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/../TcpServer/TcpServer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../cameraAPI/Camera_types.h
     )
-
-
 
 
 set(INCLUDES
@@ -41,11 +45,12 @@ INCLUDE_DIRECTORIES(${INCLUDES})
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME}
-    ${CMAKE_CURRENT_SOURCE_DIR}/bin/libTcpClient.so
     ${CMAKE_CURRENT_SOURCE_DIR}/bin/libserial.so
-    ${CMAKE_CURRENT_SOURCE_DIR}/bin/libTcpServer.so
     -lrealsense2
     -lz)
 
+#${CMAKE_CURRENT_SOURCE_DIR}/bin/libTcpClient.so
+#${CMAKE_CURRENT_SOURCE_DIR}/bin/libserial.so
+#${CMAKE_CURRENT_SOURCE_DIR}/bin/libTcpServer.so
 
 

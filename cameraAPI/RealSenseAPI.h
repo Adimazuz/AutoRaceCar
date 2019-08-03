@@ -15,22 +15,20 @@ public:
             MOTION_MODULE
         };
 
-        //TODO hidden rs2_stream_profile & rs2_frame_format ?
-        //TODO check if data type must go with specific ress&fps
-//        enum rs2_stream_profile
-//        {
-//            STREAM_ANY,
-//            STREAM_DEPTH                            , /**< Native stream of depth data produced by RealSense device */
-//            STREAM_COLOR                            , /**< Native stream of color data captured by RealSense device */
-//            STREAM_INFRARED                         , /**< Native stream of infrared data captured by RealSense device */
-//            STREAM_FISHEYE                          , /**< Native stream of fish-eye (wide) data captured from the dedicate motion camera */
-//            STREAM_GYRO                             , /**< Native stream of gyroscope motion data produced by RealSense device */
-//            STREAM_ACCEL                            , /**< Native stream of accelerometer motion data produced by RealSense device */
-//            STREAM_GPIO                             , /**< Signals from external device connected through GPIO */
-//            STREAM_POSE                             , /**< 6 Degrees of Freedom pose data, calculated by RealSense device */
-//            STREAM_CONFIDENCE                       , /**< 4 bit per-pixel depth confidence level */
-//            STREAM_COUNT
-//        };
+        enum class Stream
+        {
+            ANY,
+            DEPTH                            , /**< Native stream of depth data produced by RealSense device */
+            COLOR                            , /**< Native stream of color data captured by RealSense device */
+            INFRARED                         , /**< Native stream of infrared data captured by RealSense device */
+            FISHEYE                          , /**< Native stream of fish-eye (wide) data captured from the dedicate motion camera */
+            GYRO                             , /**< Native stream of gyroscope motion data produced by RealSense device */
+            ACCEL                            , /**< Native stream of accelerometer motion data produced by RealSense device */
+            GPIO                             , /**< Signals from external device connected through GPIO */
+            POSE                             , /**< 6 Degrees of Freedom pose data, calculated by RealSense device */
+            CONFIDENCE                       , /**< 4 bit per-pixel depth confidence level */
+            COUNT
+        };
 
         enum class FrameFormat
         {
@@ -274,20 +272,58 @@ public:
         //Here is the way to grab this scale value for a "depth" sensor:
          * @return
          */
-        float get_depth_units();
+        float getDepthUnits();
 
         /**
-         * @brief getDepthCamIntrinsics -
+         * @brief getDepthCamIntrinsics - check witch depth stream profile (according what was setuped in setupDepthImage)
+         *  is availible
+         * and return intrinsics for that lens+ressolution.
+         * Call only after startCamera.
          * @return
          */
         Camera::Intrinsics getDepthCamIntrinsics();
+
+
+        /**
+         * @brief getColorCamIntrinsics - check witch color stream profile (according what was setuped in setupDepthImage)
+         *  is availible
+         * and return intrinsics for lens+ressolution.
+         * Call only after startCamera.
+         * @return
+         */
         Camera::Intrinsics getColorCamIntrinsics();
+
+
+        /**
+         * @brief getIfraRedCamIntrinsics - check witch Infara red stream profile (according what was setuped in setupDepthImage)
+         *  is availible
+         * and return intrinsics for lens+ressolution.
+         * Call only after startCamera.
+         * @return
+         */
+        Camera::Intrinsics getIfraRedCamIntrinsics();
+
+        /**
+         * @brief getMotionCamIntrinsics - check witch Motion stream profile (according what was setuped in setupDepthImage)
+         *  is availible
+         * and return intrinsics for lens+ressolution.
+         *     /* \internal
+    * Scale X       cross axis  cross axis  Bias X \n
+    * cross axis    Scale Y     cross axis  Bias Y \n
+    * cross axis    cross axis  Scale Z     Bias Z
+         * Call only after startCamera.
+         * @return
+         */
         Camera::MotionIntrinsics getMotionCamIntrinsics();
 
+        /**
+         * @brief getExtrinsics - transformation between any two streams (if such exists)
+         * @param from_strea
+         * @param to_stream
+         * @return
+         */
+        Camera::Extrinsics getExtrinsics(RealSense::Stream from_stream, RealSense::Stream to_stream);
 
-//        rs2::sensor _stereo_module;
-//        rs2::sensor _rgb_camera;
-//        rs2::sensor _motion_module;
 
 private:
 
@@ -298,6 +334,7 @@ private:
       rs2::sensor _motion_module;
 
       rs2::pipeline _pipe;
+      rs2::pipeline_profile _pipe_profile;
       rs2::config _config;
 
 

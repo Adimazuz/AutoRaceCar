@@ -63,13 +63,33 @@ public:
     }
 };
 
-class IRealSenseDepthIntrinsic : public IRealSenseExceptions
+class IRealSenseIntrinsic : public IRealSenseExceptions
 {
 public:
     const char* what() const noexcept override
     {
-        return "Can't get intrinsics from Depth camera";
+        return "Can't get intrinsics for some camera stream";
     }
 };
+
+class IRealSenseMotionIntrinsic : public IRealSenseExceptions
+{
+public:
+    const char* what() const noexcept override
+    {
+        return "Can't get intrinsics from motion sensor";
+    }
+};
+
+class IRealSenseMotionExtrinsic : public IRealSenseExceptions
+{
+public:
+    const char* what() const noexcept override
+    {
+        return "Can't get Extrinsics";
+    }
+};
+
+
 
 #endif //TCPCLIENT_EXCEPTIONS_H

@@ -22,6 +22,7 @@ private:
 	std::shared_ptr<MotorController> _arduino;
     RealSense _camera;
 	std::shared_ptr<ITcpClient> _tcp_client;
+
     std::shared_ptr<ITcpServer> _tcp_server;
     RaceCar &parseCmdString(const std::vector<char>& cmd);
     RaceCar &getDriveCmd();
@@ -32,4 +33,5 @@ private:
     bool _is_tcp_client_connected;
     bool _is_cammera_connected;
     bool _is_arduino_connected;
+    bool _is_tcp_server_connected;
 };

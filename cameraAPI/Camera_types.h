@@ -61,6 +61,13 @@ struct MotionIntrinsics
     float bias_variances[3];   /**< Variance of bias for X, Y, and Z axis */
 };
 
+/** \brief Cross-stream extrinsics: encode the topology describing how the different devices are connected. */
+struct Extrinsics
+{
+    float rotation[9];    /**< Column-major 3x3 rotation matrix */
+    float translation[3]; /**< Three-element translation vector, in meters */
+};
+
 #pragma pack(pop)
 
 }
