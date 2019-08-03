@@ -35,7 +35,17 @@ void UdpClient::send(const string &msg)
 
 void UdpClient::send(const char *data, const uint &len)
 {
-    sendto(_socket, data, len, 0, reinterpret_cast<sockaddr*>(&_server_addres), sizeof(_server_addres));
+    uint tot_bytes_sent = 0;
+    while(tot_bytes_sent < len)
+    {
+        uint to_sent = len - tot_bytes_sent;
+        if(to_sent > 65507)
+        {
+            to_sent = 65507;
+        }
+        auto s = sendto(_socket, data, to_sent, 0, reinterpret_cast<sockaddr*>(&_server_addres), sizeof(_server_addres));
+        tot_bytes_sent += s;
+    }
 }
 
 UdpClient &UdpClient::createSocket()

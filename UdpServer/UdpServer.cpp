@@ -49,6 +49,19 @@ std::vector<char> UdpServer::receive(const unsigned long &len) noexcept
     return buffer;
 }
 
+void UdpServer::receive(char *dst, const unsigned long &len)
+{
+    uint tot_rcv_bytes = 0;
+    socklen_t address_size = static_cast<unsigned int>(sizeof(_client_address));
+
+    while(tot_rcv_bytes < len)
+    {
+        auto rcv_bytes = recvfrom(_socket, dst + tot_rcv_bytes, len - tot_rcv_bytes, 0, 
+                                  reinterpret_cast<sockaddr*>(&_client_address), &address_size);
+        tot_rcv_bytes += rcv_bytes;
+    }
+}
+
 void UdpServer::send(const std::vector<char> &data)
 {
     if(_client_address.sin_port == 0)

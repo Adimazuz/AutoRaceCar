@@ -5,9 +5,11 @@
 #include <QVector>
 #include <memory>
 #include <QTimer>
+#include <thread>
 
 #include "ITcpClient.h"
-#include "../TcpServer/ITcpServer.h"
+#include "../UdpServer/IUdpServer.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -30,13 +32,11 @@ private slots:
     void on_acn_exit_triggered();
     string keyToString(const int &key);
     bool isArrowKey(const int &key);
-    void on_actionconnect_server_triggered();
-    void on_actionshow_triggered();
-
     void on_connect_clicked();
+    void checkConnections();
+    void handleCamera(QImage &image);
 
 private:
-    unsigned long receiveDataSize();
     void info(const string &msg);
     void bindServer();
     void signalConnections();
@@ -44,9 +44,15 @@ private:
     void initClient();
     void initServer();
     void initDesign();
+    void initThreads();
     void init();
     void markCameraConnection(const bool &is_connected);
     void markControllerConnection(const bool &is_connected);
+    void cameraThread();
+
+signals:
+    void imageReady(QImage &image);
+
 
 private:
     static constexpr int KEY_LEFT = 16777234;
@@ -57,11 +63,12 @@ private:
     Ui::MainWindow *ui;
     QVector<int> _keys;
     QTimer _key_timer;
-    bool _is_stream_on;
     Socket _client_sock;
     bool _is_controller_connected;
-    std::shared_ptr<ITcpServer> _server;
+    std::shared_ptr<IUdpServer> _server;
     std::shared_ptr<ITcpClient> _client;
+    bool _is_run;
+    std::shared_ptr<std::thread> _camera_thread;
 };
 
 #endif // MAINWINDOW_H
