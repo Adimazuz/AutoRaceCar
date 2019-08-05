@@ -387,10 +387,10 @@ Camera::DepthImage RealSense::getDepthImage()
 
 }
 
+
 float RealSense::getDepthUnits()
 {
         float scale = _stereo_module.get_option(RS2_OPTION_DEPTH_UNITS);
-//        std::cout << "is depth_sensor " << scale<< std::endl;
         return scale;
 
 }

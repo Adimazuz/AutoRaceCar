@@ -71,8 +71,8 @@ RaceCar &RaceCar::run()
     std::cout << "enter run" <<std::endl;
     if(_is_tcp_client_connected && _is_cammera_connected){
              std::cout << "camera before setuped" <<std::endl;
-            _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_320x180, RealSense::ColorCamFps::F_6hz);
-            _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_6hz);
+            _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_60hz);
+            _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
             std::cout << "camera setuped" <<std::endl;
             _camera.startCamera();
             std::cout << "camera started" <<std::endl;
