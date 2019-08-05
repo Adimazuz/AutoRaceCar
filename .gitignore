@@ -13,3 +13,7 @@ TcpClient/CMakeLists.txt.user
 cameraAPI/CMakeLists.txt.user
 Chaos/CMakeLists.txt.user
 
+
+*.autosave
+
+*.stash
