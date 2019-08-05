@@ -6,8 +6,8 @@ bitcraze motion_sensor;
 
 void setup() {
   // put your setup code here, to run once:
-  //car.setup();
-  motion_sensor.setup();
+  car.setup();
+  //motion_sensor.setup();
   Serial.begin(9600); 
 }
 
@@ -17,6 +17,6 @@ void loop() {
   // put your main code here, to run repeatedly:
  // car.updateTimers();
   //car.getKeyBoardInput();
-  //car.getDriveCommand();
-  motion_sensor.getData();
+  car.getDriveCommand();
+  //motion_sensor.getData();
 }

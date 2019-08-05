@@ -58,7 +58,7 @@ void decreseToRest(){
 void setup(){
       engine.attach(5);
       steering.attach(6);
-  for(int i=70;i<95;i++)
+  for(int i=80;i<90;i++)
   {
     engine.write(i);
     delay(200);

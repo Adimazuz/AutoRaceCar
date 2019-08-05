@@ -2,7 +2,7 @@
 #include <Wire.h>
 #include <VL53L0X.h>
 #include "bitcraze.h"
-#include "flow.h"
+#include "Arduino_types.h"
 
 
 
@@ -39,9 +39,9 @@
       //Serial.Write(_range);
 		}
 		Serial.print("\n");
-
+    delay(50);
    //send data
    Flow data(_deltaX,_deltaY,_range);
    char*  p_to_send = (char *) &data;
-   Serial.write( p_to_send,sizeof(Flow));
+  // Serial.write( p_to_send,sizeof(Flow));
 	}
