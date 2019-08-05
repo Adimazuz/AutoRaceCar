@@ -6,6 +6,7 @@
 #include "ui_MainWindow.h"
 #include "RemoteControl_types.h"
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -20,7 +21,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     init();
-    checkConnections();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -64,7 +64,7 @@ void MainWindow::handleKey()
         if(isArrowKey(key))
         {
             _client->send(keyToString(key));
-//            std::cout << key << std::endl;
+            std::cout << key << std::endl;
         }
     }
 }
@@ -105,7 +105,7 @@ void MainWindow::info(const string &msg)
 
 void MainWindow::bindServer()
 {
-    _server->bind("192.168.1.75", 5555, 5);
+    _server->bind("132.68.36.50", 5555, 5);
     if(_server->isBind())
     {
         info("bind success");
@@ -202,7 +202,7 @@ void MainWindow::cameraThread()
         markCameraConnection(true);
     }
 
-    while(_is_run)
+    while(_is_run && _server->hasConnectionWithSocket(_client_sock))
     {
         QCoreApplication::processEvents();
 
@@ -218,34 +218,6 @@ void MainWindow::cameraThread()
 
         emit imageReady(image);
     }
-}
-
-void MainWindow::checkConnections()
-{
-//    if(_server->getNumOfConnectedClients() == 0)
-//    {
-//        _client_sock = _server->waitForConnections();
-//        info("camera connected");
-//        markCameraConnection(true);
-//    }
-
-//    unsigned long size = 320*180*3;
-
-//    while(_server->hasConnectionWithSocket(_client_sock))
-//    {
-//        auto len = receiveDataSize();
-
-//        auto data = _server->receive(_client_sock, static_cast<uint>(len));
-
-//        std::vector<unsigned char> uncompressed_data(size);
-
-//        uncompress(uncompressed_data.data(), &size, reinterpret_cast<unsigned char*>(data.data()), len);
-
-//        QImage image(reinterpret_cast<unsigned char*>(uncompressed_data.data()), 320, 180, QImage::Format_RGB888);
-//        QPixmap pixamp = QPixmap::fromImage(image);
-//        ui->lbl_img->setPixmap(pixamp.scaled(320, 180, Qt::AspectRatioMode::KeepAspectRatio));
-//        QCoreApplication::processEvents();
-    //    }
 }
 
 void MainWindow::handleCamera(QImage &image)

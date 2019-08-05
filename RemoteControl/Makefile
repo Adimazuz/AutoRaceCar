@@ -15,7 +15,7 @@ CXX           = g++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I../TcpClient -I../../../../Qt5.11.0/5.11.0/gcc_64/include -I../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets -I../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui -I../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore -I. -isystem /usr/include/libdrm -I. -I../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/linux-g++
+INCPATH       = -I. -I../TcpClient -I../TcpServer -I../jpeg -I../../../../Qt5.11.0/5.11.0/gcc_64/include -I../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets -I../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui -I../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore -I. -isystem /usr/include/libdrm -I. -I../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/asaf/Qt5.11.0/5.11.0/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -252,9 +252,6 @@ DIST          = ../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/features/spec_pre.prf
 		../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/features/yacc.prf \
 		../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/features/lex.prf \
 		RemoteControl.pro MainWindow.h \
-		../TcpClient/ITcpClient.h \
-		../TcpServer/ITcpServer.h \
-		../TcpServer/TcpServer.h \
 		RemoteControl_types.h main.cpp \
 		MainWindow.cpp \
 		../TcpClient/ITcpClient.cpp \
@@ -672,7 +669,7 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../../../Qt5.11.0/5.11.0/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents MainWindow.h ../TcpClient/ITcpClient.h ../TcpServer/ITcpServer.h ../TcpServer/TcpServer.h RemoteControl_types.h $(DISTDIR)/
+	$(COPY_FILE) --parents MainWindow.h RemoteControl_types.h $(DISTDIR)/
 	$(COPY_FILE) --parents main.cpp MainWindow.cpp ../TcpClient/ITcpClient.cpp ../TcpClient/TcpClient.cpp ../TcpServer/ITcpServer.cpp ../TcpServer/TcpServer.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents MainWindow.ui $(DISTDIR)/
 
@@ -825,7 +822,7 @@ moc_MainWindow.cpp: ../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QMainWi
 		MainWindow.h \
 		moc_predefs.h \
 		../../../../Qt5.11.0/5.11.0/gcc_64/bin/moc
-	/home/asaf/Qt5.11.0/5.11.0/gcc_64/bin/moc $(DEFINES) --include ./moc_predefs.h -I/home/asaf/Qt5.11.0/5.11.0/gcc_64/mkspecs/linux-g++ -I/home/asaf/Desktop/projects/AutoRaceCar/RemoteControl -I/home/asaf/Desktop/projects/AutoRaceCar/TcpClient -I/home/asaf/Qt5.11.0/5.11.0/gcc_64/include -I/home/asaf/Qt5.11.0/5.11.0/gcc_64/include/QtWidgets -I/home/asaf/Qt5.11.0/5.11.0/gcc_64/include/QtGui -I/home/asaf/Qt5.11.0/5.11.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include MainWindow.h -o moc_MainWindow.cpp
+	/home/asaf/Qt5.11.0/5.11.0/gcc_64/bin/moc $(DEFINES) --include ./moc_predefs.h -I/home/asaf/Qt5.11.0/5.11.0/gcc_64/mkspecs/linux-g++ -I/home/asaf/Desktop/projects/AutoRaceCar/RemoteControl -I/home/asaf/Desktop/projects/AutoRaceCar/TcpClient -I/home/asaf/Desktop/projects/AutoRaceCar/TcpServer -I/home/asaf/Desktop/projects/AutoRaceCar/jpeg -I/home/asaf/Qt5.11.0/5.11.0/gcc_64/include -I/home/asaf/Qt5.11.0/5.11.0/gcc_64/include/QtWidgets -I/home/asaf/Qt5.11.0/5.11.0/gcc_64/include/QtGui -I/home/asaf/Qt5.11.0/5.11.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include MainWindow.h -o moc_MainWindow.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1087,6 +1084,44 @@ MainWindow.o: MainWindow.cpp ../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/QK
 		../TcpServer/ITcpServer.h \
 		../TcpServer/TcpServer_types.h \
 		ui_MainWindow.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/QVariant \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QAction \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qaction.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QApplication \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/qeventloop.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QGridLayout \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QLabel \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlabel.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qframe.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QLineEdit \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qtextformat.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qpen.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qtextoption.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QMenu \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QPushButton \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qpushbutton.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qabstractbutton.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QSpacerItem \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QToolBar \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QWidget \
 		RemoteControl_types.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o MainWindow.cpp
 

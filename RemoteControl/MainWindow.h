@@ -33,7 +33,6 @@ private slots:
     string keyToString(const int &key);
     bool isArrowKey(const int &key);
     void on_connect_clicked();
-    void checkConnections();
     void handleCamera(QImage &image);
 
 private:

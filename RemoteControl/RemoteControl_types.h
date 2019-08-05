@@ -12,6 +12,8 @@ using uint64 = unsigned long;
 using real32 = float;
 using real64 = double;
 
+#pragma pack(push, 1)
+
 struct ColorImage
 {
     uint64 frame_num;
@@ -21,5 +23,7 @@ struct ColorImage
     uint32 height;
     unsigned char *data;
 };
+
+#pragma pack(pop)
 
 #endif // REMOTECONTROL_TYPES_H

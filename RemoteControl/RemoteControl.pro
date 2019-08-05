@@ -34,16 +34,14 @@ SOURCES += \
 
 HEADERS += \
     MainWindow.h \
-    ../TcpClient/ITcpClient.h \
-    ../TcpServer/ITcpServer.h \
-    ../TcpServer/TcpServer.h \
     RemoteControl_types.h
 
 FORMS += \
     MainWindow.ui
 
 INCLUDEPATH += \
-    $$PWD/../TcpClient
-    $$PWD/../TcpServer
+    $$PWD/../TcpClient/ \
+    $$PWD/../TcpServer/ \
+    $$PWD/../jpeg/ \
 
 LIBS += -lz
