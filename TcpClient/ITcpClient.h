@@ -75,13 +75,13 @@ public:
      * @brief send data to the server
      * @param data - a vector which constains the data
      */
-    virtual void send(const std::vector<char>& data) const noexcept = 0;
+    virtual void send(const std::vector<char>& data) noexcept = 0;
 
     /**
      * @brief send string to the server
      * @param message - the message to by sent
      */
-    virtual void send(const string& message) const noexcept = 0;
+    virtual void send(const string& message) noexcept = 0;
 
     /**
      * @brief send data to the server

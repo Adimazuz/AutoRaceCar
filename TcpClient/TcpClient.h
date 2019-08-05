@@ -26,9 +26,9 @@ public:
 
     virtual std::vector<char> receive(const unsigned int &len) override;
 
-    virtual void send(const std::vector<char>& data) const noexcept override;
+    virtual void send(const std::vector<char>& data) noexcept override;
 
-    virtual void send(const string& data) const noexcept override;
+    virtual void send(const string& data) noexcept override;
 
     virtual void send(const char* data, const uint &len) noexcept override;
 

@@ -70,7 +70,7 @@ std::vector<char> TcpClient::receive(const unsigned int &len)
     return data;
 }
 
-void TcpClient::send(const std::vector<char> &data) const noexcept
+void TcpClient::send(const std::vector<char> &data) noexcept
 {
     uint bytes_sent = 0;
     while (bytes_sent < data.size())
@@ -87,7 +87,7 @@ void TcpClient::send(const std::vector<char> &data) const noexcept
     }
 }
 
-void TcpClient::send(const string &message) const noexcept
+void TcpClient::send(const string &message) noexcept
 {
     uint bytes_sent = 0;
     uint len = static_cast<uint>(message.size());

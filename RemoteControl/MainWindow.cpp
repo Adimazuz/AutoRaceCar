@@ -61,7 +61,7 @@ void MainWindow::handleKey()
 {
     for(auto &key : _keys)
     {
-        if(isArrowKey(key))
+        if(isArrowKey(key) && _client->isConnected())
         {
             _client->send(keyToString(key));
             std::cout << key << std::endl;
