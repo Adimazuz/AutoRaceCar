@@ -88,7 +88,7 @@ public:
      * @param data - pointer to data to be sent
      * @param len - the length of te data[bytes]
      */
-    virtual void send(const char* data, const uint &len) const noexcept = 0;
+    virtual void send(const char* data, const uint &len) noexcept = 0;
 
     /**
       * @brief destructor

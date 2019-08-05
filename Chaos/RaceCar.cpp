@@ -22,11 +22,16 @@ RaceCar::RaceCar()
 
 RaceCar::~RaceCar()
 {
+
+    std::cout << "enter distruction" <<std::endl;
     if (_camera_thread){
+        std::cout << "camera distructor" <<std::endl;
          _camera_thread->join();
      }
     if (_serial_thread){
-         _serial_thread->join();
+        std::cout << "serial distructor" <<std::endl;
+        _arduino->stop();
+        _serial_thread->join();
      }
 }
 
@@ -69,16 +74,16 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 RaceCar &RaceCar::run()
 {
     std::cout << "enter run" <<std::endl;
-    if(_is_tcp_client_connected && _is_cammera_connected){
-             std::cout << "camera before setuped" <<std::endl;
-            _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_60hz);
-            _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
-            std::cout << "camera setuped" <<std::endl;
-            _camera.startCamera();
-            std::cout << "camera started" <<std::endl;
-            _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraOutput,this);
-            std::cout << "camera thread opened" <<std::endl;
-    }
+//    if(_is_tcp_client_connected && _is_cammera_connected){
+//             std::cout << "camera before setuped" <<std::endl;
+//            _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_60hz);
+//            _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
+//            std::cout << "camera setuped" <<std::endl;
+//            _camera.startCamera();
+//            std::cout << "camera started" <<std::endl;
+//            _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraOutput,this);
+//            std::cout << "camera thread opened" <<std::endl;
+//    }
     if(_is_arduino_connected){
              std::cout << "connected to Arduino" <<std::endl;
             std::cout << "waiting for connection" << std::endl;
@@ -135,12 +140,17 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 
 RaceCar &RaceCar::arduinoCommunications()
 {
-    while (_is_running)
+//    std::cout << "from arduino loop  "<< _tcp_server->hasConnectionWithSocket(_socket) <<std::endl;
+    std::cout <<" is runnig "<< _is_running << std::endl;
+    while (_is_running && _tcp_server->hasConnectionWithSocket(_socket))
     {
         std::vector<char> cmd = _tcp_server->receive(_socket, 1);
-//        std::cout << cmd[0] << std::endl;
+        std::cout << "from arduino loop  "<< _tcp_server->hasConnectionWithSocket(_socket) <<std::endl;
+        std::cout << cmd[0] << std::endl;
         parseCmdString(cmd);
     }
+    std::cout <<" exit from arduino looop "<< _is_running << std::endl;
+    _arduino->stop();
     return *this;
 
 }
@@ -148,7 +158,7 @@ RaceCar &RaceCar::arduinoCommunications()
 RaceCar &RaceCar::getCameraOutput()
 {
     std::cout << "from camera thread " <<std::endl;
-    while (_is_running)
+    while (_is_running && _tcp_client->isConnected() && _camera.isConnect())
     {
 //        std::cout << _is_running <<std::endl;
         _camera.captureFrame();
@@ -170,9 +180,11 @@ RaceCar &RaceCar::getCameraOutput()
         //std::cout << "org len: "<< len_orig <<" compresed len:"<< len <<std::endl;
 
         //color send test
+//        std::cout << "send data " << _tcp_client->isConnected() << std::endl;
         _tcp_client->send(reinterpret_cast<char*>(&image),sizeof(image)-sizeof(image.data));
         //std::cout << "sent len" <<std::endl;
         _tcp_client->send(reinterpret_cast<const char*>(image.data),len);
+//        std::cout << "finished send data" << _tcp_client->isConnected() << std::endl;
 
 //        //depth send test
 //        _tcp_client->send(reinterpret_cast<char*>(&depth_image),sizeof(depth_image)-sizeof(depth_image.data));
@@ -182,10 +194,10 @@ RaceCar &RaceCar::getCameraOutput()
 
 
 
-        //std::cout << _is_running <<std::endl;
-    }
-    return *this;
 
+    }
+    std::cout << "end camera thread" <<std::endl;
+    return *this;
 }
 
 RaceCar  &RaceCar::sendFlowOutput()
