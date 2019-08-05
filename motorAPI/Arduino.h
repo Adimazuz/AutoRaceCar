@@ -26,6 +26,8 @@ public:
 	
 	virtual Arduino &driveCurrentState();
 
+    virtual Flow &getFlowOutput() override;
+
    ~Arduino();
 
     Arduino() = default;

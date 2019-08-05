@@ -4,7 +4,7 @@
 
 #ifndef UNTITLED_MOTORCONTROLLER_HPP
 #define UNTITLED_MOTORCONTROLLER_HPP
-
+#include "Arduino_types.h"
 
 class MotorController
 {
@@ -57,6 +57,8 @@ public:
     virtual MotorController &changeAngleBy(const int &delta) = 0;
 	
     virtual MotorController &driveCurrentState()=0;
+
+    virtual Flow &getFlowOutput() = 0;
 
 };
 

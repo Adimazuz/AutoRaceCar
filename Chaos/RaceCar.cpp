@@ -76,7 +76,7 @@ RaceCar &RaceCar::run()
             std::cout << "camera setuped" <<std::endl;
             _camera.startCamera();
             std::cout << "camera started" <<std::endl;
-            _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraInput,this);
+            _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraOutput,this);
             std::cout << "camera thread opened" <<std::endl;
     }
     if(_is_arduino_connected){
@@ -84,7 +84,7 @@ RaceCar &RaceCar::run()
             std::cout << "waiting for connection" << std::endl;
             _socket = _tcp_server->waitForConnections();
             std::cout << "someone connected" << std::endl;
-           _serial_thread = std::make_shared<std::thread>(&RaceCar::getDriveCmd,this);
+           _serial_thread = std::make_shared<std::thread>(&RaceCar::arduinoCommunications,this);
     }
 
 
@@ -133,7 +133,7 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 
 }
 
-RaceCar &RaceCar::getDriveCmd()
+RaceCar &RaceCar::arduinoCommunications()
 {
     while (_is_running)
     {
@@ -145,7 +145,7 @@ RaceCar &RaceCar::getDriveCmd()
 
 }
 
-RaceCar &RaceCar::getCameraInput()
+RaceCar &RaceCar::getCameraOutput()
 {
     std::cout << "from camera thread " <<std::endl;
     while (_is_running)

@@ -7,6 +7,7 @@
 #include "ITcpClient.h"
 #include "ITcpServer.h"
 #include "RealSenseAPI.h"
+#include "Arduino_types.h"
 
 
 class RaceCar {
@@ -18,6 +19,8 @@ public:
 
     bool _is_running;
 
+
+
 private:
 	std::shared_ptr<MotorController> _arduino;
     RealSense _camera;
@@ -27,16 +30,16 @@ private:
     std::shared_ptr<std::thread> _camera_thread;
     std::shared_ptr<std::thread> _serial_thread;
     Socket _socket;
-<<<<<<< HEAD
+
     bool _is_tcp_client_connected;
     bool _is_cammera_connected;
     bool _is_arduino_connected;
     bool _is_tcp_server_connected;
-=======
+
 	
-	RaceCar &parseCmdString(const std::vector<char>& cmd);
+    RaceCar &parseCmdString(const std::vector<char>& cmd);
     RaceCar &arduinoCommunications();
     RaceCar &getCameraOutput();
     RaceCar &sendFlowOutput();
->>>>>>> 80c1c94995ff7f9ba110acdd6402e529cede8335
+
 };

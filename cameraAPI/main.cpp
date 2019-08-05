@@ -14,6 +14,7 @@ int main()
     cout << "camera connected" << endl;
     camera.setupDepthImage(RealSense::DepthRessolution::R_640x480,RealSense::DepthCamFps::F_15hz);
     camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_424x240,RealSense::ColorCamFps::F_15hz);
+
     cout << "framesetuped" << endl;
     camera.startCamera();
 //    std::fstream out("depth_image",std::ios::out | std::ios::binary);

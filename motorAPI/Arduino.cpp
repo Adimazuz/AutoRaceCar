@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include <iostream>
+#include <vector>
 using std::string;
 
 
@@ -112,6 +113,12 @@ Arduino::~Arduino()
     {
         drive(0,90);
     }
+}
+Flow &Arduino::getFlowOutput()
+{
+//    std::vector<char> data = m_serial->read(sizeof(Flow));
+//    Flow output = *reinterpret_cast<Flow*>(data.data());
+//    return output;
 }
 
 //==========================private==================================

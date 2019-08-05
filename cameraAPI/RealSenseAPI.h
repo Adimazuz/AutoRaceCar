@@ -324,6 +324,12 @@ public:
          */
         Camera::Extrinsics getExtrinsics(RealSense::Stream from_stream, RealSense::Stream to_stream);
 
+        /**
+         * @brief getMyFps -
+         * @param stream
+         * @return
+         */
+        unsigned int getMyFps(RealSense::Stream stream);
 
 private:
 
@@ -336,6 +342,7 @@ private:
       rs2::pipeline _pipe;
       rs2::pipeline_profile _pipe_profile;
       rs2::config _config;
+      unsigned long _last_frame_ts;
 
 
       rs2::frameset _frames;
