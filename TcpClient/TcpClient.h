@@ -30,7 +30,7 @@ public:
 
     virtual void send(const string& data) const noexcept override;
 
-    virtual void send(const char* data, const uint &len) const noexcept override;
+    virtual void send(const char* data, const uint &len) noexcept override;
 
     virtual ~TcpClient() override;
 
