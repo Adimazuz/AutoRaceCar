@@ -9,6 +9,7 @@ void setup() {
   car.setup();
   //motion_sensor.setup();
   Serial.begin(9600); 
+  Serial.flush();
 }
 
 char c;
