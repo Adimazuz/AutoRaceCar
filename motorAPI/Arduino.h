@@ -26,13 +26,13 @@ public:
 	
 	virtual Arduino &driveCurrentState();
 
-    virtual Flow &getFlowOutput() override;
+    virtual Flow getFlowOutput() override;
 
    ~Arduino();
 
     Arduino() = default;
 
-private:
+public:
     std::shared_ptr<ISerial> m_serial;
     int m_current_speed=0;
     int m_current_angle=90;

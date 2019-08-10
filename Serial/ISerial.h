@@ -46,6 +46,8 @@ public:
      */
     virtual string read(const uint &len) = 0;
 
+    virtual void read(char *dst, const uint &len) = 0;
+
     /**
      * @brief destructor
      */

@@ -4,6 +4,7 @@
 #include <thread>
 #include "zlib.h"
 
+
 #include "iostream"
 
 //#define DEBUG_MODE
@@ -31,6 +32,7 @@ RaceCar::~RaceCar()
     if (_serial_thread){
         std::cout << "serial distructor" <<std::endl;
         _arduino->stop();
+
         _serial_thread->join();
      }
 }
@@ -50,6 +52,8 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
          std::cout << "try _tcp_client" <<std::endl;
          _tcp_client->connect(ip, port);
          std::cout << "camera connected" <<std::endl;
+    } else {
+        std::cout << "camera NOT CONNECTED" <<std::endl;
     }
     if(_tcp_client->isConnected()){
         _is_tcp_client_connected = true;
@@ -59,6 +63,8 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     if(_arduino->connect()){
         _is_arduino_connected = true;
         std::cout << "connected to Arduino" <<std::endl;
+    } else {
+        std::cout << "Arduino NOT CONNECTED" <<std::endl;
     }
 
     _tcp_server->bind(server_ip,SERVER_PORT,MAX_NUM_USERS);
@@ -87,26 +93,16 @@ RaceCar &RaceCar::run()
     }
     if(_is_arduino_connected){
              std::cout << "connected to Arduino" <<std::endl;
-            std::cout << "waiting for connection" << std::endl;
-            _socket = _tcp_server->waitForConnections();
-            std::cout << "someone connected" << std::endl;
+
            _serial_thread = std::make_shared<std::thread>(&RaceCar::arduinoCommunications,this);
     }
 }
 
 
-RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
+RaceCar &RaceCar::parseCmdString(const string& cmd)
 {
-    if (cmd.size() < 1)
-	{
-        return *this;
-	}
-
-
+//    std::cout << "cmd " << cmd[0]<< std::endl;
 	switch (cmd[0]) {
-#ifdef DEBUG_MODE
-        std::cout << "cmd " <<cmd[0]<< std::endl;
-#endif
 
 	case 's': {
         _arduino->stop();
@@ -132,6 +128,12 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
         _is_running=false;
         break;
     }
+    case '#': {
+        //TODO add function
+        //TODO return to private
+        dynamic_cast<Arduino*>(_arduino.get())->m_serial->write("#");
+        break;
+    }
     default: _arduino->stop();
 	}
 
@@ -139,15 +141,37 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 
 RaceCar &RaceCar::arduinoCommunications()
 {
-    while (_is_running && _tcp_server->hasConnectionWithSocket(_socket))
+    std::cout << "waiting for connection" << std::endl;
+
+    string cmd;
+    while (_is_running)
     {
-        std::vector<char> cmd = _tcp_server->receive(_socket, 1);
-        parseCmdString(cmd);
+        if(_tcp_server->hasConnectionWithSocket(_socket))
+        {
+            string cmd = _tcp_server->receive(_socket, 1);
+            if(cmd.empty())
+            {
+                cmd = "#";
+            }
+            parseCmdString(cmd);
+//            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            Flow data =_arduino->getFlowOutput();
+//            std::cout << data.deltaX <<"..."<< data.deltaY << "..." << data.range <<std::endl;
+        }
+        else
+        {
+            _socket = _tcp_server->waitForConnections(1);
+            std::cout << "wait to asafff" << std::endl;
+            if(_socket > 0)
+            {
+                std::cout << "someone connected" << std::endl;
+            }
+        }
+
     }
     std::cout <<" exit from arduino looop "<< _is_running << std::endl;
     _arduino->stop();
     return *this;
-
 }
 
 RaceCar &RaceCar::getCameraOutput()
@@ -176,6 +200,9 @@ RaceCar &RaceCar::getCameraOutput()
 
         //color send test
 //        std::cout << "send data " << _tcp_client->isConnected() << std::endl;
+//        _jpeg_comp.compress(image.data);
+        auto compressed_size = _jpeg_comp.getCompressedSize();
+//        std::cout << "origin size: " << len << " but wait, the commpressed size is: " << compressed_size << std::endl;
         _tcp_client->send(reinterpret_cast<char*>(&image),sizeof(image)-sizeof(image.data));
         //std::cout << "sent len" <<std::endl;
         _tcp_client->send(reinterpret_cast<const char*>(image.data),len);
@@ -185,6 +212,7 @@ RaceCar &RaceCar::getCameraOutput()
 //        _tcp_client->send(reinterpret_cast<char*>(&depth_image),sizeof(depth_image)-sizeof(depth_image.data));
 //        //std::cout << "sent len" <<std::endl;
 //        _tcp_client->send(reinterpret_cast<const char*>(depth_image.data),depth_len);
+
 
 
 

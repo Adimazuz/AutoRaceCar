@@ -2,6 +2,8 @@
 #include <fcntl.h>
 #include <vector>
 #include <termios.h>
+#include <sys/ioctl.h>
+#include <iostream>
 
 #include "Serial.h"
 #include "Exceptions.h"
@@ -45,18 +47,29 @@ bool Serial::connect(const string &path)
 
 Serial &Serial::write(const string &msg)
 {
+    tcflush(_fd, TCIOFLUSH);
     auto bytes_written = ::write(_fd, msg.data(), msg.size());
+
 
     if(bytes_written < 0)
     {
         throw SerialCannotWrite();
     }
 
+
     return *this;
 }
 
 string Serial::read(const uint &len)
 {
+    int available_bytes = 0;
+    ioctl(_fd, TIOCINQ, &available_bytes);
+
+    while(available_bytes < len)
+    {
+        ioctl(_fd, TIOCINQ, &available_bytes);
+    }
+
     std::vector<char> rec(len);
     auto bytes_recieved = ::read(_fd, rec.data(), len);
 
@@ -66,6 +79,24 @@ string Serial::read(const uint &len)
     }
 
     return string(rec.data());
+}
+
+void Serial::read(char *dst, const uint &len)
+{
+    int available_bytes = 0;
+    ioctl(_fd, TIOCINQ, &available_bytes);
+
+    while(available_bytes < len)
+    {
+        ioctl(_fd, TIOCINQ, &available_bytes);
+    }
+
+    auto bytes_recieved = ::read(_fd, dst, len);
+
+    if(bytes_recieved < 0)
+    {
+        throw SerialCannotRead();
+    }
 }
 
 Serial::~Serial()

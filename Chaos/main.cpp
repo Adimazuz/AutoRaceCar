@@ -1,35 +1,41 @@
 #include <iostream>
 #include <string>
-
+#include <stdio.h>
 //#include "ITcpClient.h"
 #include "librealsense2/rs.hpp"
-
+#include "ISerial.h"
 #include "RaceCar.h"
+
+
 int main() {
 
-//    rs2::context ctx;
-//    rs2::device_list devices = ctx.query_devices();
-//    rs2::pipeline _pipe;
-//    rs2::config _config;
+//    auto s = ISerial::create();
+//    auto res = s->connect();
 
-//    _config.enable_stream(RS2_STREAM_COLOR,640,480,RS2_FORMAT_RGB8,30);
-//    _config.enable_stream(RS2_STREAM_DEPTH,480,270,RS2_FORMAT_Z16,30);
+//    Flow data = {};
 
-//    _pipe.start(_config);
+//    s->write("$");
+//    for(int i = 0 ; i < 1000; i++)
+//    {
+//        if(i % 2 == 0)
+//        {
+//            s->write("0 100");
+//        }
+//        else
+//        {
+//            s->write("0 90");
+//        }
 
-//    while(1){
-//        rs2::frameset _frames = _pipe.wait_for_frames();
-//        rs2::video_frame color_frame = _frames.get_color_frame();
-//        std::cout << color_frame.get_height() << std::endl;
-//        color_frame.get_data();
+//        std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
+//        s->read(reinterpret_cast<char*>(&data), 8);
+
+//        std::cout << data.deltaX << " " << data.deltaY << " " << data.range << std::endl;
 //    }
 
 
-
-
     RaceCar car;
-    car.connect("132.68.36.50",5555,"132.68.36.45");
+    car.connect("132.68.36.50",5555,"132.68.36.20");
     car.run();
 
     std::cout << " ok" << std::endl;

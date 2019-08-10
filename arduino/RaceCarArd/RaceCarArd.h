@@ -1,6 +1,8 @@
 #include<Servo.h>
 #include "timer.h"
+#include "Arduino_types.h"
 
+//#define DEBUG_MODE
 
 //speed between -20 to 20
 //min speed for forword 10
@@ -35,6 +37,7 @@ class RaceCarArd {
   int angle;
   Servo engine;
   Servo steering;
+  //bitcraze motion_sensor;
   Timer engineTimer;
   Timer steeringTimer;
   public:
@@ -58,6 +61,7 @@ void decreseToRest(){
 void setup(){
       engine.attach(5);
       steering.attach(6);
+     // motion_sensor.setup();
   for(int i=85;i<95;i++)
   {
     engine.write(i);
@@ -164,15 +168,27 @@ void neutral()
 
  speed =0;
 }
-
+void sendFlow(){
+   Flow data = {1, 2, 3.5f};
+   Serial.write(reinterpret_cast<char*>(&data),8);
+  }
 void getDriveCommand()
 {
   String speed_string;
   String angle_string;
 
+  while (!Serial.available()) {};
   //get speed
   while (Serial.available()) {
       char c = Serial.read();  //gets one byte from serial buffer
+      if( c == '#' )
+      {
+          Serial.flush();
+          sendFlow();
+          //delay(40);
+          //  motion_sensor.getData();
+          return;
+      }
       if(c== '\n' ){           //to know if this is end of former cmd
         return;
       }
@@ -186,17 +202,20 @@ void getDriveCommand()
       angle_string += c; 
       delay(2); 
     }
-  
+//    Serial.println(speed_string);
+//    Serial.println(angle_string);
+//    Serial.println("");
     if (speed_string.length() > 0 && angle_string.length()) {
   
       int wanted_speed= speed_string.toInt(); 
       int wanted_angle= angle_string.toInt(); 
-#ifdef DEBUG_MODE
-      Serial.print("speed:");
-      Serial.println(wanted_speed);  
-      Serial.print("angle:");  
-      Serial.println(wanted_angle);  
-#endif
+      
+//      Serial.println("");  
+//      Serial.print("speed:");
+//      Serial.println(wanted_speed);  
+//      Serial.print("angle:");  
+//      Serial.println(wanted_angle);  
+
       //if we need to put in revese
       if(speed >= 0 && wanted_speed < 0 )
       {
@@ -207,9 +226,16 @@ void getDriveCommand()
       }
       speed=wanted_speed;
       angle=wanted_angle;
+      
+//      Serial.flush();
+//      sendFlow();
     }
     speed_string = "";
     angle_string = "";
+    
+      Serial.flush();
+      sendFlow();
+      
   drive();
 }
 
@@ -243,4 +269,7 @@ void getKeyBoardInput(){
     default : drive();
   }
 }
+
+
+
 };
