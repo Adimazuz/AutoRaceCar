@@ -338,9 +338,24 @@ public:
 
         /**
          * @brief getEulerAngels -
-         * @return
+         * Call only after startCamera.
+         * @return struct   x_pitch;
+                            y_yaw;
+                            z_roll;
          */
         Camera::EulerAngles getEulerAngels();
+
+        /**
+         * @brief getAccelData
+         * Call only after startCamera.
+         * @return
+         */
+        Camera::AccelData getAccelData();
+
+
+
+
+
 
         //TODO why we need that?
 //        /**
@@ -367,6 +382,7 @@ private:
       rs2::frameset _frames;
 
       Camera::EulerAngles _last_euler_angles;
+      Camera::AccelData _last_accel_data;
 
 };
 

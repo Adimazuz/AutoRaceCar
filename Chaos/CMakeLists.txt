@@ -18,6 +18,8 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/../TcpServer/ITcpServer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../TcpServer/TcpServer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../jpeg/JpegCompressor.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Serial/Serial.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Serial/ISerial.cpp
     )
 
 
@@ -37,7 +39,6 @@ INCLUDE_DIRECTORIES(${INCLUDES})
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME}
-    ${CMAKE_CURRENT_SOURCE_DIR}/bin/libserial.so
     -lrealsense2
     -lturbojpeg
     -lz)
@@ -45,5 +46,5 @@ target_link_libraries(${PROJECT_NAME}
 #${CMAKE_CURRENT_SOURCE_DIR}/bin/libTcpClient.so
 #${CMAKE_CURRENT_SOURCE_DIR}/bin/libserial.so
 #${CMAKE_CURRENT_SOURCE_DIR}/bin/libTcpServer.so
-
+#${CMAKE_CURRENT_SOURCE_DIR}/bin/libserial.so
 

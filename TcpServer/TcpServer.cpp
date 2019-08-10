@@ -117,7 +117,7 @@ string TcpServer::receive(const Socket &socket, const unsigned int &len)
 
     if (bytes_received <= 0)
     {
-        _clients_connection_state[socket] = false;
+//        _clients_connection_state[socket] = false;
         data.clear();
     }
 
@@ -129,6 +129,7 @@ Socket TcpServer::waitForConnections(const uint &timeout_sec)
 
     int flags = fcntl(_socket, F_GETFL);
     fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
+
 
     Address address = {};
 
@@ -150,6 +151,7 @@ Socket TcpServer::waitForConnections(const uint &timeout_sec)
     }
 
     _clients_connection_state.insert(std::pair<Socket, bool>(client_socket, true));
+    fcntl(client_socket, F_SETFL, flags | O_NONBLOCK);
     return client_socket;
 }
 

@@ -45,6 +45,15 @@ struct EulerAngles
     int64 timestamp_ms;
 };
 
+struct AccelData
+{
+    real32 x;
+    real32 y;
+    real32 z;
+    int64 timestamp_ms;
+};
+
+
 
 struct Intrinsics
 {

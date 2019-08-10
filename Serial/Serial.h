@@ -10,6 +10,7 @@ public:
     virtual bool connect(const string &path = "/dev/ttyACM0") override;
     virtual Serial &write(const string &msg) override;
     virtual string read(const uint &len) override;
+    virtual void read(char *dst, const uint &len) override;
     virtual ~Serial() override;
 
 private:

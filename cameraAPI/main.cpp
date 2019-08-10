@@ -46,7 +46,10 @@ int main()
     while(1){
         camera.captureFrame();
         Camera::EulerAngles angles = camera.getEulerAngels();
-        std::cout << "angles : x=" << 180.0f*angles.x_pitch/3.14f  << " y=" << 180.0f*angles.y_yaw/3.14f << " z=" << 180.0f*angles.z_roll/3.14f << std::endl;
+        std::cout << "angles : x=" << 180.0f*angles.x_pitch/M_PI  << " y=" << 180.0f*angles.y_yaw/M_PI << " z=" << 180.0f*angles.z_roll/M_PI << std::endl;
+
+        Camera::AccelData accel = camera.getAccelData();
+         std::cout << "accel : x=" << accel.x  << " y=" << accel.y << " z=" << accel.z << std::endl;
 
     }
 

@@ -84,7 +84,7 @@ Arduino& Arduino::changeAngleBy(const int &delta)
     }
     else
     {
-        m_current_angle+=delta;
+        m_current_angle += delta;
     }
     sendDriveCommand();
 }
@@ -92,7 +92,7 @@ Arduino& Arduino::changeSpeedBy(const int &delta)
 {
     if (delta > 0)
 	{
-		if( m_current_speed>=0 && m_current_speed <=10)
+        if( m_current_speed>=0 && m_current_speed <10)
 		{
 			m_current_speed = 10;
 		}
@@ -100,22 +100,21 @@ Arduino& Arduino::changeSpeedBy(const int &delta)
 		{
         m_current_speed = TOP_SPEED;
 		}
+        m_current_speed += delta;
     }
     else if (delta < 0)
 	{
-		if( m_current_speed<=0 && m_current_speed >=-8)
+        if( m_current_speed<=0 && m_current_speed >-8)
 		{
 			m_current_speed = -8;
 		}
-		if( m_current_speed + delta < -TOP_SPEED  )
+        else if( m_current_speed + delta < -TOP_SPEED  )
 		{
 			m_current_speed = -TOP_SPEED;
-		}
+        }
+        m_current_speed += delta;
 	}
-    else
-    {
-        m_current_speed+=delta;
-    }
+
     sendDriveCommand();
 }
 Arduino &Arduino::driveCurrentState(){
@@ -129,11 +128,11 @@ Arduino::~Arduino()
         drive(0,90);
     }
 }
-Flow &Arduino::getFlowOutput()
+Flow Arduino::getFlowOutput()
 {
-//    std::vector<char> data = m_serial->read(sizeof(Flow));
-//    Flow output = *reinterpret_cast<Flow*>(data.data());
-//    return output;
+    Flow output = {};
+    m_serial->read(reinterpret_cast<char*>(&output), sizeof(Flow));
+    return output;
 }
 
 //==========================private==================================
