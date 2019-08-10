@@ -9,19 +9,14 @@ set(SOURCE_FILES
         Exceptions.h
         ITcpClient.cpp
         TcpClient.cpp
-        TcpClient_types.h)
+        TcpClient_types.h
+        main.cpp)
 
 
-#add_executable(TcpClient ${SOURCE_FILES})
+add_executable(TcpClient ${SOURCE_FILES})
 
 if(WIN32)
     target_link_libraries(TcpClient ws2_32)
 endif(WIN32)
 
-add_library(TcpClient SHARED
-    ITcpClient.h
-    TcpClient.h
-    Exceptions.h
-    ITcpClient.cpp
-    TcpClient.cpp
-    TcpClient_types.h)
+#add_library(TcpClient SHARED ${SOURCE_FILES})

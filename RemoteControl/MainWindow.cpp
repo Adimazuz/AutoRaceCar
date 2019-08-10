@@ -194,36 +194,52 @@ void MainWindow::markControllerConnection(const bool &is_connected)
 
 void MainWindow::cameraThread()
 {
-    if(_server->getNumOfConnectedClients() == 0)
+//    if(_server->getNumOfConnectedClients() == 0)
+//    {
+//        _client_sock = _server->waitForConnections(1);
+//        if(_client_sock < 0)
+//        {
+//            info("none connected, sleep for 1 sec");
+//            sleep(1);
+//        }
+//        else
+//        {
+//            info("camera connected");
+//            markCameraConnection(true);
+//        }
+//    }
+
+    while(_is_run)
     {
-        _client_sock = _server->waitForConnections();
-        if(_client_sock == -1)
+        if(_server->hasConnectionWithSocket(_client_sock))
         {
-            info("none connected, sleep for 1 sec");
-            sleep(1);
+            QCoreApplication::processEvents();
+
+            markCameraConnection(true);
+            info("camera connected");
+
+            ColorImage color_image;
+            _server->receive(_client_sock, reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
+            color_image.data = new uint8[color_image.size];
+            _server->receive(_client_sock, reinterpret_cast<char*>(color_image.data), static_cast<uint32>(color_image.size));
+
+            QImage image(static_cast<unsigned char*>(color_image.data), static_cast<int>(color_image.width),
+                         static_cast<int>(color_image.height), QImage::Format_RGB888);
+
+            delete [] color_image.data;
+
+            emit imageReady(image);
         }
-        info("camera connected");
-        markCameraConnection(true);
+        else
+        {
+            markCameraConnection(false);
+            _client_sock = _server->waitForConnections(1);
+            if(_client_sock < 0)
+            {
+                info("none connected, sleep for 1 sec");
+            }
+        }
     }
-
-    while(_is_run && _server->hasConnectionWithSocket(_client_sock))
-    {
-        QCoreApplication::processEvents();
-
-        ColorImage color_image;
-        _server->receive(_client_sock, reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
-        color_image.data = new uint8[color_image.size];
-        _server->receive(_client_sock, reinterpret_cast<char*>(color_image.data), static_cast<uint32>(color_image.size));
-
-        QImage image(static_cast<unsigned char*>(color_image.data), static_cast<int>(color_image.width),
-                     static_cast<int>(color_image.height), QImage::Format_RGB888);
-
-        delete [] color_image.data;
-
-        emit imageReady(image);
-    }
-
-    markCameraConnection(false);
 }
 
 void MainWindow::handleCamera(QImage &image)

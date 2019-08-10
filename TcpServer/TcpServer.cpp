@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fcntl.h>
 #include <errno.h>
+#include <thread>
 
 #include "Exceptions.h"
 #include "TcpServer.h"
@@ -74,7 +75,7 @@ TcpServer::~TcpServer()
 #endif
 }
 
-void TcpServer::bind(const string &ip, const unsigned short &port, const int &max_num_of_clients)
+void TcpServer::bind(const string &ip, const unsigned short &port, const int &max_num_of_clients) noexcept
 {
     _address = buildAddress(ip, port);
     _max_num_of_clients = max_num_of_clients;
@@ -88,29 +89,6 @@ void TcpServer::bind(const string &ip, const unsigned short &port, const int &ma
     {
         std::cout << e.what() << std::endl;
     }
-}
-
-std::vector<char> TcpServer::receive(const Socket &socket, const uint &len) noexcept
-{ 
-    std::vector<char> data(len);
-
-    uint bytes_received = 0;
-
-    while(bytes_received < len)
-    {
-        auto tmp_len = recv(socket, data.data() + bytes_received, len - bytes_received, 0);
-
-        if(tmp_len <= 0)
-        {
-            _clients_connection_state[socket] = false;
-            data.clear();
-            break;
-        }
-
-        bytes_received += tmp_len;
-    }
-
-    return data;
 }
 
 void TcpServer::receive(const Socket &socket, char *dst, const uint &len)
@@ -131,12 +109,26 @@ void TcpServer::receive(const Socket &socket, char *dst, const uint &len)
     }
 }
 
-Socket TcpServer::waitForConnections()
+string TcpServer::receive(const Socket &socket, const unsigned int &len)
+{
+    std::vector<char> data(len);
+
+    long bytes_received = recv(socket, data.data(), len, 0);
+
+    if (bytes_received <= 0)
+    {
+        _clients_connection_state[socket] = false;
+        data.clear();
+    }
+
+    return string(data.data());
+}
+
+Socket TcpServer::waitForConnections(const uint &timeout_sec)
 {
 
     int flags = fcntl(_socket, F_GETFL);
     fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
-
 
     Address address = {};
 
@@ -148,6 +140,7 @@ Socket TcpServer::waitForConnections()
     {
         if(errno == EWOULDBLOCK)
         {
+            std::this_thread::sleep_for(std::chrono::seconds(timeout_sec));
             return -1;
         }
         else
@@ -160,33 +153,54 @@ Socket TcpServer::waitForConnections()
     return client_socket;
 }
 
-void TcpServer::send(const Socket &socket, const std::vector<char> &data) const noexcept
+void TcpServer::send(const Socket &socket, const std::vector<char> &data) noexcept
 {  
     uint bytes_sent = 0;
     while (bytes_sent < data.size())
     {
         auto tmp_len = ::send(socket, data.data() + bytes_sent, data.size() - bytes_sent, 0);
+
+        if(tmp_len <= 0)
+        {
+            _clients_connection_state[socket] = false;
+            return;
+        }
+
         bytes_sent += tmp_len;
     }
 }
 
-void TcpServer::send(const Socket &socket, const string &message) const noexcept
+void TcpServer::send(const Socket &socket, const string &message) noexcept
 {
     uint bytes_sent = 0;
     uint len = static_cast<uint>(message.size());
     while (bytes_sent < message.size())
     {
         auto tmp_len = ::send(socket, message.c_str() + bytes_sent, len - bytes_sent, 0);
+
+        if(tmp_len <= 0)
+        {
+            _clients_connection_state[socket] = false;
+            return;
+        }
+
         bytes_sent += tmp_len;
     }
 }
 
-void TcpServer::send(const Socket &socket, const char *data, const uint &len) const noexcept
+void TcpServer::send(const Socket &socket, const char *data, const uint &len) noexcept
 {
     uint bytes_sent = 0;
     while (bytes_sent < len)
     {
         auto tmp_len = ::send(socket, data + bytes_sent, len - bytes_sent, 0);
+
+        if(tmp_len <= 0)
+        {
+            _clients_connection_state[socket] = false;
+            return;
+        }
+
         bytes_sent += tmp_len;
     }
 }

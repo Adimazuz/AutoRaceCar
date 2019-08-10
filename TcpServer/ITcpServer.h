@@ -45,13 +45,14 @@ public:
      * @param port - an arbitrary port defined by the host
      * @param max_num_of_clients - the maximum number of clients which can be connect to the server
      */
-    virtual void bind(const string &ip, const unsigned short &port, const int &max_num_of_clients) = 0;
+    virtual void bind(const string &ip, const unsigned short &port,
+                      const int &max_num_of_clients) noexcept = 0;
 
     /**
      * @brief isBind - check if the server is bind
      * @return true if server is bind, otherwise return false
      */
-    virtual bool isBind() const = 0;
+    virtual bool isBind() const noexcept = 0;
 
     /**
      * @brief hasConnectionWithSocket - check connection between server and one of his clients
@@ -62,9 +63,10 @@ public:
 
     /**
      * @brief waitForConnections is a blocking function which is waiting for new client connection
+     * @param timeout_sec - the number of seconds for try connection
      * @return Socket(typedef for uint) which can be used to reach the connected client
      */
-    virtual Socket waitForConnections() = 0;
+    virtual Socket waitForConnections(const uint &timeout_sec) = 0;
 
     /**
      * @brief getNumOfConnectedClients - receive the number of connected clients to this server
@@ -75,27 +77,32 @@ public:
     /**
      * @brief receive data from a client
      * @param socket - the id of the client
+     * @param dst - pointer for the data to be stored
      * @param len - the length of the data[bytes]
-     * @return vector of data
      */
-    virtual std::vector<char> receive(const Socket &socket,
-            const uint &len) noexcept = 0;
-
     virtual void receive(const Socket &socket, char *dst, const uint &len) = 0;
+
+    /**
+     * @brief receive message from client
+     * @param socket - the id of the client
+     * @param len - the length of the message
+     * @return string with the message
+     */
+    virtual string receive(const Socket &socket, const unsigned int &len) = 0;
 
     /**
      * @brief send data to a client
      * @param socket - the id of the client
      * @param data - vector of data
      */
-    virtual void send(const Socket& socket, const std::vector<char>& data) const noexcept = 0;
+    virtual void send(const Socket& socket, const std::vector<char>& data) noexcept = 0;
 
     /**
      * @brief send string to a client
      * @param socket - the id of the client
      * @param message - the message to be sent
      */
-    virtual void send(const Socket& socket, const string& message) const noexcept = 0;
+    virtual void send(const Socket& socket, const string& message) noexcept = 0;
 
     /**
      * @brief send data to a client
@@ -103,7 +110,7 @@ public:
      * @param data - pointer to the data to be sent
      * @param len - the length of the data[bytes]
      */
-    virtual void send(const Socket& socket, const char *data, const uint &len) const noexcept = 0;
+    virtual void send(const Socket& socket, const char *data, const uint &len) noexcept = 0;
 
     /**
       * @brief destructor
