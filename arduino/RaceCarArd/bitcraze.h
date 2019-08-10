@@ -8,7 +8,7 @@ class bitcraze {
   float _range;
   
   public:
-  bitcraze():_deltaX(0),_deltaY(0),_range(0),flow(6){}
+  bitcraze():_deltaX(0),_deltaY(0),_range(0),flow(10){}
   void setup();
   void getData();
 };
