@@ -30,7 +30,8 @@ SOURCES += \
     ../TcpClient/ITcpClient.cpp \
     ../TcpClient/TcpClient.cpp \
     ../TcpServer/ITcpServer.cpp \
-    ../TcpServer/TcpServer.cpp
+    ../TcpServer/TcpServer.cpp \
+    ../jpeg/JpegDecompressor.cpp
 
 HEADERS += \
     MainWindow.h \
@@ -44,4 +45,4 @@ INCLUDEPATH += \
     $$PWD/../TcpServer/ \
     $$PWD/../jpeg/ \
 
-LIBS += -lz
+LIBS += -lz -lturbojpeg

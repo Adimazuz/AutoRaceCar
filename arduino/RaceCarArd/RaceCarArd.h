@@ -58,7 +58,7 @@ void decreseToRest(){
 void setup(){
       engine.attach(5);
       steering.attach(6);
-  for(int i=70;i<95;i++)
+  for(int i=85;i<95;i++)
   {
     engine.write(i);
     delay(200);
@@ -71,7 +71,7 @@ void drive(){
   //Serial.print("Drive inst: ");
   //Serial.println(NATURAL_SPEED + speed);
   steering.write(angle);
-  delay(40);
+  //5delay(10);
 }
 void increaseSpeed(){
   if(speed<TOP_SPEED && engineTimer.getElapsedTime()>COMMAND_DELAY) {
@@ -159,8 +159,9 @@ void neutral()
  for(int i=91;i<95;i++)
  {
    engine.write(i);
-   delay(40);
+   delay(15);
  }
+
  speed =0;
 }
 
@@ -201,6 +202,7 @@ void getDriveCommand()
       {
          speed=0;
          drive();
+         delay(40);
          neutral();
       }
       speed=wanted_speed;

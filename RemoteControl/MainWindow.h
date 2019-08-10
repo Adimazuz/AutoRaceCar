@@ -8,7 +8,8 @@
 #include <thread>
 
 #include "ITcpClient.h"
-#include "../TcpServer/ITcpServer.h"
+#include "ITcpServer.h"
+#include "JpegDecompressor.h"
 
 
 namespace Ui {
@@ -68,6 +69,7 @@ private:
     std::shared_ptr<ITcpClient> _client;
     bool _is_run;
     std::shared_ptr<std::thread> _camera_thread;
+    JpegDecompressor _decompressor;
 };
 
 #endif // MAINWINDOW_H

@@ -1,4 +1,7 @@
 #include <iostream>
+#include <fcntl.h>
+#include <errno.h>
+
 #include "Exceptions.h"
 #include "TcpServer.h"
 
@@ -130,6 +133,11 @@ void TcpServer::receive(const Socket &socket, char *dst, const uint &len)
 
 Socket TcpServer::waitForConnections()
 {
+
+    int flags = fcntl(_socket, F_GETFL);
+    fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
+
+
     Address address = {};
 
     sockaddr_in client = buildAddress(address.ip, address.port);
@@ -138,7 +146,14 @@ Socket TcpServer::waitForConnections()
 
     if(client_socket == -1)
     {
-        throw ITcpServerCannotAccept();
+        if(errno == EWOULDBLOCK)
+        {
+            return -1;
+        }
+        else
+        {
+            throw ITcpServerCannotAccept();
+        }
     }
 
     _clients_connection_state.insert(std::pair<Socket, bool>(client_socket, true));
