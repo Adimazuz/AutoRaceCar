@@ -8,6 +8,7 @@
 #include "ITcpServer.h"
 #include "RealSenseAPI.h"
 #include "Arduino_types.h"
+#include "JpegCompressor.h"
 
 
 class RaceCar {
@@ -36,8 +37,9 @@ private:
     bool _is_arduino_connected;
     bool _is_tcp_server_connected;
 
+    JpegCompressor _jpeg_comp;
 	
-    RaceCar &parseCmdString(const std::vector<char>& cmd);
+    RaceCar &parseCmdString(const string &cmd);
     RaceCar &arduinoCommunications();
     RaceCar &getCameraOutput();
     RaceCar &sendFlowOutput();

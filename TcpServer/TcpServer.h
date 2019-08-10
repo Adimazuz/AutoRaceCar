@@ -21,26 +21,17 @@ public:
 
     TcpServer() noexcept;
 
-    virtual void bind(const string &ip, const unsigned short &port, const int &max_num_of_clients) override;
-
-    virtual bool isBind() const override {return _is_bind;}
-
-    virtual std::vector<char> receive(const Socket &socket, const uint &len) noexcept override;
-
+    virtual void bind(const string &ip, const unsigned short &port,
+                      const int &max_num_of_clients) noexcept override;
+    virtual bool isBind() const noexcept override {return _is_bind;}
     virtual void receive(const Socket &socket, char *dst, const uint &len) override;
-
-    virtual void send(const Socket& socket, const std::vector<char>& data) const noexcept override;
-
-    virtual void send(const Socket& socket, const string& message) const noexcept override;
-
-    virtual void send(const Socket& socket, const char *data, const uint &len) const noexcept override;
-
+    virtual string receive(const Socket &socket, const unsigned int &len) override;
+    virtual void send(const Socket& socket, const std::vector<char>& data) noexcept override;
+    virtual void send(const Socket& socket, const string& message) noexcept override;
+    virtual void send(const Socket& socket, const char *data, const uint &len) noexcept override;
     virtual bool hasConnectionWithSocket(const Socket &socket) override;
-
-    virtual Socket waitForConnections() override;
-
+    virtual Socket waitForConnections(const uint &timeout_sec) override;
     virtual unsigned long getNumOfConnectedClients() const override {return _clients_connection_state.size();}
-
     virtual ~TcpServer() override;
 
 private: //functions

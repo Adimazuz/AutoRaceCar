@@ -2,9 +2,10 @@
 #define FLOW_HPP
 
 #pragma pack(push,1)
-struct Flow {
-  int deltaX;
-  int deltaY;
+struct Flow
+{
+  short deltaX;
+  short deltaY;
   float range;
 };
 

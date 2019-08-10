@@ -24,7 +24,9 @@ public:
 
     virtual bool isConnected() const override {return _is_connected;}
 
-    virtual std::vector<char> receive(const unsigned int &len) override;
+    virtual string receive(const unsigned int &len) override;
+
+    virtual void receive(char *dst, const uint &len) override;
 
     virtual void send(const std::vector<char>& data) noexcept override;
 

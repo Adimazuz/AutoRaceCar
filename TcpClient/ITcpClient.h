@@ -69,7 +69,9 @@ public:
      * @param len - the length of the data[bytes]
      * @return a vector of chars contains the data
      */
-    virtual std::vector<char> receive(const unsigned int &len) = 0;
+    virtual string receive(const unsigned int &len) = 0;
+
+    virtual void receive(char *dst, const uint &len) = 0;
 
     /**
      * @brief send data to the server

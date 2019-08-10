@@ -222,7 +222,6 @@ public:
         void setupInfraredImage(RealSense::InfrarFrameFormat format, RealSense::InfrarRessolution ressolution, RealSense::InfrarCamFps fps
                                 ,RealSense::InfrarCamera side);
 
-
         /**
          * @brief setupDepthImage - setup depth stream in format Z16
          * Z16 = 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value.
@@ -230,6 +229,17 @@ public:
          * at resolution 1280x720 camera cant work at 90/60 fps
          */
         void setupDepthImage(RealSense::DepthRessolution ressolution, RealSense::DepthCamFps fps);
+
+        /**
+         * @brief setupGyro - Add streams of gyro to configuration
+         */
+        void setupGyro();
+
+        /**
+         * @brief setupAccel - Add streams of accelerometer to configuration
+         */
+        void setupAccel();
+
         /**
          * @brief startCamera - after setups all wanted frames and start
          * streaming according to the configuraion
@@ -264,6 +274,7 @@ public:
          * @return
          */
         Camera::DepthImage getDepthImage();
+
         /**
          * @brief get_depth_units
          *         //A Depth stream contains an image that is composed of pixels with depth information.
@@ -324,12 +335,35 @@ public:
          */
         Camera::Extrinsics getExtrinsics(RealSense::Stream from_stream, RealSense::Stream to_stream);
 
+
         /**
-         * @brief getMyFps -
-         * @param stream
+         * @brief getEulerAngels -
+         * Call only after startCamera.
+         * @return struct   x_pitch;
+                            y_yaw;
+                            z_roll;
+         */
+        Camera::EulerAngles getEulerAngels();
+
+        /**
+         * @brief getAccelData
+         * Call only after startCamera.
          * @return
          */
-        unsigned int getMyFps(RealSense::Stream stream);
+        Camera::AccelData getAccelData();
+
+
+
+
+
+
+        //TODO why we need that?
+//        /**
+//         * @brief getMyFps -
+//         * @param stream
+//         * @return
+//         */
+//        unsigned int getMyFps(RealSense::Stream stream);
 
 private:
 
@@ -346,6 +380,9 @@ private:
 
 
       rs2::frameset _frames;
+
+      Camera::EulerAngles _last_euler_angles;
+      Camera::AccelData _last_accel_data;
 
 };
 

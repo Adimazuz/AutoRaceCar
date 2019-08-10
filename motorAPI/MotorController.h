@@ -58,7 +58,7 @@ public:
 	
     virtual MotorController &driveCurrentState()=0;
 
-    virtual Flow &getFlowOutput() = 0;
+    virtual Flow getFlowOutput() = 0;
 
 };
 

@@ -55,7 +55,7 @@ TcpClient &TcpClient::createSocket()
     return *this;
 }
 
-std::vector<char> TcpClient::receive(const unsigned int &len)
+string TcpClient::receive(const unsigned int &len)
 {
     std::vector<char> data(len);
 
@@ -67,7 +67,25 @@ std::vector<char> TcpClient::receive(const unsigned int &len)
         data.clear();
     }
 
-    return data;
+    return string(data.data());
+}
+
+void TcpClient::receive(char *dst, const uint &len)
+{
+    uint bytes_received = 0;
+
+    while(bytes_received < len)
+    {
+        auto tmp_len = recv(_socket, dst + bytes_received, len - bytes_received, 0);
+
+        if(tmp_len <= 0)
+        {
+            _is_connected = false;
+            return;
+        }
+
+        bytes_received += tmp_len;
+    }
 }
 
 void TcpClient::send(const std::vector<char> &data) noexcept
