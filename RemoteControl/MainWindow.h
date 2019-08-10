@@ -11,7 +11,6 @@
 #include "ITcpServer.h"
 #include "JpegDecompressor.h"
 
-
 namespace Ui {
 class MainWindow;
 }
@@ -64,9 +63,8 @@ private:
     QVector<int> _keys;
     QTimer _key_timer;
     Socket _client_sock;
-    bool _is_controller_connected;
     std::shared_ptr<ITcpServer> _server;
-    std::shared_ptr<ITcpClient> _client;
+    std::shared_ptr<ITcpClient> _chaos;
     bool _is_run;
     std::shared_ptr<std::thread> _camera_thread;
     JpegDecompressor _decompressor;

@@ -12,9 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
     _keys(),
     _key_timer(),
     _client_sock(-1),
-    _is_controller_connected(false),
     _server(nullptr),
-    _client(nullptr),
+    _chaos(nullptr),
     _is_run(true),
     _camera_thread(nullptr)
 {
@@ -24,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if(_is_controller_connected)
+    if(_chaos->isConnected())
     {
         if(!_keys.contains(event->key()))
         {
@@ -37,7 +36,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
-    if(_is_controller_connected)
+    if(_chaos->isConnected())
     {
         if(event->isAutoRepeat()){
             setFocus();
@@ -60,10 +59,16 @@ void MainWindow::handleKey()
 {
     for(auto &key : _keys)
     {
-        if(isArrowKey(key) && _client->isConnected())
+        if(isArrowKey(key))
         {
-            _client->send(keyToString(key));
-//            std::cout << key << std::endl;
+            if(_chaos->isConnected())
+            {
+                _chaos->send(keyToString(key));
+            }
+            else
+            {
+                markControllerConnection(false);
+            }
         }
     }
 }
@@ -131,7 +136,7 @@ void MainWindow::initTimer(const int &interval)
 
 void MainWindow::initClient()
 {
-    _client = ITcpClient::create();
+    _chaos = ITcpClient::create();
 }
 
 void MainWindow::initServer()
@@ -156,7 +161,7 @@ void MainWindow::init()
     showMaximized();
     initDesign();
     signalConnections();
-    initTimer(100);
+    initTimer(20);
     initClient();
     initServer();
     initThreads();
@@ -194,21 +199,6 @@ void MainWindow::markControllerConnection(const bool &is_connected)
 
 void MainWindow::cameraThread()
 {
-//    if(_server->getNumOfConnectedClients() == 0)
-//    {
-//        _client_sock = _server->waitForConnections(1);
-//        if(_client_sock < 0)
-//        {
-//            info("none connected, sleep for 1 sec");
-//            sleep(1);
-//        }
-//        else
-//        {
-//            info("camera connected");
-//            markCameraConnection(true);
-//        }
-//    }
-
     while(_is_run)
     {
         if(_server->hasConnectionWithSocket(_client_sock))
@@ -216,7 +206,6 @@ void MainWindow::cameraThread()
             QCoreApplication::processEvents();
 
             markCameraConnection(true);
-            info("camera connected");
 
             ColorImage color_image;
             _server->receive(_client_sock, reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
@@ -234,9 +223,9 @@ void MainWindow::cameraThread()
         {
             markCameraConnection(false);
             _client_sock = _server->waitForConnections(1);
-            if(_client_sock < 0)
+            if(_client_sock > 0)
             {
-                info("none connected, sleep for 1 sec");
+                info("camera connected");
             }
         }
     }
@@ -255,11 +244,10 @@ void MainWindow::on_connect_clicked()
         string controller_ip = ui->controller_ip->text().toStdString();
         unsigned short controller_port = ui->controller_port->text().toUShort();
 
-        _client->connect(controller_ip, controller_port);
-        if(_client->isConnected())
+        _chaos->connect(controller_ip, controller_port);
+        if(_chaos->isConnected())
         {
             info("controller connection established successfully");
-            _is_controller_connected = true;
             markControllerConnection(true);
         }
     }
