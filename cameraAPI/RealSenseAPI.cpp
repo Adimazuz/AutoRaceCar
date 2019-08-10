@@ -313,6 +313,17 @@ void RealSense::setupDepthImage(RealSense::DepthRessolution ressolution, RealSen
 
 }
 
+void RealSense::setupGyro()
+{
+    _config.enable_stream(RS2_STREAM_GYRO,RS2_FORMAT_MOTION_XYZ32F);
+    _last_euler_angles = {0,0,0,0};
+}
+
+void RealSense::setupAccel()
+{
+    _config.enable_stream(RS2_STREAM_ACCEL,RS2_FORMAT_MOTION_XYZ32F);
+}
+
 
 
 
@@ -327,6 +338,7 @@ void RealSense::startCamera()
 void RealSense::captureFrame()
 {
     _frames = _pipe.wait_for_frames();
+//    std::cout << _frames.size() << std::endl;
 }
 
 Camera::ColorImage RealSense::getColorImage()
@@ -495,6 +507,28 @@ Camera::Extrinsics RealSense::getExtrinsics(RealSense::Stream from_stream, RealS
         throw IRealSenseMotionExtrinsic();
     }
     return my_extrins;
+}
+
+Camera::EulerAngles RealSense::getEulerAngels()
+{
+    auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
+    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    try{
+        rs2::frame motion_frame = _frames.first(RS2_STREAM_GYRO,RS2_FORMAT_MOTION_XYZ32F);
+        // Cast the frame that arrived to motion frame
+        auto motion = motion_frame.as<rs2::motion_frame>();
+        /** 3D vector in Euclidean coordinate space */
+        rs2_vector gyro_data = motion.get_motion_data();
+        Camera::EulerAngles cur_angels = {gyro_data.x, gyro_data.y, gyro_data.z, time_stamp_ms};
+        _last_euler_angles = cur_angels;
+        return cur_angels;
+
+    }
+    catch (const std::exception& e)
+    {
+       return _last_euler_angles;
+    }
+
 }
 
 

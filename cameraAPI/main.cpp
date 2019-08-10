@@ -1,6 +1,7 @@
 #include <iostream>
 #include <librealsense2/rs.hpp>
 #include <fstream>
+#include <cmath>
 //#include "Camera_types.h"
 
 using namespace std;
@@ -14,6 +15,9 @@ int main()
     cout << "camera connected" << endl;
     camera.setupDepthImage(RealSense::DepthRessolution::R_640x480,RealSense::DepthCamFps::F_15hz);
     camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_424x240,RealSense::ColorCamFps::F_15hz);
+    camera.setupGyro();
+    camera.setupAccel();
+
 
     cout << "framesetuped" << endl;
     camera.startCamera();
@@ -39,6 +43,12 @@ int main()
     std::cout << "                   : [" << depth_to_color_extr.rotation[2] << "," << depth_to_color_extr.rotation[5] << "," << depth_to_color_extr.rotation[8] << "]" << std::endl;
 
 
+    while(1){
+        camera.captureFrame();
+        Camera::EulerAngles angles = camera.getEulerAngels();
+        std::cout << "angles : x=" << 180.0f*angles.x_pitch/3.14f  << " y=" << 180.0f*angles.y_yaw/3.14f << " z=" << 180.0f*angles.z_roll/3.14f << std::endl;
+
+    }
 
 //    while (1){
 //        camera.captureFrame();
