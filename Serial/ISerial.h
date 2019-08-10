@@ -1,7 +1,11 @@
 #ifndef ISERIAL_H
 #define ISERIAL_H
 
-#define SERIAL_API __attribute__((visibilty ("default")))
+#ifdef EXPORTS
+    #define SERIAL_API __attribute__((visibilty ("default")))
+#else
+    #define SERIAL_API
+#endif
 
 /**
   ISerial library for open serial connection and use read and write to a file descriptor.

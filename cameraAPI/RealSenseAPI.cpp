@@ -218,6 +218,7 @@ static int converSide(RealSense::InfrarCamera side){
 RealSense::~RealSense()
 {
     if(this->isConnect()){
+        _pipe.stop();
         resetCamera();
     }
 }
