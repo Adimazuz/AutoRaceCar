@@ -47,6 +47,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     }
 
     if ( _camera.isConnect() ){
+         std::cout << "try _tcp_client" <<std::endl;
          _tcp_client->connect(ip, port);
          std::cout << "camera connected" <<std::endl;
     }
@@ -74,16 +75,16 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 RaceCar &RaceCar::run()
 {
     std::cout << "enter run" <<std::endl;
-//    if(_is_tcp_client_connected && _is_cammera_connected){
-//             std::cout << "camera before setuped" <<std::endl;
-//            _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_60hz);
-//            _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
-//            std::cout << "camera setuped" <<std::endl;
-//            _camera.startCamera();
-//            std::cout << "camera started" <<std::endl;
-//            _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraOutput,this);
-//            std::cout << "camera thread opened" <<std::endl;
-//    }
+    if(_is_tcp_client_connected && _is_cammera_connected){
+             std::cout << "camera before setuped" <<std::endl;
+            _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
+            _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
+            std::cout << "camera setuped" <<std::endl;
+            _camera.startCamera();
+            std::cout << "camera started" <<std::endl;
+            _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraOutput,this);
+            std::cout << "camera thread opened" <<std::endl;
+    }
     if(_is_arduino_connected){
              std::cout << "connected to Arduino" <<std::endl;
             std::cout << "waiting for connection" << std::endl;
@@ -91,8 +92,6 @@ RaceCar &RaceCar::run()
             std::cout << "someone connected" << std::endl;
            _serial_thread = std::make_shared<std::thread>(&RaceCar::arduinoCommunications,this);
     }
-
-
 }
 
 
@@ -140,13 +139,9 @@ RaceCar &RaceCar::parseCmdString(const std::vector<char>& cmd)
 
 RaceCar &RaceCar::arduinoCommunications()
 {
-//    std::cout << "from arduino loop  "<< _tcp_server->hasConnectionWithSocket(_socket) <<std::endl;
-    std::cout <<" is runnig "<< _is_running << std::endl;
     while (_is_running && _tcp_server->hasConnectionWithSocket(_socket))
     {
         std::vector<char> cmd = _tcp_server->receive(_socket, 1);
-        std::cout << "from arduino loop  "<< _tcp_server->hasConnectionWithSocket(_socket) <<std::endl;
-        std::cout << cmd[0] << std::endl;
         parseCmdString(cmd);
     }
     std::cout <<" exit from arduino looop "<< _is_running << std::endl;
@@ -158,15 +153,15 @@ RaceCar &RaceCar::arduinoCommunications()
 RaceCar &RaceCar::getCameraOutput()
 {
     std::cout << "from camera thread " <<std::endl;
-    while (_is_running && _tcp_client->isConnected() && _camera.isConnect())
+    while (_is_running && _tcp_client->isConnected())
     {
 //        std::cout << _is_running <<std::endl;
         _camera.captureFrame();
         Camera::ColorImage image=_camera.getColorImage();
-        Camera::DepthImage depth_image = _camera.getDepthImage();
+//        Camera::DepthImage depth_image = _camera.getDepthImage();
 
         auto len = image.size;
-        auto depth_len = depth_image.size;
+//        auto depth_len = depth_image.size;
 
 //        std::cout << "image len:"<< len <<std::endl;
 
