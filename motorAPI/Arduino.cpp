@@ -90,13 +90,28 @@ Arduino& Arduino::changeAngleBy(const int &delta)
 }
 Arduino& Arduino::changeSpeedBy(const int &delta)
 {
-    if (delta > 0 && m_current_speed + delta > TOP_SPEED ){
+    if (delta > 0)
+	{
+		if( m_current_speed>=0 && m_current_speed <=10)
+		{
+			m_current_speed = 10;
+		}
+		else if( m_current_speed + delta > TOP_SPEED )
+		{
         m_current_speed = TOP_SPEED;
+		}
     }
-    else if (delta < 0 && m_current_speed + delta < -TOP_SPEED  )
-    {
-        m_current_speed = -TOP_SPEED;
-    }
+    else if (delta < 0)
+	{
+		if( m_current_speed<=0 && m_current_speed >=-8)
+		{
+			m_current_speed = -8;
+		}
+		if( m_current_speed + delta < -TOP_SPEED  )
+		{
+			m_current_speed = -TOP_SPEED;
+		}
+	}
     else
     {
         m_current_speed+=delta;
