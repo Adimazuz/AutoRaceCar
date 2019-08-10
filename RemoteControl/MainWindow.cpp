@@ -6,7 +6,6 @@
 #include "ui_MainWindow.h"
 #include "RemoteControl_types.h"
 
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -64,7 +63,7 @@ void MainWindow::handleKey()
         if(isArrowKey(key) && _client->isConnected())
         {
             _client->send(keyToString(key));
-            std::cout << key << std::endl;
+//            std::cout << key << std::endl;
         }
     }
 }
@@ -198,6 +197,11 @@ void MainWindow::cameraThread()
     if(_server->getNumOfConnectedClients() == 0)
     {
         _client_sock = _server->waitForConnections();
+        if(_client_sock == -1)
+        {
+            info("none connected, sleep for 1 sec");
+            sleep(1);
+        }
         info("camera connected");
         markCameraConnection(true);
     }
@@ -218,6 +222,8 @@ void MainWindow::cameraThread()
 
         emit imageReady(image);
     }
+
+    markCameraConnection(false);
 }
 
 void MainWindow::handleCamera(QImage &image)
