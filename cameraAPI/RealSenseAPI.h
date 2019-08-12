@@ -163,31 +163,6 @@ public:
 
        void resetCamera();
 
-       /**TODO functions to:
-        * get_depth_units :             //A Depth stream contains an image that is composed of pixels with depth information.
-        //The value of each pixel is the distance from the camera, in some distance units.
-        //To get the distance in units of meters, each pixel's value should be multiplied by the sensor's depth scale
-        //Here is the way to grab this scale value for a "depth" sensor:
-        *
-        * get_field_of_view:
-        *         // A sensor's stream (rs2::stream_profile) is in general a stream of data with no specific type.
-        // For video streams (streams of images), the sensor that produces the data has a lens and thus has properties such
-        //  as a focal point, distortion, and principal point.
-        // To get these intrinsics parameters, we need to take a stream and first check if it is a video stream
-
-        get_extrinsics:
-        // If the device/sensor that you are using contains more than a single stream, and it was calibrated
-        // then the SDK provides a way of getting the transformation between any two streams (if such exists)
-       */
-
-
-       //TODO right resulotions per fps
-       //TODO which formats support
-//        Status setupInfraredImage(rs2FrameFormat format,rs2_ressolution_and_fps ress_fps_set);
-
-        //TODO which formats support
-//        Status setupDepthImage(rs2FrameFormat format,rs2_ressolution_and_fps ress_fps_set);
-
 
        /**
          * @brief setupColorImage - setup the camera to steam wanted frames.
