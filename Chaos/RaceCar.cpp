@@ -46,6 +46,8 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     if(_camera.connectCamera()){
         _is_cammera_connected = true;
         std::cout << "camera on" <<std::endl;
+    } else {
+        std::cout << "camera NOT CONNECTED" <<std::endl;
     }
 
     if ( _camera.isConnect() ){
@@ -58,6 +60,8 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     if(_tcp_client->isConnected()){
         _is_tcp_client_connected = true;
         std::cout << "connected to sever" <<std::endl;
+    } else {
+        std::cout << "server NOT CONNECTED" <<std::endl;
     }
 
     if(_arduino->connect()){
@@ -71,6 +75,8 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     if(_tcp_server->isBind()){
         std::cout << "bind success" << std::endl;
         _is_tcp_server_connected = true;
+    } else {
+        std::cout << "bind FAILED" <<std::endl;
     }
 
     std::cout << "end connections" <<std::endl;
@@ -156,7 +162,7 @@ RaceCar &RaceCar::arduinoCommunications()
             parseCmdString(cmd);
 //            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             Flow data =_arduino->getFlowOutput();
-//            std::cout << data.deltaX <<"..."<< data.deltaY << "..." << data.range <<std::endl;
+            std::cout << data.deltaX <<"..."<< data.deltaY << "..." << data.range <<std::endl;
         }
         else
         {
