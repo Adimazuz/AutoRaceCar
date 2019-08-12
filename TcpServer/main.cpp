@@ -11,10 +11,17 @@ int main()
         std::cout << "bind success" << std::endl;
     }
     bool is_connected = false;
+    Socket sock;
 
-    while(!is_connected)
+    while(!server->hasConnectionWithSocket(sock))
     {
-        auto sock = server->waitForConnections(1);
+        sock = server->waitForConnections(1);
+    }
+
+
+    while(server->hasConnectionWithSocket(sock))
+    {
+
         if(sock > 0)
         {
             is_connected = true;

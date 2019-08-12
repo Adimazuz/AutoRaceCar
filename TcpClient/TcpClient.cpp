@@ -93,7 +93,7 @@ void TcpClient::send(const std::vector<char> &data) noexcept
     uint bytes_sent = 0;
     while (bytes_sent < data.size())
     {
-        auto tmp_len = ::send(_socket, data.data() + bytes_sent, data.size() - bytes_sent, 0);
+        auto tmp_len = ::send(_socket, data.data() + bytes_sent, data.size() - bytes_sent, MSG_NOSIGNAL);
 
         if(tmp_len <= 0)
         {
@@ -111,7 +111,7 @@ void TcpClient::send(const string &message) noexcept
     uint len = static_cast<uint>(message.size());
     while (bytes_sent < message.size())
     {
-        auto tmp_len = ::send(_socket, message.c_str() + bytes_sent, len - bytes_sent, 0);
+        auto tmp_len = ::send(_socket, message.c_str() + bytes_sent, len - bytes_sent, MSG_NOSIGNAL);
 
         if(tmp_len <= 0)
         {
@@ -128,7 +128,7 @@ void TcpClient::send(const char *data, const uint &len) noexcept
     uint bytes_sent = 0;
     while (bytes_sent < len)
     {
-        auto tmp_len = ::send(_socket, data + bytes_sent, len - bytes_sent, 0);
+        auto tmp_len = ::send(_socket, data + bytes_sent, len - bytes_sent, MSG_NOSIGNAL);
 
         if(tmp_len <= 0)
         {
