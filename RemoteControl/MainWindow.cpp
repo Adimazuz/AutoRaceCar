@@ -161,7 +161,7 @@ void MainWindow::init()
     showMaximized();
     initDesign();
     signalConnections();
-    initTimer(20);
+    initTimer(50);
     initClient();
     initServer();
     initThreads();
@@ -207,9 +207,9 @@ void MainWindow::cameraThread()
 
             markCameraConnection(true);
 
-            ColorImage color_image;
+            ColorImage color_image = {};
             _server->receive(_client_sock, reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
-            color_image.data = new uint8[color_image.size];
+             color_image.data = new uint8[color_image.size];
             _server->receive(_client_sock, reinterpret_cast<char*>(color_image.data), static_cast<uint32>(color_image.size));
 
             QImage image(static_cast<unsigned char*>(color_image.data), static_cast<int>(color_image.width),

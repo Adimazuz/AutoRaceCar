@@ -1090,6 +1090,44 @@ MainWindow.o: MainWindow.cpp ../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/QK
 		../TcpServer/TcpServer_types.h \
 		../jpeg/JpegDecompressor.h \
 		ui_MainWindow.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/QVariant \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QAction \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qaction.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QApplication \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtCore/qeventloop.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QGridLayout \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QLabel \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlabel.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qframe.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QLineEdit \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qtextformat.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qpen.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtGui/qtextoption.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QMenu \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QPushButton \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qpushbutton.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qabstractbutton.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QSpacerItem \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QToolBar \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../../../Qt5.11.0/5.11.0/gcc_64/include/QtWidgets/QWidget \
 		RemoteControl_types.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o MainWindow.cpp
 

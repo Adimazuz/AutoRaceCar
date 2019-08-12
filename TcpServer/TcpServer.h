@@ -31,6 +31,8 @@ public:
     virtual void send(const Socket& socket, const char *data, const uint &len) noexcept override;
     virtual bool hasConnectionWithSocket(const Socket &socket) override;
     virtual Socket waitForConnections(const uint &timeout_sec) override;
+    virtual void setBlocking(const bool &new_val) override;
+    virtual void setClientBlocking(const Socket &socket, const bool &new_val) override;
     virtual unsigned long getNumOfConnectedClients() const override {return _clients_connection_state.size();}
     virtual ~TcpServer() override;
 

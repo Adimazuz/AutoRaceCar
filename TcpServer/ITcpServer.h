@@ -112,6 +112,9 @@ public:
      */
     virtual void send(const Socket& socket, const char *data, const uint &len) noexcept = 0;
 
+    virtual void setBlocking(const bool &new_val) = 0;
+    virtual void setClientBlocking(const Socket &socket, const bool &new_val) = 0;
+
     /**
       * @brief destructor
       */

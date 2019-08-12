@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <thread>
+#include <signal.h>
 
 #include "Exceptions.h"
 #include "TcpServer.h"
@@ -26,6 +27,7 @@ TcpServer::TcpServer() noexcept :
     WSAStartup(MAKEWORD(2, 0), &wsa);
 #endif
 
+    signal(SIGPIPE, SIG_IGN);
 }
 
 TcpServer &TcpServer::createSocket()
@@ -101,7 +103,7 @@ void TcpServer::receive(const Socket &socket, char *dst, const uint &len)
 
         if(tmp_len <= 0)
         {
-            _clients_connection_state[socket] = false;
+//            _clients_connection_state[socket] = false;
             return;
         }
 
@@ -126,11 +128,6 @@ string TcpServer::receive(const Socket &socket, const unsigned int &len)
 
 Socket TcpServer::waitForConnections(const uint &timeout_sec)
 {
-
-    int flags = fcntl(_socket, F_GETFL);
-    fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
-
-
     Address address = {};
 
     sockaddr_in client = buildAddress(address.ip, address.port);
@@ -151,8 +148,35 @@ Socket TcpServer::waitForConnections(const uint &timeout_sec)
     }
 
     _clients_connection_state.insert(std::pair<Socket, bool>(client_socket, true));
-    fcntl(client_socket, F_SETFL, flags | O_NONBLOCK);
     return client_socket;
+}
+
+void TcpServer::setBlocking(const bool &new_val)
+{
+    if(new_val)
+    {
+        int flags = fcntl(_socket, F_GETFL);
+        fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
+    }
+    else
+    {
+        int flags = fcntl(_socket, F_GETFL);
+        fcntl(_socket, F_SETFL, flags | !O_NONBLOCK);
+    }
+}
+
+void TcpServer::setClientBlocking(const Socket &socket, const bool &new_val)
+{
+    if(new_val)
+    {
+        int flags = fcntl(_socket, F_GETFL);
+        fcntl(socket, F_SETFL, flags | O_NONBLOCK);
+    }
+    else
+    {
+        int flags = fcntl(_socket, F_GETFL);
+        fcntl(socket, F_SETFL, flags | !O_NONBLOCK);
+    }
 }
 
 void TcpServer::send(const Socket &socket, const std::vector<char> &data) noexcept
@@ -160,7 +184,7 @@ void TcpServer::send(const Socket &socket, const std::vector<char> &data) noexce
     uint bytes_sent = 0;
     while (bytes_sent < data.size())
     {
-        auto tmp_len = ::send(socket, data.data() + bytes_sent, data.size() - bytes_sent, 0);
+        auto tmp_len = ::send(socket, data.data() + bytes_sent, data.size() - bytes_sent, MSG_NOSIGNAL);
 
         if(tmp_len <= 0)
         {
@@ -178,7 +202,7 @@ void TcpServer::send(const Socket &socket, const string &message) noexcept
     uint len = static_cast<uint>(message.size());
     while (bytes_sent < message.size())
     {
-        auto tmp_len = ::send(socket, message.c_str() + bytes_sent, len - bytes_sent, 0);
+        auto tmp_len = ::send(socket, message.c_str() + bytes_sent, len - bytes_sent, MSG_NOSIGNAL);
 
         if(tmp_len <= 0)
         {
@@ -195,7 +219,7 @@ void TcpServer::send(const Socket &socket, const char *data, const uint &len) no
     uint bytes_sent = 0;
     while (bytes_sent < len)
     {
-        auto tmp_len = ::send(socket, data + bytes_sent, len - bytes_sent, 0);
+        auto tmp_len = ::send(socket, data + bytes_sent, len - bytes_sent, MSG_NOSIGNAL);
 
         if(tmp_len <= 0)
         {
