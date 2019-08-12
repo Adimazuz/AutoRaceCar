@@ -6,45 +6,39 @@
 
 
 
-	void bitcraze::setup()
-	{
+	void bitcraze::setup() {
 		Serial.begin(9600);
-    if (!flow.begin()) {
-      Serial.println("Initialization of the flow sensor failed");
-      //while(1) { }
-    }
+		if (!flow.begin()) {
+		  //Serial.println("Initialization of the flow sensor failed");
+		//while(1) { }
+		}
+		timer.start();
+    timer2 = millis();
 
 		// Initialize range sensor
 		Wire.begin();
 		_rangeSensor.init();
 		_rangeSensor.setTimeout(500);
 	}
- 
-	void bitcraze::getData()
-	{
-    int x ;
-    int y ;
-    float z ;
-		flow.readMotionCount(&x, &y);
-		z = _rangeSensor.readRangeSingleMillimeters();
-		if (_range > 5000) {
-      //Serial.write("N/A");
-		}
+  
+	void bitcraze::updateTimer() {
+		timer.update();
+	}
 
+  
+	Flow bitcraze::getData() {
+    int x,y;
+	  flow.readMotionCount(&x, &y);
+	  float z = _rangeSensor.readRangeSingleMillimeters();
+	  if (_range > 5000) {
+        //Serial.write("N/A");
+	  }
+    short t2 = timer2 - millis();
+    timer2 = millis();
+   // short t = timer.getElapsedTime();
+//    timer.reset();
    //maybe remove delay
-    delay(50);
-    
-   //send data
-
-  Flow data = {x, y, z};
-
-  while(Serial.availableForWrite() <12) {};
-
-   Serial.write(reinterpret_cast<char*>(&data.deltaX),2);
-   delay(10);
-   Serial.write(reinterpret_cast<char*>(&data.deltaY),2);
-   delay(10);
-   Serial.write(reinterpret_cast<char*>(&data.range),4);
-   delay(10);
-
+//    delay(50);
+    Flow data = {x, y, z, t2};
+    return data;
 	}

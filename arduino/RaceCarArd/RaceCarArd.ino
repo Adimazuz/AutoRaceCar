@@ -1,23 +1,22 @@
 #include "RaceCarArd.h"
-#include "bitcraze.h"
+//#include "bitcraze.h"
 #include "Arduino_types.h"
 
 RaceCarArd car;
-bitcraze motion_sensor;
+
+bool flag =true;
 
 void setup() {
   car.setup();
   Serial.begin(9600); 
-  Serial.flush();   
-  
-  }
-
+  Serial.flush();     
+}
 
 
 void loop() {
-  // car.updateTimers();
-  //car.getKeyBoardInput();
-  //  motion_sensor.getData();
-
-   car.getDriveCommand();
+  //car.getData();
+  car.getDriveCommand();
+  if (!Serial) {
+    car.stop();
+  }
 }
