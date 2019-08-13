@@ -113,6 +113,7 @@ void MainWindow::bindServer()
     if(_server->isBind())
     {
         info("bind success");
+        _server->setBlocking(true);
     }
     else
     {

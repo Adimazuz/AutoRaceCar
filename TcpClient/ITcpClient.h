@@ -64,13 +64,13 @@ public:
 
     virtual bool isConnected() const = 0;
 
+    virtual void setUnblocking(const bool &new_val) = 0;
+
     /**
      * @brief receive data from the server
      * @param len - the length of the data[bytes]
      * @return a vector of chars contains the data
      */
-    virtual string receive(const unsigned int &len) = 0;
-
     virtual void receive(char *dst, const uint &len) = 0;
 
     /**
