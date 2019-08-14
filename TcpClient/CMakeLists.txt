@@ -19,4 +19,5 @@ if(WIN32)
     target_link_libraries(TcpClient ws2_32)
 endif(WIN32)
 
+target_link_libraries(TcpClient -pthread)
 #add_library(TcpClient SHARED ${SOURCE_FILES})

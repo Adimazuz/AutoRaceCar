@@ -19,8 +19,10 @@ TcpServer::TcpServer() noexcept :
     _port(0),
     _max_num_of_clients(0),
     _socket(-1),
-    _clients_connection_state(),
-    _address()
+    _clients_unblocking_state(),
+    _address(),
+    _is_bind(false),
+    _is_blocking(false)
 {
 #ifdef _WIN32
     WSADATA wsa;
@@ -33,6 +35,10 @@ TcpServer::TcpServer() noexcept :
 TcpServer &TcpServer::createSocket()
 {
     _socket = socket(AF_INET, SOCK_STREAM, 0);
+    if(_is_blocking)
+    {
+        setUnblocking(true);
+    }
 
     if(_socket == -1)
     {
@@ -101,29 +107,19 @@ void TcpServer::receive(const Socket &socket, char *dst, const uint &len)
     {
         auto tmp_len = recv(socket, dst + bytes_received, len - bytes_received, 0);
 
-        if(tmp_len <= 0)
+        if(tmp_len == 0)
         {
-//            _clients_connection_state[socket] = false;
+            _clients_unblocking_state.erase(socket);
+            return;
+        }
+
+        else if(tmp_len < 0)
+        {
             return;
         }
 
         bytes_received += tmp_len;
     }
-}
-
-string TcpServer::receive(const Socket &socket, const unsigned int &len)
-{
-    std::vector<char> data(len);
-
-    long bytes_received = recv(socket, data.data(), len, 0);
-
-    if (bytes_received <= 0)
-    {
-//        _clients_connection_state[socket] = false;
-        data.clear();
-    }
-
-    return string(data.data());
 }
 
 Socket TcpServer::waitForConnections(const uint &timeout_sec)
@@ -147,11 +143,11 @@ Socket TcpServer::waitForConnections(const uint &timeout_sec)
         }
     }
 
-    _clients_connection_state.insert(std::pair<Socket, bool>(client_socket, true));
+    _clients_unblocking_state.insert(std::pair<Socket, bool>(client_socket, false));
     return client_socket;
 }
 
-void TcpServer::setBlocking(const bool &new_val)
+void TcpServer::setUnblocking(const bool &new_val)
 {
     if(new_val)
     {
@@ -163,10 +159,20 @@ void TcpServer::setBlocking(const bool &new_val)
         int flags = fcntl(_socket, F_GETFL);
         fcntl(_socket, F_SETFL, flags | !O_NONBLOCK);
     }
+
+    _is_blocking = true;
 }
 
-void TcpServer::setClientBlocking(const Socket &socket, const bool &new_val)
+void TcpServer::setClientUnblocking(const Socket &socket, const bool &new_val)
 {
+    auto client = _clients_unblocking_state.find(socket);
+    if(client == _clients_unblocking_state.end())
+    {
+        return;
+    }
+
+    _clients_unblocking_state[socket] = true;
+
     if(new_val)
     {
         int flags = fcntl(socket, F_GETFL);
@@ -184,11 +190,12 @@ void TcpServer::send(const Socket &socket, const std::vector<char> &data) noexce
     uint bytes_sent = 0;
     while (bytes_sent < data.size())
     {
-        auto tmp_len = ::send(socket, data.data() + bytes_sent, data.size() - bytes_sent, MSG_NOSIGNAL);
+        auto tmp_len = ::send(socket, data.data() + bytes_sent, data.size() - bytes_sent,
+                              MSG_NOSIGNAL);
 
-        if(tmp_len <= 0)
+        if(tmp_len < 0)
         {
-            _clients_connection_state[socket] = false;
+            _clients_unblocking_state.erase(socket);
             return;
         }
 
@@ -202,11 +209,12 @@ void TcpServer::send(const Socket &socket, const string &message) noexcept
     uint len = static_cast<uint>(message.size());
     while (bytes_sent < message.size())
     {
-        auto tmp_len = ::send(socket, message.c_str() + bytes_sent, len - bytes_sent, MSG_NOSIGNAL);
+        auto tmp_len = ::send(socket, message.c_str() + bytes_sent, len - bytes_sent,
+                              MSG_NOSIGNAL);
 
-        if(tmp_len <= 0)
+        if(tmp_len < 0)
         {
-            _clients_connection_state[socket] = false;
+            _clients_unblocking_state.erase(socket);
             return;
         }
 
@@ -221,9 +229,9 @@ void TcpServer::send(const Socket &socket, const char *data, const uint &len) no
     {
         auto tmp_len = ::send(socket, data + bytes_sent, len - bytes_sent, MSG_NOSIGNAL);
 
-        if(tmp_len <= 0)
+        if(tmp_len < 0)
         {
-            _clients_connection_state[socket] = false;
+            _clients_unblocking_state.erase(socket);
             return;
         }
 
@@ -233,7 +241,9 @@ void TcpServer::send(const Socket &socket, const char *data, const uint &len) no
 
 bool TcpServer::hasConnectionWithSocket(const Socket &socket)
 {
-    return _clients_connection_state[socket];
+    auto client = _clients_unblocking_state.find(socket);
+
+    return client != _clients_unblocking_state.end();
 }
 
 sockaddr_in TcpServer::buildAddress(const string &ip, const unsigned short &port) const noexcept

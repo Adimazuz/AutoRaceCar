@@ -1,41 +1,56 @@
 #include "ITcpServer.h"
 #include <iostream>
+#include <thread>
 
 int main()
 {
+    bool is_run = true;
+    std::thread t([&is_run]()
+    {
+        while(is_run)
+        {
+            char c;
+            std::cin >> c;
+            if(c == 'q')
+            {
+                is_run = false;
+            }
+        }
+    });
+
     auto server = ITcpServer::create();
-    char *dst = new char[20];
     server->bind("127.0.0.1", 5555, 5);
     if(server->isBind())
     {
         std::cout << "bind success" << std::endl;
     }
-    bool is_connected = false;
-    Socket sock;
 
-    while(!server->hasConnectionWithSocket(sock))
+
+    auto sock = server->waitForConnections(1);
+    server->setClientUnblocking(sock, true);
+    if(sock > 0)
     {
-        sock = server->waitForConnections(1);
+        std::cout << "someone connected" << std::endl;
     }
 
-
-    while(server->hasConnectionWithSocket(sock))
+    char *name = new char[5];
+    while(is_run)
     {
-
-        if(sock > 0)
+        if(server->hasConnectionWithSocket(sock))
         {
-            is_connected = true;
-            std::cout << "client: " << sock << " has connected" << std::endl;
-            string msg = server->receive(sock, 5);
-            std::cout << msg << std::endl;
+            std::cout << "receiving" << std::endl;
+            server->receive(sock, name, 4);
+//            std::cout << msg << std::endl;
+//            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
         else
         {
-            std::cout << "no one connect" << std::endl;
+            std::cout << "disconnected" << std::endl;
+            is_run = false;
         }
     }
 
-
+    t.join();
 
     return 0;
 }

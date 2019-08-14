@@ -83,14 +83,6 @@ public:
     virtual void receive(const Socket &socket, char *dst, const uint &len) = 0;
 
     /**
-     * @brief receive message from client
-     * @param socket - the id of the client
-     * @param len - the length of the message
-     * @return string with the message
-     */
-    virtual string receive(const Socket &socket, const unsigned int &len) = 0;
-
-    /**
      * @brief send data to a client
      * @param socket - the id of the client
      * @param data - vector of data
@@ -112,8 +104,8 @@ public:
      */
     virtual void send(const Socket& socket, const char *data, const uint &len) noexcept = 0;
 
-    virtual void setBlocking(const bool &new_val) = 0;
-    virtual void setClientBlocking(const Socket &socket, const bool &new_val) = 0;
+    virtual void setUnblocking(const bool &new_val) = 0;
+    virtual void setClientUnblocking(const Socket &socket, const bool &new_val) = 0;
 
     /**
       * @brief destructor

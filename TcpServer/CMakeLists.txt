@@ -20,4 +20,5 @@ if(WIN32)
     target_link_libraries(TcpServer ws2_32)
 endif(WIN32)
 
+target_link_libraries(TcpServer -pthread)
 
