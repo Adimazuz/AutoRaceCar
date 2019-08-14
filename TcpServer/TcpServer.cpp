@@ -169,12 +169,12 @@ void TcpServer::setClientBlocking(const Socket &socket, const bool &new_val)
 {
     if(new_val)
     {
-        int flags = fcntl(_socket, F_GETFL);
+        int flags = fcntl(socket, F_GETFL);
         fcntl(socket, F_SETFL, flags | O_NONBLOCK);
     }
     else
     {
-        int flags = fcntl(_socket, F_GETFL);
+        int flags = fcntl(socket, F_GETFL);
         fcntl(socket, F_SETFL, flags | !O_NONBLOCK);
     }
 }

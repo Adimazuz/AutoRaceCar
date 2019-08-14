@@ -11,6 +11,7 @@ public:
     virtual Serial &write(const string &msg) override;
     virtual string read(const uint &len) override;
     virtual void read(char *dst, const uint &len) override;
+    virtual bool isConnected() const override {return _is_connected;}
     virtual ~Serial() override;
 
 private:
@@ -18,6 +19,7 @@ private:
 
     int _fd;
     string _path;
+    bool _is_connected;
 };
 
 #endif // SERIAL_H

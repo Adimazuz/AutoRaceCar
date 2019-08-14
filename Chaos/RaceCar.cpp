@@ -15,9 +15,11 @@ RaceCar::RaceCar()
 	_arduino = std::make_shared<Arduino>();
     _tcp_client = ITcpClient::create();
     _tcp_server = ITcpServer::create();
+
     _camera_thread = nullptr;
     _serial_thread = nullptr;
     _is_running = true;
+    _is_bitcraze_connected = true;
 
 }
 
@@ -28,12 +30,14 @@ RaceCar::~RaceCar()
     if (_camera_thread){
         std::cout << "camera distructor" <<std::endl;
          _camera_thread->join();
+         std::cout << "camera finished" <<std::endl;
      }
     if (_serial_thread){
         std::cout << "serial distructor" <<std::endl;
         _arduino->stop();
 
         _serial_thread->join();
+        std::cout << "seial finished" <<std::endl;
      }
 }
 
@@ -74,6 +78,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     _tcp_server->bind(server_ip,SERVER_PORT,MAX_NUM_USERS);
     if(_tcp_server->isBind()){
         std::cout << "bind success" << std::endl;
+        _tcp_server->setBlocking(true);
         _is_tcp_server_connected = true;
     } else {
         std::cout << "bind FAILED" <<std::endl;
@@ -147,22 +152,35 @@ RaceCar &RaceCar::parseCmdString(const string& cmd)
 
 RaceCar &RaceCar::arduinoCommunications()
 {
+    //TODO in case of crash, arduino should stop itself
+    //TODO avoid terminate from write
+    //TODO ardoino functions for "#"
     std::cout << "waiting for connection" << std::endl;
 
-    string cmd;
+
     while (_is_running)
     {
         if(_tcp_server->hasConnectionWithSocket(_socket))
         {
             string cmd = _tcp_server->receive(_socket, 1);
-            if(cmd.empty())
+            if(cmd.empty() && _is_bitcraze_connected)
             {
                 cmd = "#";
             }
+            else{
+                int koko=5; //TODO FIX BUG
+            }
             parseCmdString(cmd);
-//            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            Flow data =_arduino->getFlowOutput();
-            std::cout << data.deltaX <<"..."<< data.deltaY << "..." << data.range <<std::endl;
+            if (cmd == "#"){
+                Flow data =_arduino->getFlowOutput();
+                if (!data.range){ // check if bitcraze connected
+                    _is_bitcraze_connected = false;
+                    std::cout << "bitcraze DISCONNECTED" << std::endl;
+                } else {
+                    _is_bitcraze_connected = true;
+                    std::cout << data.deltaX <<"..."<< data.deltaY << "..." << data.range <<"..." << data.mili_sec <<std::endl;
+                }
+            }
         }
         else
         {
@@ -170,6 +188,7 @@ RaceCar &RaceCar::arduinoCommunications()
             std::cout << "wait to asafff" << std::endl;
             if(_socket > 0)
             {
+                _tcp_server->setClientBlocking(_socket,true);
                 std::cout << "someone connected" << std::endl;
             }
         }

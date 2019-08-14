@@ -128,6 +128,10 @@ Arduino::~Arduino()
         drive(0,90);
     }
 }
+/**
+ * @brief Arduino::getFlowOutput
+ * @return data from bitcraze, after timeout clocks return empty Flow
+ */
 Flow Arduino::getFlowOutput()
 {
     Flow output = {};
