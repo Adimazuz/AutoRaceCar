@@ -4,15 +4,11 @@
 #include <math.h>
 using std::string;
 
-#define SENSOR_RESULUTION 30*30
-#define FIELD_OF_VIEW 42
-#define SCALAR 1
-
 
 bool Arduino::connect()
 {
     m_serial = ISerial::create();
-    _is_connected =  m_serial->connect();
+    _is_connected =  m_serial->connect("/dev/ttyUSB0");
     return _is_connected;
 
 }
@@ -126,13 +122,6 @@ Arduino &Arduino::driveCurrentState(){
     sendDriveCommand();
 }
 
-Arduino& Arduino::requestFlowData(){
-   m_serial->write("#");
-}
-
-
-
-
 Arduino::~Arduino()
 {
     if(_is_connected)
@@ -140,20 +129,7 @@ Arduino::~Arduino()
         drive(0,90);
     }
 }
-/**
- * @brief Arduino::getFlowOutput
- * @return data from bitcraze, after timeout clocks return empty Flow
- */
-Flow Arduino::getFlowOutput()
-{
-    Flow output = {};
-    requestFlowData();
-    m_serial->read(reinterpret_cast<char*>(&output), sizeof(Flow));
-	
-	int x_distance = calcDistance(output.deltaX);
-	
-    return output;
-}
+
 
 //==========================private==================================
 
