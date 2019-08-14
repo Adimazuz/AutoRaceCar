@@ -78,7 +78,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     _tcp_server->bind(server_ip,SERVER_PORT,MAX_NUM_USERS);
     if(_tcp_server->isBind()){
         std::cout << "bind success" << std::endl;
-        _tcp_server->setBlocking(true);
+        _tcp_server->setUnblocking(true);
         _is_tcp_server_connected = true;
     } else {
         std::cout << "bind FAILED" <<std::endl;
@@ -110,10 +110,10 @@ RaceCar &RaceCar::run()
 }
 
 
-RaceCar &RaceCar::parseCmdString(const string& cmd)
+RaceCar &RaceCar::parseCmdString(const char cmd)
 {
 //    std::cout << "cmd " << cmd[0]<< std::endl;
-	switch (cmd[0]) {
+    switch (cmd) {
 
 	case 's': {
         _arduino->stop();
@@ -142,7 +142,6 @@ RaceCar &RaceCar::parseCmdString(const string& cmd)
     case '#': {
         //TODO add function
         //TODO return to private
-        dynamic_cast<Arduino*>(_arduino.get())->m_serial->write("#");
         break;
     }
     default: _arduino->stop();
@@ -162,16 +161,10 @@ RaceCar &RaceCar::arduinoCommunications()
     {
         if(_tcp_server->hasConnectionWithSocket(_socket))
         {
-            string cmd = _tcp_server->receive(_socket, 1);
-            if(cmd.empty() && _is_bitcraze_connected)
+            char cmd = ' ';
+            _tcp_server->receive(_socket,&cmd, 1);
+            if(cmd == ' ' && _is_bitcraze_connected)
             {
-                cmd = "#";
-            }
-            else{
-                int koko=5; //TODO FIX BUG
-            }
-            parseCmdString(cmd);
-            if (cmd == "#"){
                 Flow data =_arduino->getFlowOutput();
                 if (!data.range){ // check if bitcraze connected
                     _is_bitcraze_connected = false;
@@ -180,15 +173,18 @@ RaceCar &RaceCar::arduinoCommunications()
                     _is_bitcraze_connected = true;
                     std::cout << data.deltaX <<"..."<< data.deltaY << "..." << data.range <<"..." << data.mili_sec <<std::endl;
                 }
+            }else {
+                parseCmdString(cmd);
             }
         }
+
         else
         {
             _socket = _tcp_server->waitForConnections(1);
             std::cout << "wait to asafff" << std::endl;
             if(_socket > 0)
             {
-                _tcp_server->setClientBlocking(_socket,true);
+                _tcp_server->setClientUnblocking(_socket,true);
                 std::cout << "someone connected" << std::endl;
             }
         }
@@ -248,12 +244,10 @@ RaceCar &RaceCar::getCameraOutput()
     return *this;
 }
 
-RaceCar  &RaceCar::sendFlowOutput()
+RaceCar  &RaceCar::sendFlowOutput(Flow data)
 {
-    Flow output = _arduino->getFlowOutput();
-    //send to Client
-    char* data = (char*) &output;
-    _tcp_server->send(_socket,data,sizeof(Flow));
+    char* ptr = (char*) &data;
+    _tcp_server->send(_socket,ptr,sizeof(Flow));
 }
 static void splitString(const string &str, std::vector<string> &output)
 {

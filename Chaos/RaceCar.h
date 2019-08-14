@@ -40,9 +40,9 @@ private:
 
     JpegCompressor _jpeg_comp;
 	
-    RaceCar &parseCmdString(const string &cmd);
+    RaceCar &parseCmdString(const char cmd);
     RaceCar &arduinoCommunications();
     RaceCar &getCameraOutput();
-    RaceCar &sendFlowOutput();
+    RaceCar &sendFlowOutput(Flow data);
 
 };

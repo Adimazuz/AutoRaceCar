@@ -121,6 +121,13 @@ Arduino &Arduino::driveCurrentState(){
     sendDriveCommand();
 }
 
+Arduino& Arduino::requestFlowData(){
+   m_serial->write("#");
+}
+
+
+
+
 Arduino::~Arduino()
 {
     if(_is_connected)
@@ -135,6 +142,7 @@ Arduino::~Arduino()
 Flow Arduino::getFlowOutput()
 {
     Flow output = {};
+    requestFlowData();
     m_serial->read(reinterpret_cast<char*>(&output), sizeof(Flow));
     return output;
 }
