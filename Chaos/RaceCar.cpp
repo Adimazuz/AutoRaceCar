@@ -162,10 +162,11 @@ RaceCar &RaceCar::arduinoCommunications()
         if(_tcp_server->hasConnectionWithSocket(_socket))
         {
             char cmd = ' ';
+            Flow data;
             _tcp_server->receive(_socket,&cmd, 1);
             if(cmd == ' ' && _is_bitcraze_connected)
             {
-                Flow data =_arduino->getFlowOutput();
+                data =_arduino->getFlowOutput();
                 if (!data.range){ // check if bitcraze connected
                     _is_bitcraze_connected = false;
                     std::cout << "bitcraze DISCONNECTED" << std::endl;
