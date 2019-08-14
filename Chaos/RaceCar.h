@@ -9,6 +9,7 @@
 #include "RealSenseAPI.h"
 #include "Arduino_types.h"
 #include "JpegCompressor.h"
+#include "bitcraze.h"
 
 
 class RaceCar {
@@ -24,7 +25,7 @@ public:
 
 private:
     std::shared_ptr<MotorController> _arduino;
-    std::shared_ptr<BitCraze> _bitcraze; //TODO add  BitCraze files to project
+    Bitcraze _bitcraze; //TODO add  BitCraze files to project
     RealSense _camera;
     std::shared_ptr<ITcpClient> _tcp_client;
 

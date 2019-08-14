@@ -4,7 +4,7 @@
 
 #ifndef UNTITLED_MOTORCONTROLLER_HPP
 #define UNTITLED_MOTORCONTROLLER_HPP
-#include "Arduino_types.h"
+//#include "Arduino_types.h"
 
 class MotorController
 {
@@ -58,9 +58,9 @@ public:
 	
     virtual MotorController &driveCurrentState() = 0;
 
-    virtual MotorController &requestFlowData() = 0;
+//    virtual MotorController &requestFlowData() = 0;
 
-    virtual Flow getFlowOutput() = 0;
+//    virtual Flow getFlowOutput() = 0;
 
 };
 
