@@ -1,5 +1,4 @@
 #include "RaceCarArd.h"
-#include "Arduino_types.h"
 
 RaceCarArd car;
 
@@ -13,7 +12,6 @@ void setup() {
 
 
 void loop() {
-  //car.getData();
   car.getDriveCommand();
   if (!Serial) {
     car.stop();
