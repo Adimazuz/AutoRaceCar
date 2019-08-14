@@ -38,7 +38,7 @@
    // short t = timer.getElapsedTime();
 //    timer.reset();
    //maybe remove delay
-//    delay(50);
+    delay(50);
     Flow data = {x, y, z, t2};
     return data;
 	}

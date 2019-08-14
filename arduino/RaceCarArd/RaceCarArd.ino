@@ -1,5 +1,4 @@
 #include "RaceCarArd.h"
-//#include "bitcraze.h"
 #include "Arduino_types.h"
 
 RaceCarArd car;

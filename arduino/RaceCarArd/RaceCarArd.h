@@ -168,7 +168,8 @@ class RaceCarArd {
 	void getDriveCommand() {
 		String speed_string;
 		String angle_string;
-		//while (!Serial.available()) {};
+    
+//		//while (!Serial.available()) {};
 		
 		//get speed
 		while (Serial.available()) {
