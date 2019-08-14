@@ -25,13 +25,14 @@ public:
                       const int &max_num_of_clients) noexcept override;
     virtual bool isBind() const noexcept override {return _is_bind;}
     virtual void receive(const Socket &socket, char *dst, const uint &len) override;
-    virtual string receive(const Socket &socket, const unsigned int &len) override;
     virtual void send(const Socket& socket, const std::vector<char>& data) noexcept override;
     virtual void send(const Socket& socket, const string& message) noexcept override;
     virtual void send(const Socket& socket, const char *data, const uint &len) noexcept override;
     virtual bool hasConnectionWithSocket(const Socket &socket) override;
     virtual Socket waitForConnections(const uint &timeout_sec) override;
-    virtual unsigned long getNumOfConnectedClients() const override {return _clients_connection_state.size();}
+    virtual void setUnblocking(const bool &new_val) override;
+    virtual void setClientUnblocking(const Socket &socket, const bool &new_val) override;
+    virtual unsigned long getNumOfConnectedClients() const override {return _clients_unblocking_state.size();}
     virtual ~TcpServer() override;
 
 private: //functions
@@ -60,9 +61,10 @@ private: //members
     unsigned short _port;
     int _max_num_of_clients;
     Socket _socket;
-    std::map<Socket, bool> _clients_connection_state;
+    std::map<Socket, bool> _clients_unblocking_state;
     sockaddr_in _address;
     bool _is_bind;
+    bool _is_blocking;
 };
 
 

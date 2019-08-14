@@ -126,6 +126,13 @@ Arduino &Arduino::driveCurrentState(){
     sendDriveCommand();
 }
 
+Arduino& Arduino::requestFlowData(){
+   m_serial->write("#");
+}
+
+
+
+
 Arduino::~Arduino()
 {
     if(_is_connected)
@@ -133,9 +140,14 @@ Arduino::~Arduino()
         drive(0,90);
     }
 }
+/**
+ * @brief Arduino::getFlowOutput
+ * @return data from bitcraze, after timeout clocks return empty Flow
+ */
 Flow Arduino::getFlowOutput()
 {
     Flow output = {};
+    requestFlowData();
     m_serial->read(reinterpret_cast<char*>(&output), sizeof(Flow));
 	
 	int x_distance = calcDistance(output.deltaX);

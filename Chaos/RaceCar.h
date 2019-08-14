@@ -36,12 +36,13 @@ private:
     bool _is_cammera_connected;
     bool _is_arduino_connected;
     bool _is_tcp_server_connected;
+    bool _is_bitcraze_connected;
 
     JpegCompressor _jpeg_comp;
 	
-    RaceCar &parseCmdString(const string &cmd);
+    RaceCar &parseCmdString(const char cmd);
     RaceCar &arduinoCommunications();
     RaceCar &getCameraOutput();
-    RaceCar &sendFlowOutput();
+    RaceCar &sendFlowOutput(Flow data);
 
 };

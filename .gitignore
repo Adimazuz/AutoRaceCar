@@ -12,7 +12,7 @@ TcpServer/CMakeLists.txt.user
 TcpClient/CMakeLists.txt.user
 cameraAPI/CMakeLists.txt.user
 Chaos/CMakeLists.txt.user
-
+*.orig
 
 *.autosave
 

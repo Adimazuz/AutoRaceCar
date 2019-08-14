@@ -11,28 +11,18 @@ int main() {
 
 //    auto s = ISerial::create();
 //    auto res = s->connect();
-
+//    if(res)
+//    {
+//        std::cout << "arduino connected" << std::endl;
+//    }
 //    Flow data = {};
 
-//    s->write("$");
-//    for(int i = 0 ; i < 1000; i++)
+//    while(true)
 //    {
-//        if(i % 2 == 0)
-//        {
-//            s->write("0 100");
-//        }
-//        else
-//        {
-//            s->write("0 90");
-//        }
-
-//        std::this_thread::sleep_for(std::chrono::milliseconds(200));
-
-//        s->read(reinterpret_cast<char*>(&data), 8);
-
-//        std::cout << data.deltaX << " " << data.deltaY << " " << data.range << std::endl;
+//        s->write("#");
+//        s->read(reinterpret_cast<char*>(&data), sizeof(Flow));
+//        std::cout << data.deltaX << " " << data.deltaY << " " << data.range << " " << data.mili_sec << std::endl;
 //    }
-
 
     RaceCar car;
     car.connect("132.68.36.50",5555,"132.68.36.20");

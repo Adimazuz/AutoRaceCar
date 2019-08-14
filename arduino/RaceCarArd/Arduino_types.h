@@ -7,7 +7,7 @@ struct Flow
   short deltaX;
   short deltaY;
   float range;
-  short t;
+  short mili_sec;
 };
 
 #pragma pack(pop)
