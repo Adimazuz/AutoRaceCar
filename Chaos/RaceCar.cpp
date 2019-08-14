@@ -12,33 +12,41 @@
 #define MAX_NUM_USERS 5
 RaceCar::RaceCar()
 {
-	_arduino = std::make_shared<Arduino>();
+    _arduino = std::make_shared<Arduino>();
+    _bitcraze = std::make_shared<BitCraze>();
     _tcp_client = ITcpClient::create();
     _tcp_server = ITcpServer::create();
 
     _camera_thread = nullptr;
     _serial_thread = nullptr;
     _is_running = true;
-    _is_bitcraze_connected = true;
 
 }
 
 RaceCar::~RaceCar()
 {
 
-    std::cout << "enter distruction" <<std::endl;
+    std::cout << "enter diestruction" <<std::endl;
     if (_camera_thread){
-        std::cout << "camera distructor" <<std::endl;
+        std::cout << "camera destructor" <<std::endl;
          _camera_thread->join();
-         std::cout << "camera finished" <<std::endl;
+         std::cout << "camera destruction finished" <<std::endl;
      }
     if (_serial_thread){
-        std::cout << "serial distructor" <<std::endl;
+        std::cout << "serial destructor" <<std::endl;
         _arduino->stop();
 
         _serial_thread->join();
-        std::cout << "seial finished" <<std::endl;
+        std::cout << "seial destruction finished" <<std::endl;
      }
+    if (_bitcraze_thred){
+        std::cout << "bitcraze destructor" <<std::endl;
+//        _bitcraze->stop();
+
+        _bitcraze_thred->join();
+        std::cout << "bitcraze destruction finished" <<std::endl;
+
+    }
 }
 
 RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const string& server_ip)
@@ -75,6 +83,15 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
         std::cout << "Arduino NOT CONNECTED" <<std::endl;
     }
 
+    if(_bitcraze->connect()){
+        _is_bitcraze_connected = true;
+        std::cout << "connected to Bitcraze" <<std::endl;
+    } else {
+        std::cout << "bitcraze NOT CONNECTED" <<std::endl;
+    }
+
+
+
     _tcp_server->bind(server_ip,SERVER_PORT,MAX_NUM_USERS);
     if(_tcp_server->isBind()){
         std::cout << "bind success" << std::endl;
@@ -93,59 +110,56 @@ RaceCar &RaceCar::run()
 {
     std::cout << "enter run" <<std::endl;
     if(_is_tcp_client_connected && _is_cammera_connected){
-             std::cout << "camera before setuped" <<std::endl;
             _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
             _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
-            std::cout << "camera setuped" <<std::endl;
+            std::cout << "Camera setuped" <<std::endl;
             _camera.startCamera();
-            std::cout << "camera started" <<std::endl;
+            std::cout << "Camera started" <<std::endl;
             _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraOutput,this);
-            std::cout << "camera thread opened" <<std::endl;
     }
     if(_is_arduino_connected){
-             std::cout << "connected to Arduino" <<std::endl;
+//            std::cout << "connected to Arduino" <<std::endl;
+            _serial_thread = std::make_shared<std::thread>(&RaceCar::arduinoCommunications,this);
+    }
+    if(_is_bitcraze_connected){
+//        std::cout << "connected to BitCraze" <<std::endl;
+        _bitcraze = std::make_shared<std::thread>(&RaceCar::getBitCrazeOutput,this);
 
-           _serial_thread = std::make_shared<std::thread>(&RaceCar::arduinoCommunications,this);
     }
 }
 
 
 RaceCar &RaceCar::parseCmdString(const char cmd)
 {
-//    std::cout << "cmd " << cmd[0]<< std::endl;
+
     switch (cmd) {
 
-	case 's': {
+    case 's': {
         _arduino->stop();
-		break;
-	}
-	case 'u': {
+        break;
+    }
+    case 'u': {
         _arduino->changeSpeedBy(1);
         break;
-	}
-	case 'd': {
+    }
+    case 'd': {
         _arduino->changeSpeedBy(-1);
-		break;
-	}
-	case 'l': {
+        break;
+    }
+    case 'l': {
         _arduino->changeAngleBy(-2);
-		break;
-	}
-	case 'r': {
+        break;
+    }
+    case 'r': {
         _arduino->changeAngleBy(2);
-		break;
-	}
+        break;
+    }
     case 'q': {
         _is_running=false;
         break;
     }
-    case '#': {
-        //TODO add function
-        //TODO return to private
-        break;
-    }
     default: _arduino->stop();
-	}
+    }
 
 }
 
@@ -162,21 +176,9 @@ RaceCar &RaceCar::arduinoCommunications()
         if(_tcp_server->hasConnectionWithSocket(_socket))
         {
             char cmd = ' ';
-            Flow data;
             _tcp_server->receive(_socket,&cmd, 1);
-            if(cmd == ' ' && _is_bitcraze_connected)
-            {
-                data =_arduino->getFlowOutput();
-                if (!data.range){ // check if bitcraze connected
-                    _is_bitcraze_connected = false;
-                    std::cout << "bitcraze DISCONNECTED" << std::endl;
-                } else {
-                    _is_bitcraze_connected = true;
-                    std::cout << data.deltaX <<"..."<< data.deltaY << "..." << data.range <<"..." << data.mili_sec <<std::endl;
-                }
-            }else {
-                parseCmdString(cmd);
-            }
+            parseCmdString(cmd);
+
         }
 
         else
@@ -188,17 +190,17 @@ RaceCar &RaceCar::arduinoCommunications()
                 _tcp_server->setClientUnblocking(_socket,true);
                 std::cout << "someone connected" << std::endl;
             }
-        }
+        }getBitCrazeOutput
 
     }
-    std::cout <<" exit from arduino looop "<< _is_running << std::endl;
+    std::cout <<"CarControl thread finished" << std::endl;
     _arduino->stop();
     return *this;
 }
 
 RaceCar &RaceCar::getCameraOutput()
 {
-    std::cout << "from camera thread " <<std::endl;
+    std::cout << "enter Camera thread" <<std::endl;
     while (_is_running && _tcp_client->isConnected())
     {
 //        std::cout << _is_running <<std::endl;
@@ -241,8 +243,24 @@ RaceCar &RaceCar::getCameraOutput()
 
 
     }
-    std::cout << "end camera thread" <<std::endl;
+    std::cout << "Camera thread finished" <<std::endl;
     return *this;
+}
+
+RaceCar &RaceCar::getBitCrazeOutput()
+{
+    std::cout << "enter BitCraze thread" << std::endl;
+
+    while (_is_running) {
+        Flow flow_data = _bitcraze->getFlowOutput();
+
+
+
+
+
+
+    }
+    std::cout << "BitCraze thread finished" << std::endl;
 }
 
 RaceCar  &RaceCar::sendFlowOutput(Flow data)
@@ -252,26 +270,26 @@ RaceCar  &RaceCar::sendFlowOutput(Flow data)
 }
 static void splitString(const string &str, std::vector<string> &output)
 {
-	string::size_type start = 0; // Where to start
-	string::size_type last = str.find_first_of(" "); // Finds the first space
+    string::size_type start = 0; // Where to start
+    string::size_type last = str.find_first_of(" "); // Finds the first space
 
-	// npos means that the find_first_of wasn't able to find what it was looking for
-	// in this case it means it couldn't find another space so we are at the end of the
-	// words in the string.
-	while (last != string::npos)
-	{
-		// If last is greater then start we have a word ready
-		if (last > start)
-		{
-			output.push_back(str.substr(start, last - start)); // Puts the word into a vector look into how the method substr() works
-		}
+    // npos means that the find_first_of wasn't able to find what it was looking for
+    // in this case it means it couldn't find another space so we are at the end of the
+    // words in the string.
+    while (last != string::npos)
+    {
+        // If last is greater then start we have a word ready
+        if (last > start)
+        {
+            output.push_back(str.substr(start, last - start)); // Puts the word into a vector look into how the method substr() works
+        }
 
-		start = ++last; // Reset start to the first character of the next word
-		last = str.find_first_of(" ", last); // This means find the first space and we start searching at the first character of the next word
-	}
+        start = ++last; // Reset start to the first character of the next word
+        last = str.find_first_of(" ", last); // This means find the first space and we start searching at the first character of the next word
+    }
 
-	// This will pickup the last word in the file since it won't be added to the vector inside our loop
-	output.push_back(str.substr(start));
+    // This will pickup the last word in the file since it won't be added to the vector inside our loop
+    output.push_back(str.substr(start));
 }
 
 

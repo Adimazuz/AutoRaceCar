@@ -14,7 +14,7 @@
 class RaceCar {
 public:
     RaceCar &connect(const string& client_ip, const unsigned short& client_port,const string& server_ip);
-	RaceCar &run();
+    RaceCar &run();
     RaceCar();
     ~RaceCar();
 
@@ -23,13 +23,15 @@ public:
 
 
 private:
-	std::shared_ptr<MotorController> _arduino;
+    std::shared_ptr<MotorController> _arduino;
+    std::shared_ptr<BitCraze> _bitcraze; //TODO add  BitCraze files to project
     RealSense _camera;
-	std::shared_ptr<ITcpClient> _tcp_client;
+    std::shared_ptr<ITcpClient> _tcp_client;
 
     std::shared_ptr<ITcpServer> _tcp_server;
     std::shared_ptr<std::thread> _camera_thread;
-    std::shared_ptr<std::thread> _serial_thread;
+    std::shared_ptr<std::thread> _carcontrol_thread;
+    std::shared_ptr<std::thread> _bitcraze_thread;
     Socket _socket;
 
     bool _is_tcp_client_connected;
@@ -43,6 +45,7 @@ private:
     RaceCar &parseCmdString(const char cmd);
     RaceCar &arduinoCommunications();
     RaceCar &getCameraOutput();
-    RaceCar &sendFlowOutput(Flow data);
+//    RaceCar &sendFlowOutput(Flow data);
+    RaceCar &getBitCrazeOutput();
 
 };
