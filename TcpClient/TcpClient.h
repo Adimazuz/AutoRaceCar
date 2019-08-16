@@ -34,6 +34,8 @@ public:
 
     virtual void send(const char* data, const uint &len) noexcept override;
 
+    virtual void disconnect() override;
+
     virtual ~TcpClient() override;
 
 private: //functions

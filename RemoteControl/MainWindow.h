@@ -64,7 +64,7 @@ private:
     QTimer _key_timer;
     Socket _client_sock;
     std::shared_ptr<ITcpServer> _server;
-    std::shared_ptr<ITcpClient> _chaos;
+    std::shared_ptr<ITcpClient> _controller;
     bool _is_run;
     std::shared_ptr<std::thread> _camera_thread;
     JpegDecompressor _decompressor;

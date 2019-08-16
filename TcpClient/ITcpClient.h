@@ -66,6 +66,8 @@ public:
 
     virtual void setUnblocking(const bool &new_val) = 0;
 
+    virtual void disconnect() = 0;
+
     /**
      * @brief receive data from the server
      * @param len - the length of the data[bytes]

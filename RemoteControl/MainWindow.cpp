@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _key_timer(),
     _client_sock(-1),
     _server(nullptr),
-    _chaos(nullptr),
+    _controller(nullptr),
     _is_run(true),
     _camera_thread(nullptr)
 {
@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if(_chaos->isConnected())
+    if(_controller->isConnected())
     {
         if(!_keys.contains(event->key()))
         {
@@ -36,7 +36,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
-    if(_chaos->isConnected())
+    if(_controller->isConnected())
     {
         if(event->isAutoRepeat()){
             setFocus();
@@ -61,9 +61,9 @@ void MainWindow::handleKey()
     {
         if(isArrowKey(key))
         {
-            if(_chaos->isConnected())
+            if(_controller->isConnected())
             {
-                _chaos->send(keyToString(key));
+                _controller->send(keyToString(key));
             }
             else
             {
@@ -113,7 +113,7 @@ void MainWindow::bindServer()
     if(_server->isBind())
     {
         info("bind success");
-        _server->setBlocking(true);
+        _server->setUnblocking(true);
     }
     else
     {
@@ -137,7 +137,7 @@ void MainWindow::initTimer(const int &interval)
 
 void MainWindow::initClient()
 {
-    _chaos = ITcpClient::create();
+    _controller = ITcpClient::create();
 }
 
 void MainWindow::initServer()
@@ -245,8 +245,8 @@ void MainWindow::on_connect_clicked()
         string controller_ip = ui->controller_ip->text().toStdString();
         unsigned short controller_port = ui->controller_port->text().toUShort();
 
-        _chaos->connect(controller_ip, controller_port);
-        if(_chaos->isConnected())
+        _controller->connect(controller_ip, controller_port);
+        if(_controller->isConnected())
         {
             info("controller connection established successfully");
             markControllerConnection(true);

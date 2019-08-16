@@ -160,6 +160,15 @@ void TcpClient::send(const char *data, const uint &len) noexcept
     }
 }
 
+void TcpClient::disconnect()
+{
+#ifdef _WIN32
+    closesocket(_socket);
+#else
+    close(_socket);
+#endif
+}
+
 sockaddr_in TcpClient::buildAddress(const string &ip, const unsigned short &port) const noexcept
 {
     sockaddr_in address;
@@ -179,9 +188,5 @@ sockaddr_in TcpClient::buildAddress(const string &ip, const unsigned short &port
 
 TcpClient::~TcpClient()
 {
-#ifdef _WIN32
-    closesocket(_socket);
-#else
-    close(_socket);
-#endif
+    disconnect();
 }
