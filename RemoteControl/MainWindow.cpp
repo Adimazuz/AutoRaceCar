@@ -67,6 +67,7 @@ void MainWindow::handleKey()
             }
             else
             {
+                _controller->disconnect();
                 markControllerConnection(false);
             }
         }
@@ -150,6 +151,14 @@ void MainWindow::initDesign()
 {
     markCameraConnection(false);
     markControllerConnection(false);
+
+    QPalette p;
+    p.setColor(QPalette::ColorRole::Foreground, QColor(Qt::blue));
+
+    ui->optical_flow->setPalette(p);
+    ui->gyro->setPalette(p);
+    ui->accelometer->setPalette(p);
+
 }
 
 void MainWindow::initThreads()
@@ -209,16 +218,22 @@ void MainWindow::cameraThread()
             markCameraConnection(true);
 
             ColorImage color_image = {};
-            _server->receive(_client_sock, reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
-             color_image.data = new uint8[color_image.size];
-            _server->receive(_client_sock, reinterpret_cast<char*>(color_image.data), static_cast<uint32>(color_image.size));
+            uint64 compressed_size = 0;
+//            _server->receive(_client_sock, reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
+            _server->receive(_client_sock, reinterpret_cast<char*>(&compressed_size), sizeof(uint64));
+            uint8 *compressed_data = new uint8[compressed_size];
+//            color_image.data = new uint8[color_image.size];
+            _server->receive(_client_sock, reinterpret_cast<char*>(compressed_data), compressed_size);
+            _decompressor.decompress(compressed_data, compressed_size);
+            uint8 *output = _decompressor.getOutput();
 
-            QImage image(static_cast<unsigned char*>(color_image.data), static_cast<int>(color_image.width),
-                         static_cast<int>(color_image.height), QImage::Format_RGB888);
 
-            delete [] color_image.data;
+            QImage image(static_cast<unsigned char*>(output), static_cast<int>(640),
+                         static_cast<int>(480), QImage::Format_RGB888);
 
-            emit imageReady(image);
+            handleCamera(image);
+//            delete [] color_image.data;
+            delete [] compressed_data;
         }
         else
         {
