@@ -26,9 +26,6 @@ public:
 	
     virtual Arduino &driveCurrentState();
 
-    virtual Arduino &requestFlowData();
-
-    virtual Flow getFlowOutput() override;
 
    ~Arduino();
 

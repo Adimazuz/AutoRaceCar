@@ -1,13 +1,14 @@
 #include "Arduino.h"
 #include <iostream>
 #include <vector>
+#include <math.h>
 using std::string;
 
 
 bool Arduino::connect()
 {
     m_serial = ISerial::create();
-    _is_connected =  m_serial->connect();
+    _is_connected =  m_serial->connect("/dev/ttyUSB0");
     return _is_connected;
 
 }
@@ -121,13 +122,6 @@ Arduino &Arduino::driveCurrentState(){
     sendDriveCommand();
 }
 
-Arduino& Arduino::requestFlowData(){
-   m_serial->write("#");
-}
-
-
-
-
 Arduino::~Arduino()
 {
     if(_is_connected)
@@ -135,17 +129,7 @@ Arduino::~Arduino()
         drive(0,90);
     }
 }
-/**
- * @brief Arduino::getFlowOutput
- * @return data from bitcraze, after timeout clocks return empty Flow
- */
-Flow Arduino::getFlowOutput()
-{
-    Flow output = {};
-    requestFlowData();
-    m_serial->read(reinterpret_cast<char*>(&output), sizeof(Flow));
-    return output;
-}
+
 
 //==========================private==================================
 
@@ -157,6 +141,10 @@ void Arduino::sendDriveCommand(){
     string cmd_string = createCommandMsg(m_current_speed,m_current_angle);
     m_serial->write(cmd_string);
 }
+
+//int Arduino::calcDistance(int sensor_value,int range){
+//	return ( (sensor_value * range) / (SENSOR_RESULUTION * SCALAR ) ) * 2 * tan(FIELD_OF_VIEW/2);
+//}
 
 //int main() {
 //    Arduino car;

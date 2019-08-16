@@ -36,6 +36,7 @@ void JpegCompressor::setParams(const uint32 &width, const uint32 &height,
 void JpegCompressor::compress(const uint8 *input)
 {
     tjFree(_output);
+    _output = nullptr;
     _handle = tjInitCompress();
 
     TJPF format = TJPF_RGB;

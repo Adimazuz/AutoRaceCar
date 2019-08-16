@@ -7,21 +7,24 @@
 #include "RaceCar.h"
 
 
+
 int main() {
 
+
+
 //    auto s = ISerial::create();
-//    auto res = s->connect();
+//    auto res = s->connect("/dev/ttyUSB0");
 //    if(res)
 //    {
 //        std::cout << "arduino connected" << std::endl;
 //    }
-//    Flow data = {};
+////    Flow data = {};
 
 //    while(true)
 //    {
 //        s->write("#");
-//        s->read(reinterpret_cast<char*>(&data), sizeof(Flow));
-//        std::cout << data.deltaX << " " << data.deltaY << " " << data.range << " " << data.mili_sec << std::endl;
+////        s->read(reinterpret_cast<char*>(&data), sizeof(Flow));
+////        std::cout << data.deltaX << " " << data.deltaY << " " << data.range << " " << data.mili_sec << std::endl;
 //    }
 
     RaceCar car;

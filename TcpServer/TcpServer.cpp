@@ -124,6 +124,11 @@ void TcpServer::receive(const Socket &socket, char *dst, const uint &len)
 
 Socket TcpServer::waitForConnections(const uint &timeout_sec)
 {
+    if(!_is_bind)
+    {
+        return -1;
+    }
+
     Address address = {};
 
     sockaddr_in client = buildAddress(address.ip, address.port);
