@@ -23,5 +23,5 @@ public:
 private:
 
     std::shared_ptr<ISerial> m_serial;
-    bool _is_connected = false;
+    bool _is_connected;
 };
