@@ -1,6 +1,7 @@
 #pragma once
 
 #include <thread>
+#include <mutex>
 
 #include "MotorController.h"
 #include "RaceCar.h"
@@ -10,6 +11,8 @@
 #include "Arduino_types.h"
 #include "JpegCompressor.h"
 #include "bitcraze.h"
+#include "Chaos_types.h"
+
 
 
 class RaceCar {
@@ -19,15 +22,25 @@ public:
     RaceCar();
     ~RaceCar();
 
+
     bool _is_running;
 
+private: // methods
+    PacketToRemote::ColorDataAndPeriphelSensors buildColorPacket(const Camera::ColorImage &image);
+    PacketToRemote::header buildColorHeader();
+    RaceCar &parseCmdString(const char cmd);
+    RaceCar &arduinoCommunications();
+    RaceCar &getCameraOutput();
+//    RaceCar &sendFlowOutput(Flow data);
+    RaceCar &getBitCrazeOutput();
 
-
-private:
+private: //members
     std::shared_ptr<MotorController> _motor_control;
     Bitcraze _bitcraze; //TODO add  BitCraze files to project
     RealSense _camera;
     std::shared_ptr<ITcpClient> _tcp_client;
+    Flow _flow_data;
+    std::mutex _flow_mtx;
 
     std::shared_ptr<ITcpServer> _tcp_server;
     std::shared_ptr<std::thread> _camera_thread;
@@ -43,10 +56,6 @@ private:
 
     JpegCompressor _jpeg_comp;
 	
-    RaceCar &parseCmdString(const char cmd);
-    RaceCar &arduinoCommunications();
-    RaceCar &getCameraOutput();
-//    RaceCar &sendFlowOutput(Flow data);
-    RaceCar &getBitCrazeOutput();
+
 
 };

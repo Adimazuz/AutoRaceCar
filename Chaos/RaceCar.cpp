@@ -113,6 +113,8 @@ RaceCar &RaceCar::run()
     if(_is_tcp_client_connected && _is_cammera_connected){
             _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
             _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
+            _camera.setupGyro();
+            _camera.setupAccel();
             std::cout << "Camera setuped" <<std::endl;
             _camera.startCamera();
             std::cout << "Camera started" <<std::endl;
@@ -200,6 +202,37 @@ RaceCar &RaceCar::arduinoCommunications()
     return *this;
 }
 
+PacketToRemote::ColorDataAndPeriphelSensors RaceCar::buildColorPacket(const Camera::ColorImage &image){
+
+    PacketToRemote::ColorDataAndPeriphelSensors packet = {};
+
+    packet.accel_data = _camera.getAccelData();
+    packet.euler_angl = _camera.getEulerAngels();
+
+    _flow_mtx.lock();
+    packet.flow_data = _flow_data;
+    _flow_mtx.unlock();
+
+    packet.image.frame_num = image.frame_num;
+    packet.image.height = image.height;
+    packet.image.width = image.width;
+    packet.image.size = image.size;
+    packet.image.timestamp_ms = image.timestamp_ms;
+
+    _jpeg_comp.compress(image.data);
+    packet.image.compressed_size = _jpeg_comp.getCompressedSize();
+    packet.image.compresed_data = _jpeg_comp.getOutput();
+
+    return packet;
+}
+
+PacketToRemote::header RaceCar::buildColorHeader(){
+    PacketToRemote::header header = {};
+    header.type_code = PacketToRemote::COLOR_HEADER;
+    header.total_size = sizeof(PacketToRemote::ColorDataAndPeriphelSensors)-sizeof(PacketToRemote::ColorImage::compresed_data);
+    return header;
+}
+
 RaceCar &RaceCar::getCameraOutput()
 {
     std::cout << "enter Camera thread" <<std::endl;
@@ -208,41 +241,13 @@ RaceCar &RaceCar::getCameraOutput()
 //        std::cout << _is_running <<std::endl;
         _camera.captureFrame();
         Camera::ColorImage image=_camera.getColorImage();
-//        Camera::DepthImage depth_image = _camera.getDepthImage();
 
-        auto len = image.size;
-//        auto depth_len = depth_image.size;
+        PacketToRemote::ColorDataAndPeriphelSensors packet = buildColorPacket(image);
+        PacketToRemote::header header = buildColorHeader();
 
-//        std::cout << "image len:"<< len <<std::endl;
-
-//        std::cout << "image len:"<< depth_len <<std::endl;
-//        std::cout << depth_image.depth_scale  <<std::endl;
-
-        //compresed send test
-//        auto len_orig=len;
-//        std::vector<unsigned char> compresed_image(len);
-//        compress(compresed_image.data(),&len,image.data,len_orig);
-        //std::cout << "org len: "<< len_orig <<" compresed len:"<< len <<std::endl;
-
-        //color send test
-//        std::cout << "send data " << _tcp_client->isConnected() << std::endl;
-//        _jpeg_comp.compress(image.data);
-        auto compressed_size = _jpeg_comp.getCompressedSize();
-//        std::cout << "origin size: " << len << " but wait, the commpressed size is: " << compressed_size << std::endl;
-        _tcp_client->send(reinterpret_cast<char*>(&image),sizeof(image)-sizeof(image.data));
-        //std::cout << "sent len" <<std::endl;
-        _tcp_client->send(reinterpret_cast<const char*>(image.data),len);
-//        std::cout << "finished send data" << _tcp_client->isConnected() << std::endl;
-
-//        //depth send test
-//        _tcp_client->send(reinterpret_cast<char*>(&depth_image),sizeof(depth_image)-sizeof(depth_image.data));
-//        //std::cout << "sent len" <<std::endl;
-//        _tcp_client->send(reinterpret_cast<const char*>(depth_image.data),depth_len);
-
-
-
-
-
+        _tcp_client->send(reinterpret_cast<char*>(&header), sizeof(header));
+        _tcp_client->send(reinterpret_cast<char*>(&packet), header.total_size);
+        _tcp_client->send(reinterpret_cast<char*>(packet.image.compresed_data), packet.image.compressed_size);
 
     }
     std::cout << "Camera thread finished" <<std::endl;
@@ -257,6 +262,8 @@ RaceCar &RaceCar::getBitCrazeOutput()
         Flow flow_data = _bitcraze.getFlowOutput(); //TODO send flow to asaf
 //        std::cout << flow_data.deltaX <<"..." << flow_data.deltaY << "..."<<flow_data.range << "..." <<flow_data.mili_sec << std::endl;
 
+        std::lock_guard<std::mutex> lock(_flow_mtx);
+        _flow_data = flow_data;
 
     }
     std::cout << "BitCraze thread finished" << std::endl;

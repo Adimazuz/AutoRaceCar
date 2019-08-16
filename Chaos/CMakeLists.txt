@@ -10,6 +10,7 @@ set(SOURCE_FILES
     main.cpp
     RaceCar.cpp
     RaceCar.h
+    Chaos_types.h
     ${CMAKE_CURRENT_SOURCE_DIR}/../TcpClient/TcpClient.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../TcpClient/ITcpClient.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../motorAPI/Arduino.cpp
