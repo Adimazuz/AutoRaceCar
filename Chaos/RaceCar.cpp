@@ -12,7 +12,7 @@
 #define MAX_NUM_USERS 5
 RaceCar::RaceCar()
 {
-    _arduino = std::make_shared<Arduino>();
+    _motor_control = std::make_shared<Arduino>();
 //    _bitcraze = std::make_shared<Bitcraze>();
     _tcp_client = ITcpClient::create();
     _tcp_server = ITcpServer::create();
@@ -35,7 +35,7 @@ RaceCar::~RaceCar()
      }
     if (_carcontrol_thread){
         std::cout << "serial destructor" <<std::endl;
-        _arduino->stop();
+        _motor_control->stop();
 
         _carcontrol_thread->join();
         std::cout << "seial destruction finished" <<std::endl;
@@ -77,8 +77,8 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
         std::cout << "server NOT CONNECTED" <<std::endl;
     }
 
-    if(_arduino->connect()){
-        _is_arduino_connected = true;
+    if(_motor_control->connect()){
+        _is_motor_control_connected = true;
         std::cout << "connected to Arduino" <<std::endl;
     } else {
         std::cout << "Arduino NOT CONNECTED" <<std::endl;
@@ -93,7 +93,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 
 
 
-    _tcp_server->bind(server_ip,SERVER_PORT,MAX_NUM_USERS);
+    _tcp_server->bind(server_ip,SERVER_PORT,MAX_NUM_USERS); //to allow athers to connect
     if(_tcp_server->isBind()){
         std::cout << "bind success" << std::endl;
         _tcp_server->setUnblocking(true);
@@ -118,8 +118,8 @@ RaceCar &RaceCar::run()
             std::cout << "Camera started" <<std::endl;
             _camera_thread = std::make_shared<std::thread>(&RaceCar::getCameraOutput,this);
     }
-    if(_is_arduino_connected){
-            std::cout << "connected to Arduino" <<std::endl;
+    if(_is_motor_control_connected && _tcp_server->isBind()){
+            std::cout << "connected to Motor Control" <<std::endl;
             _carcontrol_thread = std::make_shared<std::thread>(&RaceCar::arduinoCommunications,this);
     }
     if(_is_bitcraze_connected){
@@ -136,30 +136,30 @@ RaceCar &RaceCar::parseCmdString(const char cmd)
     switch (cmd) {
 
     case 's': {
-        _arduino->stop();
+        _motor_control->stop();
         break;
     }
     case 'u': {
-        _arduino->changeSpeedBy(1);
+        _motor_control->changeSpeedBy(1);
         break;
     }
     case 'd': {
-        _arduino->changeSpeedBy(-1);
+        _motor_control->changeSpeedBy(-1);
         break;
     }
     case 'l': {
-        _arduino->changeAngleBy(-2);
+        _motor_control->changeAngleBy(-2);
         break;
     }
     case 'r': {
-        _arduino->changeAngleBy(2);
+        _motor_control->changeAngleBy(2);
         break;
     }
     case 'q': {
         _is_running=false;
         break;
     }
-    default: _arduino->stop();
+//    default: _motor_control->stop();
     }
 
 }
@@ -179,6 +179,7 @@ RaceCar &RaceCar::arduinoCommunications()
             char cmd = ' ';
             _tcp_server->receive(_socket,&cmd, 1);
             parseCmdString(cmd);
+//            std::cout << cmd << std::endl;
 
         }
 
@@ -195,7 +196,7 @@ RaceCar &RaceCar::arduinoCommunications()
 
     }
     std::cout <<"CarControl thread finished" << std::endl;
-    _arduino->stop();
+    _motor_control->stop();
     return *this;
 }
 
@@ -254,7 +255,7 @@ RaceCar &RaceCar::getBitCrazeOutput()
     _bitcraze.requestFlowData();
     while (_is_running) {
         Flow flow_data = _bitcraze.getFlowOutput(); //TODO send flow to asaf
-        std::cout << flow_data.deltaX <<"..." << flow_data.deltaY << "..."<<flow_data.range << "..." <<flow_data.mili_sec << std::endl;
+//        std::cout << flow_data.deltaX <<"..." << flow_data.deltaY << "..."<<flow_data.range << "..." <<flow_data.mili_sec << std::endl;
 
 
     }

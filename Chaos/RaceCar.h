@@ -24,7 +24,7 @@ public:
 
 
 private:
-    std::shared_ptr<MotorController> _arduino;
+    std::shared_ptr<MotorController> _motor_control;
     Bitcraze _bitcraze; //TODO add  BitCraze files to project
     RealSense _camera;
     std::shared_ptr<ITcpClient> _tcp_client;
@@ -37,7 +37,7 @@ private:
 
     bool _is_tcp_client_connected;
     bool _is_cammera_connected;
-    bool _is_arduino_connected;
+    bool _is_motor_control_connected;
     bool _is_tcp_server_connected;
     bool _is_bitcraze_connected;
 

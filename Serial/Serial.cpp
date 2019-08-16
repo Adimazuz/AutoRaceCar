@@ -47,7 +47,7 @@ bool Serial::connect(const string &path)
 
 Serial &Serial::write(const string &msg)
 {
-    tcflush(_fd, TCIOFLUSH);
+//    tcflush(_fd, TCIOFLUSH);
     auto bytes_written = ::write(_fd, msg.data(), msg.size());
 
 
