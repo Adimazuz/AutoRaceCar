@@ -10,6 +10,7 @@
 #include "ITcpClient.h"
 #include "ITcpServer.h"
 #include "JpegDecompressor.h"
+#include "Image.h"
 
 namespace Ui {
 class MainWindow;
@@ -45,6 +46,8 @@ private:
     void initDesign();
     void initThreads();
     void init();
+    void receiveImageMetadata(Image &image);
+    uint64 receiveCompressedSize();
     void markCameraConnection(const bool &is_connected);
     void markControllerConnection(const bool &is_connected);
     void cameraThread();

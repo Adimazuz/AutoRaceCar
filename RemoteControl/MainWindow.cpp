@@ -1,10 +1,10 @@
 #include <iostream>
 #include <QKeyEvent>
-#include <zlib.h>
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
-#include "RemoteControl_types.h"
+#include "Image.h"
+#include "Chaos_types.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -110,7 +110,8 @@ void MainWindow::info(const string &msg)
 
 void MainWindow::bindServer()
 {
-    _server->bind("132.68.36.50", 5555, 5);
+//    _server->bind("132.68.36.50", 5555, 5);
+    _server->bind("192.168.1.75", 5555, 5);
     if(_server->isBind())
     {
         info("bind success");
@@ -177,6 +178,20 @@ void MainWindow::init()
     initThreads();
 }
 
+void MainWindow::receiveImageMetadata(Image &image)
+{
+
+}
+
+uint64 MainWindow::receiveCompressedSize()
+{
+    uint64 compressed_size = 0;
+
+    _server->receive(_client_sock, reinterpret_cast<char*>(&compressed_size), sizeof(uint64));
+
+    return compressed_size;
+}
+
 void MainWindow::markCameraConnection(const bool &is_connected)
 {
     QPalette p;
@@ -209,6 +224,8 @@ void MainWindow::markControllerConnection(const bool &is_connected)
 
 void MainWindow::cameraThread()
 {
+    std::vector<uint8> compressed_image(1920*1200*3);
+
     while(_is_run)
     {
         if(_server->hasConnectionWithSocket(_client_sock))
@@ -217,23 +234,43 @@ void MainWindow::cameraThread()
 
             markCameraConnection(true);
 
-            ColorImage color_image = {};
-            uint64 compressed_size = 0;
-//            _server->receive(_client_sock, reinterpret_cast<char*>(&color_image), sizeof(color_image) - sizeof(color_image.data));
-            _server->receive(_client_sock, reinterpret_cast<char*>(&compressed_size), sizeof(uint64));
-            uint8 *compressed_data = new uint8[compressed_size];
-//            color_image.data = new uint8[color_image.size];
-            _server->receive(_client_sock, reinterpret_cast<char*>(compressed_data), compressed_size);
-            _decompressor.decompress(compressed_data, compressed_size);
+            PacketToRemote::header header = {};
+            _server->receive(_client_sock, reinterpret_cast<char*>(&header), sizeof(header));
+
+            PacketToRemote::ColorDataAndPeriphelSensors packet = {};
+
+            _server->receive(_client_sock, reinterpret_cast<char*>(&packet),
+                             static_cast<uint32>(header.total_size));
+
+//            packet.image.compresed_data = new uint8[packet.image.compressed_size];
+
+//            _server->receive(_client_sock, reinterpret_cast<char*>(packet.image.compresed_data),
+//                             static_cast<uint32>(packet.image.compressed_size));
+
+            _server->receive(_client_sock, reinterpret_cast<char*>(compressed_image.data()),
+                             static_cast<uint32>(packet.image.compressed_size));
+
+//            std::vector<uint8> uncompressed_data(packet.image.size);
+
+            _decompressor.decompress(compressed_image.data(), packet.image.compressed_size);
             uint8 *output = _decompressor.getOutput();
 
 
-            QImage image(static_cast<unsigned char*>(output), static_cast<int>(640),
-                         static_cast<int>(480), QImage::Format_RGB888);
+            QImage q_image(static_cast<unsigned char*>(output), static_cast<int>(packet.image.width),
+                         static_cast<int>(packet.image.height), QImage::Format_RGB888);
 
-            handleCamera(image);
-//            delete [] color_image.data;
-            delete [] compressed_data;
+            handleCamera(q_image);
+            ui->dx->setText(QString::number(packet.flow_data.deltaX));
+            ui->dy->setText(QString::number(packet.flow_data.deltaY));
+            ui->range->setText(QString::number(packet.flow_data.range));
+            ui->x->setText(QString::number(packet.accel_data.x));
+            ui->y->setText(QString::number(packet.accel_data.y));
+            ui->z->setText(QString::number(packet.accel_data.z));
+            ui->psi->setText(QString::number(packet.euler_angl.x_pitch));
+            ui->theta->setText(QString::number(packet.euler_angl.y_yaw));
+            ui->phi->setText(QString::number(packet.euler_angl.z_roll));
+
+//            delete [] packet.image.compresed_data;
         }
         else
         {

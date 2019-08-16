@@ -46,5 +46,8 @@ INCLUDEPATH += \
     $$PWD/../TcpClient/ \
     $$PWD/../TcpServer/ \
     $$PWD/../jpeg/ \
+    $$PWD/../Chaos/ \
+    $$PWD/../cameraAPI/ \
+    $$PWD/../arduino/bitcraze/ \
 
 LIBS += -lz -lturbojpeg

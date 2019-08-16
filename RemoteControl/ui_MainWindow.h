@@ -60,10 +60,10 @@ public:
     QLabel *lbl_theta;
     QLabel *dx;
     QLabel *label_6;
-    QLabel *label_9;
-    QLabel *label_5;
+    QLabel *z;
+    QLabel *y;
     QLabel *label_4;
-    QLabel *label_3;
+    QLabel *x;
     QSpacerItem *verticalSpacer_2;
     QSpacerItem *verticalSpacer;
     QLabel *controller;
@@ -279,19 +279,19 @@ public:
 
         gridLayout_2->addWidget(label_6, 14, 0, 1, 1);
 
-        label_9 = new QLabel(centralWidget);
-        label_9->setObjectName(QStringLiteral("label_9"));
-        label_9->setFrameShape(QFrame::StyledPanel);
-        label_9->setAlignment(Qt::AlignCenter);
+        z = new QLabel(centralWidget);
+        z->setObjectName(QStringLiteral("z"));
+        z->setFrameShape(QFrame::StyledPanel);
+        z->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(label_9, 15, 0, 1, 1);
+        gridLayout_2->addWidget(z, 15, 0, 1, 1);
 
-        label_5 = new QLabel(centralWidget);
-        label_5->setObjectName(QStringLiteral("label_5"));
-        label_5->setFrameShape(QFrame::StyledPanel);
-        label_5->setAlignment(Qt::AlignCenter);
+        y = new QLabel(centralWidget);
+        y->setObjectName(QStringLiteral("y"));
+        y->setFrameShape(QFrame::StyledPanel);
+        y->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(label_5, 13, 0, 1, 1);
+        gridLayout_2->addWidget(y, 13, 0, 1, 1);
 
         label_4 = new QLabel(centralWidget);
         label_4->setObjectName(QStringLiteral("label_4"));
@@ -299,12 +299,12 @@ public:
 
         gridLayout_2->addWidget(label_4, 12, 0, 1, 1);
 
-        label_3 = new QLabel(centralWidget);
-        label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setFrameShape(QFrame::StyledPanel);
-        label_3->setAlignment(Qt::AlignCenter);
+        x = new QLabel(centralWidget);
+        x->setObjectName(QStringLiteral("x"));
+        x->setFrameShape(QFrame::StyledPanel);
+        x->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(label_3, 11, 0, 1, 1);
+        gridLayout_2->addWidget(x, 11, 0, 1, 1);
 
         verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
@@ -392,10 +392,10 @@ public:
         lbl_theta->setText(QApplication::translate("MainWindow", "theta", nullptr));
         dx->setText(QString());
         label_6->setText(QApplication::translate("MainWindow", "z", nullptr));
-        label_9->setText(QString());
-        label_5->setText(QString());
+        z->setText(QString());
+        y->setText(QString());
         label_4->setText(QApplication::translate("MainWindow", "y", nullptr));
-        label_3->setText(QString());
+        x->setText(QString());
         controller->setText(QApplication::translate("MainWindow", "controller", nullptr));
         menufile->setTitle(QApplication::translate("MainWindow", "file", nullptr));
         menusettings->setTitle(QApplication::translate("MainWindow", "settings", nullptr));

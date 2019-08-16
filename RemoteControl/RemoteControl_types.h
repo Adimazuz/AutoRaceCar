@@ -14,14 +14,13 @@ using real64 = double;
 
 #pragma pack(push, 1)
 
-struct ColorImage
+struct ImageMetaData
 {
     uint64 frame_num;
     uint64 size;
     int64 timestamp_ms;
     uint32 width;
     uint32 height;
-    unsigned char *data;
 };
 
 #pragma pack(pop)
