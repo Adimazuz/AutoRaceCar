@@ -1,8 +1,8 @@
 #include "JpegCompressor.h"
 
 JpegCompressor::JpegCompressor() :
-    _width(640),
-    _height(480),
+    _width(960),
+    _height(540),
     _format(Format::RGB),
     _quality_percent(100),
     _output(nullptr),
