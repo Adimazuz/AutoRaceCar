@@ -24,7 +24,9 @@ public:
 
     virtual Arduino &changeAngleBy(const int &delta) override;
 	
-	virtual Arduino &driveCurrentState();
+    virtual Arduino &driveCurrentState();
+
+    virtual Arduino &requestFlowData();
 
     virtual Flow getFlowOutput() override;
 
@@ -32,7 +34,8 @@ public:
 
     Arduino() = default;
 
-public:
+private:
+
     std::shared_ptr<ISerial> m_serial;
     int m_current_speed=0;
     int m_current_angle=90;

@@ -10,7 +10,8 @@
 
 Serial::Serial() :
     _fd(-1),
-    _path()
+    _path(),
+    _is_connected(false)
 {
 
 }
@@ -18,11 +19,10 @@ Serial::Serial() :
 bool Serial::connect(const string &path)
 {
     _path = path;
-    _fd = open(_path.data(), O_RDWR | O_NOCTTY | O_NDELAY);
+    _fd = open(_path.data(), O_RDWR | O_NOCTTY /*| O_NDELAY*/);
     if(_fd < 0)
     {
         return false;
-//        throw SerialCannotBeOpened(_path);
     }
 
     struct termios config;
@@ -41,7 +41,7 @@ bool Serial::connect(const string &path)
     tcsetattr(_fd, TCSAFLUSH, &config);
 
     usleep(ARDUINO_REBOOT_MS);
-
+    _is_connected = true;
     return true;
 }
 
@@ -61,41 +61,56 @@ Serial &Serial::write(const string &msg)
 }
 
 string Serial::read(const uint &len)
-{
-    int available_bytes = 0;
-    ioctl(_fd, TIOCINQ, &available_bytes);
+{  
+//    uint bytes_received = 0;
+//    std::vector<char> rec(len);
+//    while(bytes_received < len)
+//    {
+//        auto curr_byes = ::read(_fd, rec.data(), len);
+//        if(curr_byes <= 0)
+//        {
+//            _is_connected = false;
+//            rec.clear();
+//            return string(rec.data());
+//        }
+//        bytes_received += curr_byes;
+//    }
 
-    while(available_bytes < len)
-    {
-        ioctl(_fd, TIOCINQ, &available_bytes);
-    }
-
-    std::vector<char> rec(len);
-    auto bytes_recieved = ::read(_fd, rec.data(), len);
-
-    if(bytes_recieved < 0)
-    {
-        throw SerialCannotRead();
-    }
-
-    return string(rec.data());
+//    return string(rec.data());
 }
 
 void Serial::read(char *dst, const uint &len)
 {
-    int available_bytes = 0;
-    ioctl(_fd, TIOCINQ, &available_bytes);
+//    int available_bytes = 0;
+//    ioctl(_fd, TIOCINQ, &available_bytes);
+//    int timeout = 0;
+//    while(available_bytes < len)
+//    {
+//        ioctl(_fd, TIOCINQ, &available_bytes);
 
-    while(available_bytes < len)
+////        timeout++;
+////        if (timeout > 100000){
+////            return;
+////        }
+//    }
+
+//    auto bytes_recieved = ::read(_fd, dst, len);
+
+//    if(bytes_recieved < 0)
+//    {
+//        throw SerialCannotRead();
+//    }
+
+    uint bytes_received = 0;
+    while(bytes_received < len)
     {
-        ioctl(_fd, TIOCINQ, &available_bytes);
-    }
-
-    auto bytes_recieved = ::read(_fd, dst, len);
-
-    if(bytes_recieved < 0)
-    {
-        throw SerialCannotRead();
+        auto curr_byes = ::read(_fd, dst + bytes_received, len - bytes_received);
+        if(curr_byes <= 0)
+        {
+            _is_connected = false;
+            return;
+        }
+        bytes_received += curr_byes;
     }
 }
 

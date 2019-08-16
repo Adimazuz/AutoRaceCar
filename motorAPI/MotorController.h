@@ -56,7 +56,9 @@ public:
      */
     virtual MotorController &changeAngleBy(const int &delta) = 0;
 	
-    virtual MotorController &driveCurrentState()=0;
+    virtual MotorController &driveCurrentState() = 0;
+
+    virtual MotorController &requestFlowData() = 0;
 
     virtual Flow getFlowOutput() = 0;
 

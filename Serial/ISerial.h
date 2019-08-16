@@ -48,6 +48,8 @@ public:
 
     virtual void read(char *dst, const uint &len) = 0;
 
+    virtual bool isConnected() const = 0;
+
     /**
      * @brief destructor
      */
