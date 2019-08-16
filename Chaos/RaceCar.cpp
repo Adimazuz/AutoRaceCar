@@ -79,9 +79,9 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 
     if(_motor_control->connect()){
         _is_motor_control_connected = true;
-        std::cout << "connected to Arduino" <<std::endl;
+        std::cout << "connected to motor Conmtrol" <<std::endl;
     } else {
-        std::cout << "Arduino NOT CONNECTED" <<std::endl;
+        std::cout << "motor Conmtrol NOT CONNECTED" <<std::endl;
     }
 
     if(_bitcraze.connect()){
