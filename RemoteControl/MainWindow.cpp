@@ -5,6 +5,7 @@
 #include "ui_MainWindow.h"
 #include "Image.h"
 #include "Chaos_types.h"
+#include "RemoteControl_types.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -57,20 +58,35 @@ MainWindow::~MainWindow()
 
 void MainWindow::handleKey()
 {
-    for(auto &key : _keys)
+//    for(auto &key : _keys)
+//    {
+//        if(isArrowKey(key))
+//        {
+//            if(_controller->isConnected())
+//            {
+//                _controller->send(keyToString(key));
+//            }
+//            else
+//            {
+//                _controller->disconnect();
+//                markControllerConnection(false);
+//            }
+//        }
+//    }
+
+    if(_controller->isConnected())
     {
-        if(isArrowKey(key))
+        for(auto &key : _keys)
         {
-            if(_controller->isConnected())
+            if(isArrowKey(key))
             {
                 _controller->send(keyToString(key));
             }
-            else
-            {
-                _controller->disconnect();
-                markControllerConnection(false);
-            }
         }
+    }
+    else
+    {
+        markControllerConnection(false);
     }
 }
 
@@ -110,8 +126,8 @@ void MainWindow::info(const string &msg)
 
 void MainWindow::bindServer()
 {
-//    _server->bind("132.68.36.50", 5555, 5);
-    _server->bind("192.168.1.75", 5555, 5);
+    _server->bind("132.68.36.50", 5555, 5);
+//    _server->bind("192.168.1.75", 5555, 5);
     if(_server->isBind())
     {
         info("bind success");
@@ -128,7 +144,6 @@ void MainWindow::signalConnections()
     qRegisterMetaType<QImage>("QImage&");
 
     connect(&_key_timer, SIGNAL(timeout()), this, SLOT(handleKey()));
-    connect(this, SIGNAL(imageReady(QImage&)), this, SLOT(handleCamera(QImage&)));
 }
 
 void MainWindow::initTimer(const int &interval)
@@ -178,11 +193,6 @@ void MainWindow::init()
     initThreads();
 }
 
-void MainWindow::receiveImageMetadata(Image &image)
-{
-
-}
-
 uint64 MainWindow::receiveCompressedSize()
 {
     uint64 compressed_size = 0;
@@ -224,73 +234,111 @@ void MainWindow::markControllerConnection(const bool &is_connected)
 
 void MainWindow::cameraThread()
 {
-    std::vector<uint8> compressed_image(1920*1200*3);
+    std::vector<uint8> compressed_image(FULL_HD_SIZE);
 
     while(_is_run)
     {
         if(_server->hasConnectionWithSocket(_client_sock))
         {
             QCoreApplication::processEvents();
-
             markCameraConnection(true);
 
-            PacketToRemote::header header = {};
-            _server->receive(_client_sock, reinterpret_cast<char*>(&header), sizeof(header));
+            PacketToRemote::header header = readHeader();
+            PacketToRemote::ColorDataAndPeriphelSensors packet = readPacket(compressed_image, header);
 
-            PacketToRemote::ColorDataAndPeriphelSensors packet = {};
-
-            _server->receive(_client_sock, reinterpret_cast<char*>(&packet),
-                             static_cast<uint32>(header.total_size));
-
-//            packet.image.compresed_data = new uint8[packet.image.compressed_size];
-
-//            _server->receive(_client_sock, reinterpret_cast<char*>(packet.image.compresed_data),
-//                             static_cast<uint32>(packet.image.compressed_size));
-
-            _server->receive(_client_sock, reinterpret_cast<char*>(compressed_image.data()),
-                             static_cast<uint32>(packet.image.compressed_size));
-
-//            std::vector<uint8> uncompressed_data(packet.image.size);
-
-            _decompressor.decompress(compressed_image.data(), packet.image.compressed_size);
-            uint8 *output = _decompressor.getOutput();
-
-
-            QImage q_image(static_cast<unsigned char*>(output), static_cast<int>(packet.image.width),
-                         static_cast<int>(packet.image.height), QImage::Format_RGB888);
-
-            handleCamera(q_image);
-            ui->dx->setText(QString::number(packet.flow_data.deltaX));
-            ui->dy->setText(QString::number(packet.flow_data.deltaY));
-            ui->range->setText(QString::number(packet.flow_data.range));
-            ui->x->setText(QString::number(packet.accel_data.x));
-            ui->y->setText(QString::number(packet.accel_data.y));
-            ui->z->setText(QString::number(packet.accel_data.z));
-            ui->psi->setText(QString::number(packet.euler_angl.x_pitch));
-            ui->theta->setText(QString::number(packet.euler_angl.y_yaw));
-            ui->phi->setText(QString::number(packet.euler_angl.z_roll));
-
-//            delete [] packet.image.compresed_data;
+            if(packet.image.size > 0)
+            {
+                QImage image = makeImage(compressed_image, packet);
+                update(image, packet);
+            }
         }
         else
         {
             markCameraConnection(false);
-            _client_sock = _server->waitForConnections(1);
-            if(_client_sock > 0)
-            {
-                info("camera connected");
-            }
+            waitForConnection();
         }
     }
 }
 
-void MainWindow::handleCamera(QImage &image)
+void MainWindow::updateOpticalFlow(const Flow &flow)
+{
+    ui->dx->setText(QString::number(flow.deltaX, 'f', 3));
+    ui->dy->setText(QString::number(flow.deltaY, 'f', 3));
+    ui->range->setText(QString::number(static_cast<real64>(flow.range), 'f', 3));
+}
+
+void MainWindow::updateEulerAngles(const Camera::EulerAngles &angles)
+{
+    ui->psi->setText(QString::number(static_cast<real64>(angles.x_pitch), 'f', 3));
+    ui->theta->setText(QString::number(static_cast<real64>(angles.y_yaw), 'f', 3));
+    ui->phi->setText(QString::number(static_cast<real64>(angles.z_roll), 'f', 3));
+}
+
+void MainWindow::updateAccelometer(const Camera::AccelData &accel_data)
+{
+    ui->x->setText(QString::number(static_cast<real64>(accel_data.x), 'f', 3));
+    ui->y->setText(QString::number(static_cast<real64>(accel_data.y), 'f', 3));
+    ui->z->setText(QString::number(static_cast<real64>(accel_data.z), 'f', 3));
+}
+
+void MainWindow::update(const QImage &image, PacketToRemote::ColorDataAndPeriphelSensors &packet)
+{
+    updateImage(image);
+    updateOpticalFlow(packet.flow_data);
+    updateEulerAngles(packet.euler_angl);
+    updateAccelometer(packet.accel_data);
+}
+
+PacketToRemote::header MainWindow::readHeader()
+{
+    PacketToRemote::header header = {};
+    _server->receive(_client_sock, reinterpret_cast<char*>(&header), sizeof(header));
+
+    return header;
+}
+
+PacketToRemote::ColorDataAndPeriphelSensors MainWindow::readPacket(std::vector<uint8> &compressed_image,
+                                                                   const PacketToRemote::header &header)
+{
+    PacketToRemote::ColorDataAndPeriphelSensors packet = {};
+
+    _server->receive(_client_sock, reinterpret_cast<char*>(&packet),
+                     static_cast<uint32>(header.total_size));
+
+    _server->receive(_client_sock, reinterpret_cast<char*>(compressed_image.data()),
+                     static_cast<uint32>(packet.image.compressed_size));
+
+    return packet;
+}
+
+QImage MainWindow::makeImage(std::vector<uint8> &compressed_image,
+                             const PacketToRemote::ColorDataAndPeriphelSensors &packet)
+{
+    _decompressor.decompress(compressed_image.data(), packet.image.compressed_size);
+    uint8 *output = _decompressor.getOutput();
+
+    QImage image(static_cast<unsigned char*>(output), static_cast<int>(packet.image.width),
+                 static_cast<int>(packet.image.height), QImage::Format_RGB888);
+
+    return image;
+}
+
+void MainWindow::waitForConnection()
+{
+    _client_sock = _server->waitForConnections(1);
+    if(_client_sock > 0)
+    {
+        info("camera connected");
+    }
+}
+
+void MainWindow::updateImage(const QImage &image)
 {
     QPixmap pixamp = QPixmap::fromImage(image);
     ui->lbl_img->setPixmap(pixamp.scaled(image.width(), image.height(), Qt::AspectRatioMode::KeepAspectRatio));
 }
 
-void MainWindow::on_connect_clicked()
+void MainWindow::connectToConroller()
 {
     if(!ui->controller_ip->text().isEmpty())
     {
@@ -305,4 +353,9 @@ void MainWindow::on_connect_clicked()
         }
     }
     setFocus();
+}
+
+void MainWindow::on_connect_clicked()
+{
+    connectToConroller();
 }

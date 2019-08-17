@@ -31,13 +31,11 @@ SOURCES += \
     ../TcpClient/TcpClient.cpp \
     ../TcpServer/ITcpServer.cpp \
     ../TcpServer/TcpServer.cpp \
-    ../jpeg/JpegDecompressor.cpp \
-    Image.cpp
+    ../jpeg/JpegDecompressor.cpp
 
 HEADERS += \
     MainWindow.h \
-    RemoteControl_types.h \
-    Image.h
+    RemoteControl_types.h
 
 FORMS += \
     MainWindow.ui

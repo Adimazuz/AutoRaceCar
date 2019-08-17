@@ -23,18 +23,25 @@ TcpClient::TcpClient() noexcept :
     WSAStartup(MAKEWORD(2, 0), &wsa);
 #endif
 
-    try
-    {
-        createSocket();
-    }
-    catch(std::exception& e)
-    {
-        std::cout << e.what() << std::endl;
-    }
+//    try
+//    {
+//        createSocket();
+//    }
+//    catch(std::exception& e)
+//    {
+//        std::cout << e.what() << std::endl;
+//    }
 }
 
 void TcpClient::connect(const string& ip, const unsigned short& port)
 {
+    if(isConnected())
+    {
+        return;
+    }
+
+    createSocket();
+
     sockaddr_in server_address = buildAddress(ip, port);
 
     int res = ::connect(_socket, reinterpret_cast<sockaddr*>(& server_address),
@@ -95,7 +102,7 @@ void TcpClient::receive(char *dst, const uint &len)
 
         if(tmp_len == 0)
         {
-            _is_connected = false;
+            disconnect();
             return;
         }
 
@@ -117,7 +124,7 @@ void TcpClient::send(const std::vector<char> &data) noexcept
 
         if(tmp_len < 0)
         {
-            _is_connected = false;
+            disconnect();
             return;
         }
 
@@ -135,7 +142,7 @@ void TcpClient::send(const string &message) noexcept
 
         if(tmp_len < 0)
         {
-            _is_connected = false;
+            disconnect();
             return;
         }
 
@@ -152,7 +159,7 @@ void TcpClient::send(const char *data, const uint &len) noexcept
 
         if(tmp_len < 0)
         {
-            _is_connected = false;
+            disconnect();
             return;
         }
 
@@ -166,6 +173,7 @@ void TcpClient::disconnect()
     closesocket(_socket);
 #else
     close(_socket);
+    _is_connected = false;
 #endif
 }
 
