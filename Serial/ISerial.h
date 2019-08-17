@@ -39,6 +39,8 @@ public:
      */
     virtual ISerial &write(const string &msg) = 0;
 
+    virtual ISerial &write(const char &msg) = 0;
+
     /**
      * @brief read string from the file descriptor, block function
      * @param len - the length of the string[bytes]

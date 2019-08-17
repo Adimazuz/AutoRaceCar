@@ -10,23 +10,6 @@
 
 int main() {
 
-
-
-//    auto s = ISerial::create();
-//    auto res = s->connect("/dev/ttyUSB0");
-//    if(res)
-//    {
-//        std::cout << "arduino connected" << std::endl;
-//    }
-////    Flow data = {};
-
-//    while(true)
-//    {
-//        s->write("#");
-////        s->read(reinterpret_cast<char*>(&data), sizeof(Flow));
-////        std::cout << data.deltaX << " " << data.deltaY << " " << data.range << " " << data.mili_sec << std::endl;
-//    }
-
     RaceCar car;
     car.connect("132.68.36.50",5555,"132.68.36.20");
     car.run();

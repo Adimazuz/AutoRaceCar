@@ -1,9 +1,9 @@
 #ifndef CHAOS_TYPES_H
 #define CHAOS_TYPES_H
 #include "Camera_types.h"
-#include "Arduino_types.h"
+#include "bitcraze_types.h"
 
-namespace PacketToRemote {
+namespace Chaos {
 
 using int8 = char;
 using int16 = short;
@@ -51,7 +51,7 @@ struct DepthImage
 };
 
 
-struct ColorDataAndPeriphelSensors
+struct ColorPacket
 {
     Camera::EulerAngles euler_angl;
     Camera::AccelData accel_data;
@@ -60,7 +60,7 @@ struct ColorDataAndPeriphelSensors
 
 };
 
-struct DepthDataAndPeriphelSensors
+struct DepthPacket
 {
     Camera::EulerAngles euler_angl;
     Camera::AccelData accel_data;

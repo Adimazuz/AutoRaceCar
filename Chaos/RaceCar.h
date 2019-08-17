@@ -8,7 +8,7 @@
 #include "ITcpClient.h"
 #include "ITcpServer.h"
 #include "RealSenseAPI.h"
-#include "Arduino_types.h"
+#include "bitcraze_types.h"
 #include "JpegCompressor.h"
 #include "bitcraze.h"
 #include "Chaos_types.h"
@@ -26,8 +26,8 @@ public:
     bool _is_running;
 
 private: // methods
-    PacketToRemote::ColorDataAndPeriphelSensors buildColorPacket(const Camera::ColorImage &image);
-    PacketToRemote::header buildColorHeader();
+    Chaos::ColorPacket buildColorPacket(const Camera::ColorImage &image);
+    Chaos::header buildColorHeader();
     RaceCar &parseCmdString(const char cmd);
     RaceCar &arduinoCommunications();
     RaceCar &getCameraOutput();
