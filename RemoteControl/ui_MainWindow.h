@@ -79,7 +79,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(808, 490);
+        MainWindow->resize(808, 546);
         acn_exit = new QAction(MainWindow);
         acn_exit->setObjectName(QStringLiteral("acn_exit"));
         actionshow = new QAction(MainWindow);
@@ -377,24 +377,24 @@ public:
         connect->setText(QApplication::translate("MainWindow", "connect", nullptr));
         psi->setText(QString());
         optical_flow->setText(QApplication::translate("MainWindow", "optical flow", nullptr));
-        lbl_dx->setText(QApplication::translate("MainWindow", "dx", nullptr));
+        lbl_dx->setText(QApplication::translate("MainWindow", "dx [px]", nullptr));
         range->setText(QString());
-        lbl_dy->setText(QApplication::translate("MainWindow", "dy", nullptr));
+        lbl_dy->setText(QApplication::translate("MainWindow", "dy [px]", nullptr));
         gyro->setText(QApplication::translate("MainWindow", "gyro", nullptr));
         theta->setText(QString());
-        label_2->setText(QApplication::translate("MainWindow", "x", nullptr));
-        lbl_phi->setText(QApplication::translate("MainWindow", "phi", nullptr));
+        label_2->setText(QApplication::translate("MainWindow", "x [m/sec^2]", nullptr));
+        lbl_phi->setText(QApplication::translate("MainWindow", "roll [rad/sec]", nullptr));
         accelometer->setText(QApplication::translate("MainWindow", "accelometer", nullptr));
         dy->setText(QString());
-        lbl_range->setText(QApplication::translate("MainWindow", "range", nullptr));
-        lbl_psi->setText(QApplication::translate("MainWindow", "psi", nullptr));
+        lbl_range->setText(QApplication::translate("MainWindow", "range [mm]", nullptr));
+        lbl_psi->setText(QApplication::translate("MainWindow", "pitch [rad/sec]", nullptr));
         phi->setText(QString());
-        lbl_theta->setText(QApplication::translate("MainWindow", "theta", nullptr));
+        lbl_theta->setText(QApplication::translate("MainWindow", "yaw [rad/sec]", nullptr));
         dx->setText(QString());
-        label_6->setText(QApplication::translate("MainWindow", "z", nullptr));
+        label_6->setText(QApplication::translate("MainWindow", "z [m/sec^2]", nullptr));
         z->setText(QString());
         y->setText(QString());
-        label_4->setText(QApplication::translate("MainWindow", "y", nullptr));
+        label_4->setText(QApplication::translate("MainWindow", "y [m/sec^2]", nullptr));
         x->setText(QString());
         controller->setText(QApplication::translate("MainWindow", "controller", nullptr));
         menufile->setTitle(QApplication::translate("MainWindow", "file", nullptr));

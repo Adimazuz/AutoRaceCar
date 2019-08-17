@@ -87,6 +87,7 @@ void MainWindow::handleKey()
     else
     {
         markControllerConnection(false);
+        _keys.clear();
     }
 }
 

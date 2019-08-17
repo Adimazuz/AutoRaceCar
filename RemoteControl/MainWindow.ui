@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>808</width>
-    <height>490</height>
+    <height>546</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -146,7 +146,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="lbl_dx">
         <property name="text">
-         <string>dx</string>
+         <string>dx [px]</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -169,7 +169,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="lbl_dy">
         <property name="text">
-         <string>dy</string>
+         <string>dy [px]</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -208,7 +208,7 @@
       <item row="10" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>x</string>
+         <string>x [m/sec^2]</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -218,7 +218,7 @@
       <item row="5" column="1">
        <widget class="QLabel" name="lbl_phi">
         <property name="text">
-         <string>phi</string>
+         <string>roll [rad/sec]</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -257,7 +257,7 @@
       <item row="5" column="0">
        <widget class="QLabel" name="lbl_range">
         <property name="text">
-         <string>range</string>
+         <string>range [mm]</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -267,7 +267,7 @@
       <item row="1" column="1">
        <widget class="QLabel" name="lbl_psi">
         <property name="text">
-         <string>psi</string>
+         <string>pitch [rad/sec]</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -290,7 +290,7 @@
       <item row="3" column="1">
        <widget class="QLabel" name="lbl_theta">
         <property name="text">
-         <string>theta</string>
+         <string>yaw [rad/sec]</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -313,7 +313,7 @@
       <item row="14" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>z</string>
+         <string>z [m/sec^2]</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -349,7 +349,7 @@
       <item row="12" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>y</string>
+         <string>y [m/sec^2]</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
