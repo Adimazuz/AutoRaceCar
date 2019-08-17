@@ -76,6 +76,16 @@ TcpServer &TcpServer::doListen()
 
 TcpServer::~TcpServer()
 {
+
+    for(auto client : _clients_unblocking_state)
+    {
+#ifdef _WIN32
+    closesocket(client.first);
+#else
+    close(client.first);
+#endif
+    }
+
 #ifdef _WIN32
     closesocket(_socket);
 #else

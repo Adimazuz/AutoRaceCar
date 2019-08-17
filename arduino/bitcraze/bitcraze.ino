@@ -17,7 +17,7 @@ void loop() {
      c = Serial.read();     //gets one byte from serial buffer
     }
     
-    if( c == '#' ){
+    if( c == START_STREAMING ){
       motion_sensor.sendData();
     }
 
