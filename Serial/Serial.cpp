@@ -48,7 +48,7 @@ bool Serial::connect(const string &path)
 Serial &Serial::write(const string &msg)
 {
     auto bytes_written = ::write(_fd, msg.data(), msg.size());
-
+//    std::cout << "write bytes " <<bytes_written << std::endl;
 
     if(bytes_written < 0)
     {

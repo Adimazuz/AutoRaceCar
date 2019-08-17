@@ -174,10 +174,6 @@ RaceCar &RaceCar::parseCmdString(const char cmd)
 
 RaceCar &RaceCar::arduinoCommunications()
 {
-    //TODO in case of crash, arduino should stop itself
-    //TODO avoid terminate from write
-    //TODO ardoino functions for "#"
-    //TODO asaf is the ultimate king
     std::cout << "waiting for connection" << std::endl;
 
 
@@ -188,7 +184,6 @@ RaceCar &RaceCar::arduinoCommunications()
             char cmd = ' ';
             _tcp_server->receive(_socket,&cmd, 1);
             parseCmdString(cmd);
-//            std::cout << cmd << std::endl;
 
         }
 
@@ -208,10 +203,13 @@ RaceCar &RaceCar::arduinoCommunications()
     _motor_control->stop();
     return *this;
 }
+//TODO to depth functions
+//TODO set params for different ressolutions
+//TODO JpegDecompressor implement setParams
+//TODO remoteControl showImage according to number_of_components
+Chaos::ColorPacket RaceCar::buildColorPacket(const Camera::ColorImage &image){
 
-PacketToRemote::ColorDataAndPeriphelSensors RaceCar::buildColorPacket(const Camera::ColorImage &image){
-
-    PacketToRemote::ColorDataAndPeriphelSensors packet = {};
+    Chaos::ColorPacket packet = {};
 
     packet.accel_data = _camera.getAccelData();
     packet.euler_angl = _camera.getEulerAngels();
@@ -233,10 +231,10 @@ PacketToRemote::ColorDataAndPeriphelSensors RaceCar::buildColorPacket(const Came
     return packet;
 }
 
-PacketToRemote::header RaceCar::buildColorHeader(){
-    PacketToRemote::header header = {};
-    header.type_code = PacketToRemote::COLOR_HEADER;
-    header.total_size = sizeof(PacketToRemote::ColorDataAndPeriphelSensors)-sizeof(PacketToRemote::ColorImage::compresed_data);
+Chaos::header RaceCar::buildColorHeader(){
+    Chaos::header header = {};
+    header.type_code = Chaos::COLOR_HEADER;
+    header.total_size = sizeof(Chaos::ColorPacket)-sizeof(Chaos::ColorImage::compresed_data);
     return header;
 }
 
@@ -249,8 +247,8 @@ RaceCar &RaceCar::getCameraOutput()
         _camera.captureFrame();
         Camera::ColorImage image=_camera.getColorImage();
 
-        PacketToRemote::ColorDataAndPeriphelSensors packet = buildColorPacket(image);
-        PacketToRemote::header header = buildColorHeader();
+        Chaos::ColorPacket packet = buildColorPacket(image);
+        Chaos::header header = buildColorHeader();
 
         _tcp_client->send(reinterpret_cast<char*>(&header), sizeof(header));
         _tcp_client->send(reinterpret_cast<char*>(&packet), header.total_size);
@@ -267,11 +265,13 @@ RaceCar &RaceCar::getBitCrazeOutput()
     _bitcraze.requestFlowData();
     while (_is_running) {
         //TODO reset bitcrze arduino at start!
+
         Flow flow_data = _bitcraze.getFlowOutput();
-//        std::cout << flow_data.deltaX <<"..." << flow_data.deltaY << "..."<<flow_data.range << "..." <<flow_data.mili_sec << std::endl;
+        //        std::cout << flow_data.deltaX <<"..." << flow_data.deltaY << "..."<<flow_data.range << "..." <<flow_data.mili_sec << std::endl;
 
         std::lock_guard<std::mutex> lock(_flow_mtx);
         _flow_data = flow_data;
+
 
     }
     _bitcraze.stopStream();
