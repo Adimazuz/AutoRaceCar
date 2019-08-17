@@ -85,9 +85,9 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 
     if(_motor_control->connect()){
         _is_motor_control_connected = true;
-        std::cout << "connected to motor Conmtrol" <<std::endl;
+        std::cout << "connected to motor Control" <<std::endl;
     } else {
-        std::cout << "motor Conmtrol NOT CONNECTED" <<std::endl;
+        std::cout << "motor Control NOT CONNECTED" <<std::endl;
     }
 
     if(_bitcraze.connect()){
@@ -99,7 +99,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 
 
 
-    _tcp_server->bind(server_ip,SERVER_PORT,MAX_NUM_USERS); //to allow athers to connect
+    _tcp_server->bind(server_ip, SERVER_PORT, MAX_NUM_USERS); //to allow athers to connect
     if(_tcp_server->isBind()){
         std::cout << "bind success" << std::endl;
         _tcp_server->setUnblocking(true);
@@ -177,6 +177,7 @@ RaceCar &RaceCar::arduinoCommunications()
     //TODO in case of crash, arduino should stop itself
     //TODO avoid terminate from write
     //TODO ardoino functions for "#"
+    //TODO asaf is the ultimate king
     std::cout << "waiting for connection" << std::endl;
 
 
@@ -198,7 +199,7 @@ RaceCar &RaceCar::arduinoCommunications()
             if(_socket > 0)
             {
                 _tcp_server->setClientUnblocking(_socket,true);
-                std::cout << "someone connected" << std::endl;
+                std::cout << "someone connected: " << std::endl;
             }
         }
 

@@ -47,3 +47,8 @@
     Flow data = {x, y, z, t2};
     return data;
 	}
+ 
+ void bitcraze::stopstreaming(){
+  
+  
+ }
