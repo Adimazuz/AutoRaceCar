@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[13];
-    char stringdata0[135];
+    char stringdata0[141];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -43,13 +43,13 @@ QT_MOC_LITERAL(8, 81, 6), // "string"
 QT_MOC_LITERAL(9, 88, 3), // "key"
 QT_MOC_LITERAL(10, 92, 10), // "isArrowKey"
 QT_MOC_LITERAL(11, 103, 18), // "on_connect_clicked"
-QT_MOC_LITERAL(12, 122, 12) // "handleCamera"
+QT_MOC_LITERAL(12, 122, 18) // "connectToConroller"
 
     },
     "MainWindow\0imageReady\0\0QImage&\0image\0"
     "handleKey\0on_acn_exit_triggered\0"
     "keyToString\0string\0key\0isArrowKey\0"
-    "on_connect_clicked\0handleCamera"
+    "on_connect_clicked\0connectToConroller"
 };
 #undef QT_MOC_LITERAL
 
@@ -75,7 +75,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,    1,   54,    2, 0x08 /* Private */,
       10,    1,   57,    2, 0x08 /* Private */,
       11,    0,   60,    2, 0x08 /* Private */,
-      12,    1,   61,    2, 0x08 /* Private */,
+      12,    0,   61,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -86,7 +86,7 @@ static const uint qt_meta_data_MainWindow[] = {
     0x80000000 | 8, QMetaType::Int,    9,
     QMetaType::Bool, QMetaType::Int,    9,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 3,    4,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -105,7 +105,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 4: { bool _r = _t->isArrowKey((*reinterpret_cast< const int(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         case 5: _t->on_connect_clicked(); break;
-        case 6: _t->handleCamera((*reinterpret_cast< QImage(*)>(_a[1]))); break;
+        case 6: _t->connectToConroller(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
