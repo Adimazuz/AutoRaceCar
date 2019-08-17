@@ -19,7 +19,14 @@ bool Bitcraze::connect()
 }
 
 Bitcraze& Bitcraze::requestFlowData(){
-   m_serial->write("#");
+//   m_serial->write("#");
+
+    m_serial->write(START_STREAMING);
+}
+
+Bitcraze &Bitcraze::stopStream()
+{
+    m_serial->write(STOP_STREAMING);
 }
 
 Flow Bitcraze::getFlowOutput()

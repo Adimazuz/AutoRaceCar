@@ -8,7 +8,7 @@
 #include "ITcpClient.h"
 #include "ITcpServer.h"
 #include "RealSenseAPI.h"
-#include "Arduino_types.h"
+#include "bitcraze_types.h"
 #include "JpegCompressor.h"
 #include "bitcraze.h"
 #include "Chaos_types.h"

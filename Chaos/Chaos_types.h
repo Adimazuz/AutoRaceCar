@@ -1,7 +1,7 @@
 #ifndef CHAOS_TYPES_H
 #define CHAOS_TYPES_H
 #include "Camera_types.h"
-#include "Arduino_types.h"
+#include "bitcraze_types.h"
 
 namespace PacketToRemote {
 

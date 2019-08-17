@@ -1,6 +1,6 @@
 #include <string>
 #include "ISerial.h"
-#include "Arduino_types.h"
+#include "bitcraze_types.h"
 
 
 class Bitcraze
@@ -13,6 +13,8 @@ public:
      bool connect() ;
 	
      Bitcraze &requestFlowData();
+
+     Bitcraze &stopStream();
 	 
      Flow getFlowOutput() ;
 

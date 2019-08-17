@@ -47,13 +47,29 @@ bool Serial::connect(const string &path)
 
 Serial &Serial::write(const string &msg)
 {
-//    tcflush(_fd, TCIOFLUSH);
     auto bytes_written = ::write(_fd, msg.data(), msg.size());
 
 
     if(bytes_written < 0)
     {
-        throw SerialCannotWrite();
+        close(_fd);
+        _is_connected = false;
+        return *this;
+    }
+
+
+    return *this;
+}
+
+Serial &Serial::write(const char &msg)
+{
+    auto bytes_written = ::write(_fd, &msg, 1);
+//TODO add close(fd)
+    if(bytes_written < 0)
+    {
+        close(_fd);
+        _is_connected = false;
+        return *this;
     }
 
 

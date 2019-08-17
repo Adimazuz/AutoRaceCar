@@ -274,6 +274,7 @@ RaceCar &RaceCar::getBitCrazeOutput()
         _flow_data = flow_data;
 
     }
+    _bitcraze.stopStream();
     std::cout << "BitCraze thread finished" << std::endl;
 }
 
