@@ -20,3 +20,5 @@ Chaos/CMakeLists.txt.user
 
 Chaos/.idea/*
 Chaos/cmake-build-debug/*
+cameraAPI/.idea/*
+cameraAPI/cmake-build-debug/*
