@@ -222,7 +222,10 @@ Chaos::ColorPacket RaceCar::buildColorPacket(const Camera::ColorImage &image){
     packet.image.height = image.height;
     packet.image.width = image.width;
     packet.image.size = image.size;
-    packet.image.timestamp_ms = image.timestamp_ms;
+    packet.image.host_ts_ms = image.host_ts_ms;
+    packet.image.camera_ts_ms = image.camera_ts_ms;
+    packet.image.bytes_per_pixel = image.bytes_per_pixel;
+
 
     _jpeg_comp.compress(image.data);
     packet.image.compressed_size = _jpeg_comp.getCompressedSize();
@@ -253,8 +256,10 @@ Chaos::DepthPacket RaceCar::buildDepthPacket(const Camera::DepthImage &image){
     packet.image.height = image.height;
     packet.image.width = image.width;
     packet.image.size = image.size;
-    packet.image.timestamp_ms = image.timestamp_ms;
+    packet.image.host_ts_ms = image.host_ts_ms;
+    packet.image.camera_ts_ms = image.camera_ts_ms;
     packet.image.depth_scale = image.depth_scale;
+    packet.image.bytes_per_pixel = image.bytes_per_pixel;
     
     _jpeg_comp.compress(image.data);
     packet.image.compressed_size = _jpeg_comp.getCompressedSize();
@@ -278,15 +283,15 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
     {
 //        std::cout << _is_running <<std::endl;
         _camera.captureFrame();
-        Camera::ColorImage image=_camera.getColorImage();
-        Chaos::ColorPacket packet = buildColorPacket(image);
-        Chaos::header header = buildColorHeader();
+        Camera::ColorImage c_image=_camera.getColorImage();
+        Chaos::ColorPacket c_packet = buildColorPacket(c_image);
+        Chaos::header c_header = buildColorHeader();
         
-        _tcp_client->send(reinterpret_cast<char*>(&header), sizeof(header));
-        _tcp_client->send(reinterpret_cast<char*>(&packet), header.total_size);
-        _tcp_client->send(reinterpret_cast<char*>(packet.image.compresed_data), packet.image.compressed_size);
+        _tcp_client->send(reinterpret_cast<char*>(&c_header), sizeof(c_header));
+        _tcp_client->send(reinterpret_cast<char*>(&c_packet), c_header.total_size);
+        _tcp_client->send(reinterpret_cast<char*>(c_packet.image.compresed_data), c_packet.image.compressed_size);
     
-        //TODO check flow for depth image:
+        //TODO check flow and functions for depth image:
 //        Camera::DepthImage d_image=_camera.getDepthImage();
 //        Chaos::DepthPacket d_packet = buildDepthPacket(d_image);
 //        Chaos::header d_header = buildDepthHeader();

@@ -346,15 +346,17 @@ Camera::ColorImage RealSense::getColorImage()
 {
     rs2::video_frame color_frame = _frames.get_color_frame();
     auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
-    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
     uint32_t w = color_frame.get_width();
     uint32_t h = color_frame.get_height();
     uint32_t byte_per_pixel = color_frame.get_bytes_per_pixel();
 
     uint64_t size = w*h*byte_per_pixel;
 
-    Camera::ColorImage cur_image = {color_frame.get_frame_number(), size , time_stamp_ms, w, h,
-                                   reinterpret_cast<const unsigned char*>(color_frame.get_data())};
+    Camera::ColorImage cur_image = {color_frame.get_frame_number(), size, color_frame.get_bytes_per_pixel(),
+                                    host_time_stamp_ms,
+                                    color_frame.get_timestamp(),w, h,
+                                    reinterpret_cast<const unsigned char*>(color_frame.get_data())};
 
 //            (reinterpret_cast<const unsigned char*>(color_frame.get_data()),color_frame.get_width(),color_frame.get_height(),
 //                    color_frame.get_frame_number(), color_frame.get_timestamp(), color_frame.get_bytes_per_pixel());
@@ -365,15 +367,17 @@ Camera::ColorImage RealSense::getInfraredImage()
 {
     rs2::video_frame infrared_frame = _frames.get_infrared_frame();
     auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
-    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
     uint32_t w = infrared_frame.get_width();
     uint32_t h = infrared_frame.get_height();
     uint32_t byte_per_pixel = infrared_frame.get_bytes_per_pixel();
 
     uint64_t size = w*h*byte_per_pixel;
 
-    Camera::ColorImage cur_image = {infrared_frame.get_frame_number(), size, time_stamp_ms, w, h,
-                                   reinterpret_cast<const unsigned char*>(infrared_frame.get_data())};
+    Camera::ColorImage cur_image = {infrared_frame.get_frame_number(), size, infrared_frame.get_bytes_per_pixel(),
+                                    host_time_stamp_ms,
+                                    infrared_frame.get_timestamp(),w, h,
+                                    reinterpret_cast<const unsigned char*>(infrared_frame.get_data())};
 
 //    Image cur_image(reinterpret_cast<const unsigned char*>(infrared_frame.get_data()),infrared_frame.get_width(),infrared_frame.get_height(),
 //                    infrared_frame.get_frame_number(), time_stamp_ms, infrared_frame.get_bytes_per_pixel());
@@ -385,15 +389,17 @@ Camera::DepthImage RealSense::getDepthImage()
 {
     rs2::depth_frame depth_frame = _frames.get_depth_frame();
     auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
-    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
     uint32_t w = depth_frame.get_width();
     uint32_t h = depth_frame.get_height();
     uint32_t byte_per_pixel = depth_frame.get_bytes_per_pixel();
 
     uint64_t size = w*h*byte_per_pixel;
 
-    Camera::DepthImage cur_image = {depth_frame.get_frame_number(), size, time_stamp_ms, w, h,
-                                  getDepthUnits(),reinterpret_cast<const unsigned char*>(depth_frame.get_data())};
+    Camera::DepthImage cur_image = {depth_frame.get_frame_number(), size, depth_frame.get_bytes_per_pixel(),
+                                    host_time_stamp_ms,
+                                    depth_frame.get_timestamp(),w, h,
+                                    getDepthUnits(),reinterpret_cast<const unsigned char*>(depth_frame.get_data())};
 //    Image cur_image(reinterpret_cast<const unsigned char*>(depth_frame.get_data()),depth_frame.get_width(),depth_frame.get_height(),
 //                    depth_frame.get_frame_number(), depth_frame.get_timestamp(), depth_frame.get_bytes_per_pixel());
 
@@ -513,14 +519,15 @@ Camera::Extrinsics RealSense::getExtrinsics(RealSense::Stream from_stream, RealS
 Camera::EulerAngles RealSense::getEulerAngels()
 {
     auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
-    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
 //    try{
         rs2::frame motion_frame = _frames.first(RS2_STREAM_GYRO,RS2_FORMAT_MOTION_XYZ32F);
         // Cast the frame that arrived to motion frame
         auto motion = motion_frame.as<rs2::motion_frame>();
         /** 3D vector in Euclidean coordinate space */
         rs2_vector gyro_data = motion.get_motion_data();
-        Camera::EulerAngles cur_angels = {gyro_data.x, gyro_data.y, gyro_data.z, time_stamp_ms};
+        Camera::EulerAngles cur_angels = {gyro_data.x, gyro_data.y, gyro_data.z, host_time_stamp_ms,
+                                         motion_frame.get_timestamp()};
         _last_euler_angles = cur_angels;
         return cur_angels;
 
@@ -535,12 +542,13 @@ Camera::EulerAngles RealSense::getEulerAngels()
 Camera::AccelData RealSense::getAccelData()
 {
     auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
-    auto time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+    auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
 
     rs2::frame motion_frame = _frames.first(RS2_STREAM_ACCEL,RS2_FORMAT_MOTION_XYZ32F);
     auto motion = motion_frame.as<rs2::motion_frame>();
     rs2_vector accel_data = motion.get_motion_data();
-    Camera::AccelData cur_accel_data = {accel_data.x, accel_data.y, accel_data.z, time_stamp_ms};
+    Camera::AccelData cur_accel_data = {accel_data.x, accel_data.y, accel_data.z, host_time_stamp_ms,
+                                       motion_frame.get_timestamp()};
     return cur_accel_data;
 }
 

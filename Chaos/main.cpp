@@ -9,7 +9,6 @@
 
 
 int main() {
-    //TODO add timestamp from camera
     RaceCar car;
     car.connect("132.68.36.163",5555,"132.68.36.165");
     car.run();

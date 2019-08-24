@@ -31,7 +31,9 @@ struct ColorImage
 {
     uint64 frame_num;
     uint64 size;
-    int64 timestamp_ms;
+    int32 bytes_per_pixel;
+    int64 host_ts_ms;
+    int64 camera_ts_ms;
     uint32 width;
     uint32 height;
     uint64 compressed_size;
@@ -42,7 +44,9 @@ struct DepthImage
 {
     uint64 frame_num;
     uint64 size;
-    int64 timestamp_ms;
+    int32 bytes_per_pixel;
+    int64 host_ts_ms;
+    int64 camera_ts_ms;
     uint32 width;
     uint32 height;
     real32 depth_scale;

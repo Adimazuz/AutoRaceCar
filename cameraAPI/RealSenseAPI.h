@@ -2,7 +2,6 @@
 #define REALSENSEAPI_H
 
 #include <librealsense2/rs.hpp>
-#include "Image.h"
 #include "Camera_types.h"
 
 class RealSense{
