@@ -50,7 +50,7 @@ static rs2_format converColorFrameFormat(RealSense::ColorFrameFormat format){
     if(format == RealSense::ColorFrameFormat::Y16){
         return RS2_FORMAT_Y16;
     }
-    return RS2_FORMAT_ANY; //TODO ??
+    return RS2_FORMAT_ANY;
 }
 
 static rs2_format converInfraFrameFormat(RealSense::InfrarFrameFormat format){
@@ -60,7 +60,7 @@ static rs2_format converInfraFrameFormat(RealSense::InfrarFrameFormat format){
     if (format == RealSense::InfrarFrameFormat::Y16){
         return RS2_FORMAT_Y16;
     }
-    return RS2_FORMAT_ANY; //TODO ??
+    return RS2_FORMAT_ANY;
 }
 
 static void convertColorFPStoInt(RealSense::ColorCamFps fps, int& f_int){
@@ -224,10 +224,6 @@ RealSense::~RealSense()
 }
 
 bool RealSense::connectCamera(){
-
-    //TODO cheak if must
-    // rs2::log_to_console(RS2_LOG_SEVERITY_ERROR);
-
 
     rs2::context ctx;
     rs2::device_list devices = ctx.query_devices();

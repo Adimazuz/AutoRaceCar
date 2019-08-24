@@ -9,9 +9,9 @@
 
 
 int main() {
-
+    //TODO add timestamp from camera
     RaceCar car;
-    car.connect("132.68.36.50",5555,"132.68.36.20");
+    car.connect("132.68.36.163",5555,"132.68.36.165");
     car.run();
 
     std::cout << " ok" << std::endl;

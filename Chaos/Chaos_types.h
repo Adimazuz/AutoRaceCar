@@ -17,7 +17,7 @@ using real32 = float;
 using real64 = double;
 
 #pragma pack(push,1)
-
+//TODO add bytes_per_pixel to ColorImage only
 constexpr int COLOR_HEADER = 1;
 constexpr int DEPTH_HEADER = 2;
 

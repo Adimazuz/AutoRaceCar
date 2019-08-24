@@ -36,7 +36,7 @@ private: // methods
 
 private: //members
     std::shared_ptr<MotorController> _motor_control;
-    Bitcraze _bitcraze; //TODO add  BitCraze files to project
+    Bitcraze _bitcraze;
     RealSense _camera;
     std::shared_ptr<ITcpClient> _tcp_client;
     Flow _flow_data;

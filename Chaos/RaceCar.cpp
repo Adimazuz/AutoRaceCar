@@ -117,7 +117,7 @@ RaceCar &RaceCar::run()
 {
     std::cout << "enter run" <<std::endl;
     if(_is_tcp_client_connected && _is_cammera_connected){
-            _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_960_540, RealSense::ColorCamFps::F_30hz);
+            _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
             _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
             _camera.setupGyro();
             _camera.setupAccel();
@@ -267,12 +267,10 @@ RaceCar &RaceCar::getBitCrazeOutput()
         //TODO reset bitcrze arduino at start!
 
         Flow flow_data = _bitcraze.getFlowOutput();
-        //        std::cout << flow_data.deltaX <<"..." << flow_data.deltaY << "..."<<flow_data.range << "..." <<flow_data.mili_sec << std::endl;
+//        std::cout << flow_data.deltaX <<"..." << flow_data.deltaY << "..."<<flow_data.range << "..." <<flow_data.dt << std::endl;
 
         std::lock_guard<std::mutex> lock(_flow_mtx);
         _flow_data = flow_data;
-
-
     }
     _bitcraze.stopStream();
     std::cout << "BitCraze thread finished" << std::endl;
