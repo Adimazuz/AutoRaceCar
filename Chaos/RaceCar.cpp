@@ -291,7 +291,7 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
         _tcp_client->send(reinterpret_cast<char*>(&c_packet), c_header.total_size);
         _tcp_client->send(reinterpret_cast<char*>(c_packet.image.compresed_data), c_packet.image.compressed_size);
     
-        //TODO check flow and functions for depth image:
+        //TODO check flow and functions for depth image (and all the new parameters in type):
 //        Camera::DepthImage d_image=_camera.getDepthImage();
 //        Chaos::DepthPacket d_packet = buildDepthPacket(d_image);
 //        Chaos::header d_header = buildDepthHeader();
