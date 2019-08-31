@@ -345,6 +345,9 @@ void RealSense::captureFrame()
 Camera::ColorImage RealSense::getColorImage()
 {
     rs2::video_frame color_frame = _frames.get_color_frame();
+    if (!color_frame){
+        throw IRealSenseBadSettingUse();
+    }
     auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
     auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
     uint32_t w = color_frame.get_width();
@@ -366,6 +369,9 @@ Camera::ColorImage RealSense::getColorImage()
 Camera::ColorImage RealSense::getInfraredImage()
 {
     rs2::video_frame infrared_frame = _frames.get_infrared_frame();
+    if (!infrared_frame){
+        throw IRealSenseBadSettingUse();
+    }
     auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
     auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
     uint32_t w = infrared_frame.get_width();
@@ -379,8 +385,7 @@ Camera::ColorImage RealSense::getInfraredImage()
                                     infrared_frame.get_timestamp(),w, h,
                                     reinterpret_cast<const unsigned char*>(infrared_frame.get_data())};
 
-//    Image cur_image(reinterpret_cast<const unsigned char*>(infrared_frame.get_data()),infrared_frame.get_width(),infrared_frame.get_height(),
-//                    infrared_frame.get_frame_number(), time_stamp_ms, infrared_frame.get_bytes_per_pixel());
+
 
     return cur_image;
 }
@@ -388,6 +393,9 @@ Camera::ColorImage RealSense::getInfraredImage()
 Camera::DepthImage RealSense::getDepthImage()
 {
     rs2::depth_frame depth_frame = _frames.get_depth_frame();
+    if (!depth_frame){
+        throw IRealSenseBadSettingUse();
+    }
     auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
     auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
     uint32_t w = depth_frame.get_width();
@@ -400,8 +408,6 @@ Camera::DepthImage RealSense::getDepthImage()
                                     host_time_stamp_ms,
                                     depth_frame.get_timestamp(),w, h,
                                     getDepthUnits(),reinterpret_cast<const unsigned char*>(depth_frame.get_data())};
-//    Image cur_image(reinterpret_cast<const unsigned char*>(depth_frame.get_data()),depth_frame.get_width(),depth_frame.get_height(),
-//                    depth_frame.get_frame_number(), depth_frame.get_timestamp(), depth_frame.get_bytes_per_pixel());
 
     return cur_image;
 

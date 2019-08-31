@@ -17,6 +17,14 @@
 
 class RaceCar {
 public:
+    enum class format_to_remote
+    {
+        COLOR,
+        INFRARED,
+        DEPTH
+    };
+
+
     /**
      * constructor - init. all the classes
      */
@@ -70,6 +78,7 @@ private: // methods
     void setCamAndJpegConfig();
     /**
      *  build packet to remote user
+     * data compressed with JPEG!
      * @param image - the color frame the we got from camera
      * @return color packet that rdy to be send, with all relevant data (Image description data, accel data, gyro data,
      * flow (bitcraze) data and compressed image data)
@@ -84,13 +93,17 @@ private: // methods
      */
     Chaos::header buildColorHeader();
     
+
     /**
-    *  build packet to remote user
-    * @param image - the depth frame the we got from camera
-    * @return depth packet that rdy to be send, with all relevant data (Image description data, accel data, gyro data,
+     * @brief buildDepthPacket
+     * build packet to remote user
+     * data compressed with Z-LIB!
+     * @param image - the depth frame the we got from camera
+     * @param compresed_image - vector in size of orig depth image
+     * @return depth packet that rdy to be send, with all relevant data (Image description data, accel data, gyro data,
     * flow (bitcraze) data and compressed image data)
-    */
-    Chaos::DepthPacket buildDepthPacket(const Camera::DepthImage &image);
+     */
+    Chaos::DepthPacket buildDepthPacket(const Camera::DepthImage &image, std::vector<unsigned char> &compresed_image);
     
     /**
     * build Depth header that need to send before the Depth Packer (remote user need to know witch
@@ -162,6 +175,8 @@ private: //members
     bool _is_motor_control_connected;
     bool _is_tcp_server_connected;
     bool _is_bitcraze_connected;
+
+    RaceCar::format_to_remote _image_format_to_remote;
 
     JpegCompressor _jpeg_comp;
 	

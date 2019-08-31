@@ -40,13 +40,16 @@ void JpegCompressor::compress(const uint8 *input)
     _handle = tjInitCompress();
 
     TJPF format = TJPF_RGB;
+    TJSAMP tj_samp = TJSAMP_444;
+
     if(_format == Format::GREY_SCALE)
     {
         format = TJPF_GRAY;
+        tj_samp = TJSAMP_GRAY;
     }
 
     tjCompress2(_handle, input, static_cast<int32>(_width), 0, static_cast<int32>(_height),
-                format, &_output, &_compressed_size, TJSAMP_444,
+                format, &_output, &_compressed_size, tj_samp,
                 static_cast<int32>(_quality_percent), TJFLAG_FASTDCT);
 
     tjDestroy(_handle);

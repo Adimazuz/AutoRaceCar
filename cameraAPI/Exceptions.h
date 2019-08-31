@@ -90,6 +90,14 @@ public:
     }
 };
 
+class IRealSenseBadSettingUse : public IRealSenseExceptions
+{
+public:
+    const char* what() const noexcept override
+    {
+        return "didn't got frame from the set";
+    }
+};
 
 
 #endif //TCPCLIENT_EXCEPTIONS_H
