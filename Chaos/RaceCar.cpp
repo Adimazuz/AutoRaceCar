@@ -212,20 +212,20 @@ RaceCar &RaceCar::getCarControlCommands()
 
 RaceCar &RaceCar::doDonuts()
 {
-    int angle = 90;
+    _motor_control->changeAngle(90);
+    _motor_control->changeSpeed(8);
     int delta = 2;
     while(true)
     {
-        std::this_thread::sleep_for (std::chrono::milliseconds(20));
+        std::this_thread::sleep_for (std::chrono::milliseconds(50));
         //change direction
-        _motor_control->changeAngle(angle);
-        angle += delta;
-
-        if(angle >= 120 || angle <= 60)
+        _motor_control->changeAngleBy(delta);
+        int current_angle = _motor_control->getAngle();
+        if(current_angle >= 120 || current_angle <= 60)
         {
             std::this_thread::sleep_for (std::chrono::milliseconds(200));
+            delta *= -1;
         }
-
 
     }
 
