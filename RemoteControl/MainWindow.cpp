@@ -3,7 +3,7 @@
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
-#include "Image.h"
+//#include "Image.h"
 #include "Chaos_types.h"
 #include "RemoteControl_types.h"
 
@@ -58,22 +58,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::handleKey()
 {
-//    for(auto &key : _keys)
-//    {
-//        if(isArrowKey(key))
-//        {
-//            if(_controller->isConnected())
-//            {
-//                _controller->send(keyToString(key));
-//            }
-//            else
-//            {
-//                _controller->disconnect();
-//                markControllerConnection(false);
-//            }
-//        }
-//    }
-
     if(_controller->isConnected())
     {
         for(auto &key : _keys)
@@ -127,7 +111,7 @@ void MainWindow::info(const string &msg)
 
 void MainWindow::bindServer()
 {
-    _server->bind("132.68.36.50", 5555, 5);
+    _server->bind("132.68.36.163", 5555, 5);
 //    _server->bind("192.168.1.75", 5555, 5);
     if(_server->isBind())
     {
@@ -244,8 +228,8 @@ void MainWindow::cameraThread()
             QCoreApplication::processEvents();
             markCameraConnection(true);
 
-            PacketToRemote::header header = readHeader();
-            PacketToRemote::ColorDataAndPeriphelSensors packet = readPacket(compressed_image, header);
+            Chaos::header header = readHeader();
+            Chaos::ColorPacket packet = readPacket(compressed_image, header);
 
             if(packet.image.size > 0)
             {
@@ -282,7 +266,7 @@ void MainWindow::updateAccelometer(const Camera::AccelData &accel_data)
     ui->z->setText(QString::number(static_cast<real64>(accel_data.z), 'f', 3));
 }
 
-void MainWindow::update(const QImage &image, PacketToRemote::ColorDataAndPeriphelSensors &packet)
+void MainWindow::update(const QImage &image, Chaos::ColorPacket &packet)
 {
     updateImage(image);
     updateOpticalFlow(packet.flow_data);
@@ -290,18 +274,18 @@ void MainWindow::update(const QImage &image, PacketToRemote::ColorDataAndPeriphe
     updateAccelometer(packet.accel_data);
 }
 
-PacketToRemote::header MainWindow::readHeader()
+Chaos::header MainWindow::readHeader()
 {
-    PacketToRemote::header header = {};
+    Chaos::header header = {};
     _server->receive(_client_sock, reinterpret_cast<char*>(&header), sizeof(header));
 
     return header;
 }
 
-PacketToRemote::ColorDataAndPeriphelSensors MainWindow::readPacket(std::vector<uint8> &compressed_image,
-                                                                   const PacketToRemote::header &header)
+Chaos::ColorPacket MainWindow::readPacket(std::vector<uint8> &compressed_image,
+                                                                   const Chaos::header &header)
 {
-    PacketToRemote::ColorDataAndPeriphelSensors packet = {};
+    Chaos::ColorPacket packet = {};
 
     _server->receive(_client_sock, reinterpret_cast<char*>(&packet),
                      static_cast<uint32>(header.total_size));
@@ -313,7 +297,7 @@ PacketToRemote::ColorDataAndPeriphelSensors MainWindow::readPacket(std::vector<u
 }
 
 QImage MainWindow::makeImage(std::vector<uint8> &compressed_image,
-                             const PacketToRemote::ColorDataAndPeriphelSensors &packet)
+                             const Chaos::ColorPacket &packet)
 {
     _decompressor.decompress(compressed_image.data(), packet.image.compressed_size);
     uint8 *output = _decompressor.getOutput();
