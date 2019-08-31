@@ -29,32 +29,32 @@ public:
             COUNT
         };
 
-        enum class FrameFormat
-        {
-            FORMAT_ANY             , /**< When passed to enable stream, librealsense will try to provide best suited format */
-            FORMAT_Z16             , /**< 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value. */
-            FORMAT_DISPARITY16     , /**< 16-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth. */
-            FORMAT_XYZ32F          , /**< 32-bit floating point 3D coordinates. */
-            FORMAT_YUYV            , /**< 32-bit y0, u, y1, v data for every two pixels. Similar to YUV422 but packed in a different order - https://en.wikipedia.org/wiki/YUV */
-            FORMAT_RGB8            , /**< 8-bit red, green and blue channels */
-            FORMAT_BGR8            , /**< 8-bit blue, green, and red channels -- suitable for OpenCV */
-            FORMAT_RGBA8           , /**< 8-bit red, green and blue channels + constant alpha channel equal to FF */
-            FORMAT_BGRA8           , /**< 8-bit blue, green, and red channels + constant alpha channel equal to FF */
-            FORMAT_Y8              , /**< 8-bit per-pixel grayscars2_stream_profilele image */
-            FORMAT_Y16             , /**< 16-bit per-pixel grayscale image */
-            FORMAT_RAW10           , /**< Four 10 bits per pixel luminance values packed into a 5-byte macropixel */
-            FORMAT_RAW16           , /**< 16-bit raw image */
-            FORMAT_RAW8            , /**< 8-bit raw image */
-            FORMAT_UYVY            , /**< Similar to the standard YUYV pixel format, but packed in a different order */
-            FORMAT_MOTION_RAW      , /**< Raw data from the motion sensor */
-            FORMAT_MOTION_XYZ32F   , /**< Motion data packed as 3 32-bit float values, for X, Y, and Z axis */
-            FORMAT_GPIO_RAW        , /**< Raw data from the external sensors hooked to one of the GPIO's */
-            FORMAT_6DOF            , /**< Pose data packed as floats array, containing translation vector, rotation quaternion and prediction velocities and accelerations vectors */
-            FORMAT_DISPARITY32     , /**< 32-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth */
-            FORMAT_Y10BPACK        , /**< 16-bit per-pixel grayscale image unpacked from 10 bits per pixel packed ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6 zero bits */
-            FORMAT_DISTANCE        , /**< 32-bit float-point depth distance value.  */
-            FORMAT_COUNT             /**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
-        };
+//        enum class FrameFormat
+//        {
+//            FORMAT_ANY             , /**< When passed to enable stream, librealsense will try to provide best suited format */
+//            FORMAT_Z16             , /**< 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value. */
+//            FORMAT_DISPARITY16     , /**< 16-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth. */
+//            FORMAT_XYZ32F          , /**< 32-bit floating point 3D coordinates. */
+//            FORMAT_YUYV            , /**< 32-bit y0, u, y1, v data for every two pixels. Similar to YUV422 but packed in a different order - https://en.wikipedia.org/wiki/YUV */
+//            FORMAT_RGB8            , /**< 8-bit red, green and blue channels */
+//            FORMAT_BGR8            , /**< 8-bit blue, green, and red channels -- suitable for OpenCV */
+//            FORMAT_RGBA8           , /**< 8-bit red, green and blue channels + constant alpha channel equal to FF */
+//            FORMAT_BGRA8           , /**< 8-bit blue, green, and red channels + constant alpha channel equal to FF */
+//            FORMAT_Y8              , /**< 8-bit per-pixel grayscars2_stream_profilele image */
+//            FORMAT_Y16             , /**< 16-bit per-pixel grayscale image */
+//            FORMAT_RAW10           , /**< Four 10 bits per pixel luminance values packed into a 5-byte macropixel */
+//            FORMAT_RAW16           , /**< 16-bit raw image */
+//            FORMAT_RAW8            , /**< 8-bit raw image */
+//            FORMAT_UYVY            , /**< Similar to the standard YUYV pixel format, but packed in a different order */
+//            FORMAT_MOTION_RAW      , /**< Raw data from the motion sensor */
+//            FORMAT_MOTION_XYZ32F   , /**< Motion data packed as 3 32-bit float values, for X, Y, and Z axis */
+//            FORMAT_GPIO_RAW        , /**< Raw data from the external sensors hooked to one of the GPIO's */
+//            FORMAT_6DOF            , /**< Pose data packed as floats array, containing translation vector, rotation quaternion and prediction velocities and accelerations vectors */
+//            FORMAT_DISPARITY32     , /**< 32-bit float-point disparity values. Depth->Disparity conversion : Disparity = Baseline*FocalLength/Depth */
+//            FORMAT_Y10BPACK        , /**< 16-bit per-pixel grayscale image unpacked from 10 bits per pixel packed ([8:8:8:8:2222]) grey-scale image. The data is unpacked to LSB and padded with 6 zero bits */
+//            FORMAT_DISTANCE        , /**< 32-bit float-point depth distance value.  */
+//            FORMAT_COUNT             /**< Number of enumeration values. Not a valid input: intended to be used in for-loops. */
+//        };
 
         enum class ColorFrameFormat
         {
@@ -186,6 +186,7 @@ public:
          * notice that
          * 1). at ressolution 1280x800 camera can work only at 20/25/15 fps
          * 2). format Y16 works only for resolutions: 1280x800 and 640x480 and only at rates 30/15/6
+         * *depth and infrared frames cant be setuped together (same sensors)
          * @param format:
          * Y8
          * Y16
@@ -201,6 +202,7 @@ public:
          * Z16 = 16-bit linear depth values. The depth is meters is equal to depth scale * pixel value.
          * notice that
          * at resolution 1280x720 camera cant work at 90/60 fps
+         * *depth and infrared frames cant be setuped together (same sensors)
          */
         void setupDepthImage(RealSense::DepthRessolution ressolution, RealSense::DepthCamFps fps);
 

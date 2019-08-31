@@ -64,7 +64,9 @@ Arduino &Arduino::changeAngle(const int &wanted_angle)
     }
     else
     {
-        m_current_angle+=wanted_angle;
+
+        m_current_angle = wanted_angle;
+
     }
     sendDriveCommand();
 }
@@ -118,6 +120,11 @@ Arduino& Arduino::changeSpeedBy(const int &delta)
 
     sendDriveCommand();
 }
+
+int Arduino::getAngle(){ return m_current_angle;}
+
+int Arduino::getSpeed(){ return m_current_speed;}
+
 Arduino &Arduino::driveCurrentState(){
     sendDriveCommand();
 }

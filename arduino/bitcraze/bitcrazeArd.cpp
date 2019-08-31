@@ -5,7 +5,9 @@
 #include "Arduino_types.h"
 
 
-
+/**
+* start both sensors in bitcraze
+*/
 	void bitcraze::setup() {
 		if (!flow.begin()) {
 		  Serial.println("Initialization of the flow sensor failed");
@@ -18,7 +20,9 @@
 		_rangeSensor.init();
 		_rangeSensor.setTimeout(500);
 	}
-  
+  /**
+  * sends data trough serial to computer
+  */
   	void bitcraze::sendData(){
 		Flow data = getData ();
    // Serial.print("X: ");
@@ -32,7 +36,9 @@
 
 		Serial.write(reinterpret_cast<char*>(&data),sizeof(Flow));
 	}
-	
+	/**
+	* requests data from bitcraze
+	*/
 	Flow bitcraze::getData() {
     int x,y;
 	  flow.readMotionCount(&x, &y);
@@ -47,7 +53,9 @@
     Flow data = {x, y, z, t2};
     return data;
 	}
- 
+	/**
+	*stops sending data to computer
+	*/
  void bitcraze::stopstreaming(){
   
   

@@ -18,7 +18,6 @@ public:
      * stops the car and set the wheels to a 90 degree angle
      * @return this
      */
-
     virtual MotorController &stop() = 0;
     /**
      * sends command to drive at <speed> <current_angle>
@@ -45,7 +44,6 @@ public:
      * @param delta
      * @return this
      */
-
     virtual MotorController &changeSpeedBy(const int &delta) = 0;
 
     /**
@@ -57,6 +55,18 @@ public:
     virtual MotorController &changeAngleBy(const int &delta) = 0;
 	
     virtual MotorController &driveCurrentState() = 0;
+
+    /**
+     *
+     * @return currnet speed in units between [-30,30]
+     */
+    virtual int getSpeed() = 0;
+    /**
+     *
+     * @return current angle in degrees
+     */
+    virtual int getAngle() = 0;
+
 
 //    virtual MotorController &requestFlowData() = 0;
 
