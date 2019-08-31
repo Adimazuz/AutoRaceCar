@@ -113,8 +113,6 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 
 }
 
-
-
 RaceCar &RaceCar::run()
 {
     std::cout << "enter run" <<std::endl;
@@ -212,6 +210,27 @@ RaceCar &RaceCar::getCarControlCommands()
     return *this;
 }
 
+RaceCar &RaceCar::doDonuts()
+{
+    int angle = 90;
+    int delta = 2;
+    while(true)
+    {
+        std::this_thread::sleep_for (std::chrono::milliseconds(20));
+        //change direction
+        _motor_control->changeAngle(angle);
+        angle += delta;
+
+        if(angle >= 120 || angle <= 60)
+        {
+            std::this_thread::sleep_for (std::chrono::milliseconds(200));
+        }
+
+
+    }
+
+    return *this;
+}
 
 //TODO JpegDecompressor implement setParams
 //TODO remoteControl showImage according to number_of_components

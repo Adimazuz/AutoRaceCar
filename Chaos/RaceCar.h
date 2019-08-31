@@ -137,6 +137,12 @@ private: // methods
      */
     RaceCar &getBitCrazeOutput();
 
+    /**
+     * makes the car do circles
+     * @return pointer to class
+     */
+    RaceCar &doDonuts();
+
 private: //members
     std::shared_ptr<MotorController> _motor_control;
     Bitcraze _bitcraze;
