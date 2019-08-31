@@ -64,7 +64,7 @@ Arduino &Arduino::changeAngle(const int &wanted_angle)
     }
     else
     {
-        m_current_angle+=wanted_angle;
+        m_current_angle=wanted_angle;
     }
     sendDriveCommand();
 }

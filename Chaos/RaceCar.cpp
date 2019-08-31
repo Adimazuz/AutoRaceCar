@@ -126,22 +126,24 @@ RaceCar &RaceCar::run()
     if(_is_motor_control_connected && _tcp_server->isBind()){
             std::cout << "connected to Motor Control" <<std::endl;
             _carcontrol_thread = std::make_shared<std::thread>(&RaceCar::getCarControlCommands,this);
+
     }
+    //TODO normal flow for adi test
+//    _carcontrol_thread = std::make_shared<std::thread>(&RaceCar::doDonuts,this);
     if(_is_bitcraze_connected){
         std::cout << "connected to BitCraze" <<std::endl;
         _bitcraze_thread = std::make_shared<std::thread>(&RaceCar::getBitCrazeOutput,this);
-
     }
 }
 
 void RaceCar::setCamAndJpegConfig()
 {
     _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
-//    _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
-    _camera.setupInfraredImage(RealSense::InfrarFrameFormat::Y8, RealSense::InfrarRessolution::R_640x480, RealSense::InfrarCamFps::F_30hz, RealSense::InfrarCamera::LEFT);
+    _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
+//    _camera.setupInfraredImage(RealSense::InfrarFrameFormat::Y8, RealSense::InfrarRessolution::R_640x480, RealSense::InfrarCamFps::F_30hz, RealSense::InfrarCamera::LEFT);
     _camera.setupGyro();
     _camera.setupAccel();
-    _jpeg_comp.setParams(640,480,JpegCompressor::Format::GREY_SCALE,100);
+    _jpeg_comp.setParams(640,480,JpegCompressor::Format::RGB,100);
 }
 
 
@@ -217,14 +219,15 @@ RaceCar &RaceCar::doDonuts()
     int delta = 2;
     while(true)
     {
-        std::this_thread::sleep_for (std::chrono::milliseconds(20));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         //change direction
         _motor_control->changeAngle(angle);
         angle += delta;
 
         if(angle >= 120 || angle <= 60)
         {
-            std::this_thread::sleep_for (std::chrono::milliseconds(200));
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            delta *= -1;
         }
 
 
@@ -314,22 +317,22 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
         _camera.captureFrame();
 
         //test for color image
-//        Camera::ColorImage c_image=_camera.getColorImage();
-//        Chaos::ColorPacket c_packet = buildColorPacket(c_image);
-//        Chaos::header c_header = buildColorHeader();
+        Camera::ColorImage c_image=_camera.getColorImage();
+        Chaos::ColorPacket c_packet = buildColorPacket(c_image);
+        Chaos::header c_header = buildColorHeader();
         
-//        _tcp_client->send(reinterpret_cast<char*>(&c_header), sizeof(c_header));
-//        _tcp_client->send(reinterpret_cast<char*>(&c_packet), c_header.total_size);
-//        _tcp_client->send(reinterpret_cast<char*>(c_packet.image.compresed_data), c_packet.image.compressed_size);
+        _tcp_client->send(reinterpret_cast<char*>(&c_header), sizeof(c_header));
+        _tcp_client->send(reinterpret_cast<char*>(&c_packet), c_header.total_size);
+        _tcp_client->send(reinterpret_cast<char*>(c_packet.image.compresed_data), c_packet.image.compressed_size);
     
         //test for infrared image
-        Camera::ColorImage i_image=_camera.getInfraredImage();
-        Chaos::ColorPacket i_packet = buildColorPacket(i_image);
-        Chaos::header i_header = buildColorHeader();
+//        Camera::ColorImage i_image=_camera.getInfraredImage();
+//        Chaos::ColorPacket i_packet = buildColorPacket(i_image);
+//        Chaos::header i_header = buildColorHeader();
 
-        _tcp_client->send(reinterpret_cast<char*>(&i_header), sizeof(i_header));
-        _tcp_client->send(reinterpret_cast<char*>(&i_packet), i_header.total_size);
-        _tcp_client->send(reinterpret_cast<char*>(i_packet.image.compresed_data), i_packet.image.compressed_size);
+//        _tcp_client->send(reinterpret_cast<char*>(&i_header), sizeof(i_header));
+//        _tcp_client->send(reinterpret_cast<char*>(&i_packet), i_header.total_size);
+//        _tcp_client->send(reinterpret_cast<char*>(i_packet.image.compresed_data), i_packet.image.compressed_size);
 
 
         //TODO check flow and functions for depth image (and all the new parameters in type):
