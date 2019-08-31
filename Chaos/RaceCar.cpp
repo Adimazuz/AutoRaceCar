@@ -214,7 +214,10 @@ RaceCar &RaceCar::doDonuts()
 {
     _motor_control->changeAngle(90);
     _motor_control->changeSpeed(8);
+    std::this_thread::sleep_for (std::chrono::milliseconds(200));
+
     int delta = 2;
+
     while(true)
     {
         std::this_thread::sleep_for (std::chrono::milliseconds(50));
