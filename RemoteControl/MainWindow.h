@@ -10,7 +10,6 @@
 #include "ITcpClient.h"
 #include "ITcpServer.h"
 #include "JpegDecompressor.h"
-#include "Image.h"
 #include "Chaos_types.h"
 
 namespace Ui {
@@ -46,6 +45,7 @@ private:
     void initServer();
     void initDesign();
     void initThreads();
+    void initJpegDecompressor(const Chaos::ColorPacket &packet);
     void init();
     uint64 receiveCompressedSize();
     void markCameraConnection(const bool &is_connected);
@@ -55,13 +55,21 @@ private:
     void updateOpticalFlow(const Flow &flow);
     void updateEulerAngles(const Camera::EulerAngles &angles);
     void updateAccelometer(const Camera::AccelData &accel_data);
-    void update(const QImage &image, Chaos::ColorPacket &packet);
+    void update(const QImage &image, const Chaos::ColorPacket &packet);
     Chaos::header readHeader();
-    Chaos::ColorPacket readPacket(std::vector<uint8> &compressed_image,
-                                                           const Chaos::header &header);
+    Chaos::ColorPacket readColorPacket(std::vector<uint8> &compressed_image,
+                                       const Chaos::header &header);
+    Chaos::DepthPacket readDepthPacket(std::vector<uint8> &compressed_image,
+                                       const Chaos::header &header);
     QImage makeImage(std::vector<uint8> &compressed_image,
                      const Chaos::ColorPacket &packet);
     void waitForConnection();
+    QColor distanceToColor(const unsigned short &min, const unsigned short &max, const unsigned short &dist);
+    void handleDepthPacket(std::vector<uint8> &compressed_image, const Chaos::DepthPacket &packet);
+    void handleColorPacket(std::vector<uint8> &compressed_image, const Chaos::ColorPacket &packet);
+    std::vector<unsigned short> depthPacketToDistances(std::vector<uint8> &compressed_image, const Chaos::DepthPacket &packet);
+
+
 
 signals:
     void imageReady(QImage &image);
@@ -83,6 +91,7 @@ private:
     bool _is_run;
     std::shared_ptr<std::thread> _camera_thread;
     JpegDecompressor _decompressor;
+    bool _is_jpeg_decompressor_initialized;
 };
 
 #endif // MAINWINDOW_H
