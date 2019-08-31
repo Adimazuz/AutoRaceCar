@@ -111,7 +111,7 @@ void MainWindow::info(const string &msg)
 
 void MainWindow::bindServer()
 {
-    _server->bind("132.68.36.163", 5555, 5);
+    _server->bind("132.68.36.138", 5555, 5);
 //    _server->bind("192.168.1.75", 5555, 5);
     if(_server->isBind())
     {
