@@ -139,10 +139,11 @@ RaceCar &RaceCar::run()
 void RaceCar::setCamAndJpegConfig()
 {
     _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
-    _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
+//    _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
+    _camera.setupInfraredImage(RealSense::InfrarFrameFormat::Y8, RealSense::InfrarRessolution::R_640x480, RealSense::InfrarCamFps::F_30hz, RealSense::InfrarCamera::LEFT);
     _camera.setupGyro();
     _camera.setupAccel();
-    _jpeg_comp.setParams(640,480,JpegCompressor::Format::RGB,100);
+    _jpeg_comp.setParams(640,480,JpegCompressor::Format::GREY_SCALE,100);
 }
 
 
@@ -290,15 +291,28 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
     while (_is_running && _tcp_client->isConnected())
     {
 //        std::cout << _is_running <<std::endl;
+
         _camera.captureFrame();
-        Camera::ColorImage c_image=_camera.getColorImage();
-        Chaos::ColorPacket c_packet = buildColorPacket(c_image);
-        Chaos::header c_header = buildColorHeader();
+
+        //test for color image
+//        Camera::ColorImage c_image=_camera.getColorImage();
+//        Chaos::ColorPacket c_packet = buildColorPacket(c_image);
+//        Chaos::header c_header = buildColorHeader();
         
-        _tcp_client->send(reinterpret_cast<char*>(&c_header), sizeof(c_header));
-        _tcp_client->send(reinterpret_cast<char*>(&c_packet), c_header.total_size);
-        _tcp_client->send(reinterpret_cast<char*>(c_packet.image.compresed_data), c_packet.image.compressed_size);
+//        _tcp_client->send(reinterpret_cast<char*>(&c_header), sizeof(c_header));
+//        _tcp_client->send(reinterpret_cast<char*>(&c_packet), c_header.total_size);
+//        _tcp_client->send(reinterpret_cast<char*>(c_packet.image.compresed_data), c_packet.image.compressed_size);
     
+        //test for infrared image
+        Camera::ColorImage i_image=_camera.getInfraredImage();
+        Chaos::ColorPacket i_packet = buildColorPacket(i_image);
+        Chaos::header i_header = buildColorHeader();
+
+        _tcp_client->send(reinterpret_cast<char*>(&i_header), sizeof(i_header));
+        _tcp_client->send(reinterpret_cast<char*>(&i_packet), i_header.total_size);
+        _tcp_client->send(reinterpret_cast<char*>(i_packet.image.compresed_data), i_packet.image.compressed_size);
+
+
         //TODO check flow and functions for depth image (and all the new parameters in type):
 //        Camera::DepthImage d_image=_camera.getDepthImage();
 //        Chaos::DepthPacket d_packet = buildDepthPacket(d_image);
