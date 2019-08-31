@@ -61,6 +61,13 @@ public:
     bool _is_running;
 
 private: // methods
+
+    /**
+     * @brief setCamAndJpegConfig
+     * setup camera ressolution and fps
+     * setup jpeg compressor for same ressolution as from camera
+     */
+    void setCamAndJpegConfig();
     /**
      *  build packet to remote user
      * @param image - the color frame the we got from camera
