@@ -113,14 +113,13 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 
 }
 
+
+
 RaceCar &RaceCar::run()
 {
     std::cout << "enter run" <<std::endl;
     if(_is_tcp_client_connected && _is_cammera_connected){
-            _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
-            _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
-            _camera.setupGyro();
-            _camera.setupAccel();
+            setCamAndJpegConfig();
             std::cout << "Camera setuped" <<std::endl;
             _camera.startCamera();
             std::cout << "Camera started" <<std::endl;
@@ -135,6 +134,15 @@ RaceCar &RaceCar::run()
         _bitcraze_thread = std::make_shared<std::thread>(&RaceCar::getBitCrazeOutput,this);
 
     }
+}
+
+void RaceCar::setCamAndJpegConfig()
+{
+    _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
+    _camera.setupDepthImage(RealSense::DepthRessolution::R_480x270, RealSense::DepthCamFps::F_30hz);
+    _camera.setupGyro();
+    _camera.setupAccel();
+    _jpeg_comp.setParams(640,480,JpegCompressor::Format::RGB,100);
 }
 
 
@@ -204,7 +212,7 @@ RaceCar &RaceCar::getCarControlCommands()
     return *this;
 }
 
-//TODO set params for different ressolutions
+
 //TODO JpegDecompressor implement setParams
 //TODO remoteControl showImage according to number_of_components
 Chaos::ColorPacket RaceCar::buildColorPacket(const Camera::ColorImage &image){
