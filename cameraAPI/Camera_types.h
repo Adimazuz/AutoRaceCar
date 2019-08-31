@@ -20,7 +20,9 @@ struct ColorImage
 {
     uint64 frame_num;
     uint64 size;
-    int64 timestamp_ms;
+    int32 bytes_per_pixel;
+    int64 host_ts_ms;
+    real64 camera_ts_ms;
     uint32 width;
     uint32 height;
     const unsigned char *data;
@@ -30,7 +32,9 @@ struct DepthImage
 {
     uint64 frame_num;
     uint64 size;
-    int64 timestamp_ms;
+    int32 bytes_per_pixel;
+    int64 host_ts_ms;
+    real64 camera_ts_ms;
     uint32 width;
     uint32 height;
     real32 depth_scale;
@@ -42,7 +46,8 @@ struct EulerAngles
     real32 x_pitch;
     real32 y_yaw;
     real32 z_roll;
-    int64 timestamp_ms;
+    int64 host_ts_ms;
+    real64 camera_ts_ms;
 };
 
 struct AccelData
@@ -50,7 +55,8 @@ struct AccelData
     real32 x;
     real32 y;
     real32 z;
-    int64 timestamp_ms;
+    int64 host_ts_ms;
+    real64 camera_ts_ms;
 };
 
 

@@ -2,7 +2,6 @@
 #define REALSENSEAPI_H
 
 #include <librealsense2/rs.hpp>
-#include "Image.h"
 #include "Camera_types.h"
 
 class RealSense{
@@ -255,7 +254,6 @@ public:
          *         //A Depth stream contains an image that is composed of pixels with depth information.
         //The value of each pixel is the distance from the camera, in some distance units.
         //To get the distance in units of meters, each pixel's value should be multiplied by the sensor's depth scale
-        //Here is the way to grab this scale value for a "depth" sensor:
          * @return
          */
         float getDepthUnits();

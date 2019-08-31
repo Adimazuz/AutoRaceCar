@@ -17,3 +17,8 @@ Chaos/CMakeLists.txt.user
 *.autosave
 
 *.stash
+
+Chaos/.idea/*
+Chaos/cmake-build-debug/*
+cameraAPI/.idea/*
+cameraAPI/cmake-build-debug/*

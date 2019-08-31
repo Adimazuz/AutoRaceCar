@@ -8,7 +8,6 @@ set(SOURCE_FILES
     RealSenseAPI.h
     RealSenseAPI.cpp
     api_how_to.h
-    Image.h
     Camera_types.h
     Exceptions.h
     )
