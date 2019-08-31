@@ -55,12 +55,12 @@ private:
     void updateOpticalFlow(const Flow &flow);
     void updateEulerAngles(const Camera::EulerAngles &angles);
     void updateAccelometer(const Camera::AccelData &accel_data);
-    void update(const QImage &image, PacketToRemote::ColorDataAndPeriphelSensors &packet);
-    PacketToRemote::header readHeader();
-    PacketToRemote::ColorDataAndPeriphelSensors readPacket(std::vector<uint8> &compressed_image,
-                                                           const PacketToRemote::header &header);
+    void update(const QImage &image, Chaos::ColorPacket &packet);
+    Chaos::header readHeader();
+    Chaos::ColorPacket readPacket(std::vector<uint8> &compressed_image,
+                                                           const Chaos::header &header);
     QImage makeImage(std::vector<uint8> &compressed_image,
-                     const PacketToRemote::ColorDataAndPeriphelSensors &packet);
+                     const Chaos::ColorPacket &packet);
     void waitForConnection();
 
 signals:

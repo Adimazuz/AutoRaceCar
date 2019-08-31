@@ -147,7 +147,6 @@ void TcpClient::send(const string &message) noexcept
         }
 
         bytes_sent += tmp_len;
-        std::cout << tmp_len << std::endl;
     }
 }
 
@@ -173,7 +172,6 @@ void TcpClient::disconnect()
 #ifdef _WIN32
     closesocket(_socket);
 #else
-//    shutdown(_socket, 2);
     close(_socket);
     _is_connected = false;
 #endif

@@ -52,19 +52,26 @@ class RaceCarArd {
 			delay(200);
 		}
 	}
-	
+	/**
+	*sends command to motor and to steering to drive and speed and angle set in class
+	*/
 	void drive(){
 		engine.write(NATURAL_SPEED + speed);
 		steering.write(angle);
 		//delay(10);
 	}
-
-  void stop(){
+	/**
+	* stops car and set wheels to 90 degree angle
+	*/
+    void stop(){
      speed = 0;
      angle = 90;
      drive();
   }
-	
+	/**
+	*when changing from forewords to revers this function needs to be called
+	*before changing speed use this function
+	*/
 	void neutral() {
 		for(int i=91;i<95;i++)
 		{
@@ -74,6 +81,11 @@ class RaceCarArd {
 		speed =0;
 	}
 
+	/**
+	*waits for command to be writing ti Serial
+	* command structure "<speed> <angle>" 
+	* example "10 90"
+	*/
 	void getDriveCommand() {
 		String speed_string;
 		String angle_string;
