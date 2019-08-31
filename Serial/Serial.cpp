@@ -64,7 +64,7 @@ Serial &Serial::write(const string &msg)
 Serial &Serial::write(const char &msg)
 {
     auto bytes_written = ::write(_fd, &msg, 1);
-//TODO add close(fd)
+
     if(bytes_written < 0)
     {
         close(_fd);
