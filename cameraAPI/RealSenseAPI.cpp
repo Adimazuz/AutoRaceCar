@@ -149,6 +149,9 @@ static void convertInfraRessToInt(RealSense::InfrarRessolution ressolution, int&
     }else if(ressolution == RealSense::InfrarRessolution::R_640x480){
         w = 640;
         h = 480;
+    }else if(ressolution == RealSense::InfrarRessolution::R_640x480){
+        w = 640;
+        h = 400;
     }else if(ressolution == RealSense::InfrarRessolution::R_640x360){
         w = 640;
         h = 360;

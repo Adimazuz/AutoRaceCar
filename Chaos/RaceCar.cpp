@@ -140,12 +140,16 @@ RaceCar &RaceCar::run()
 void RaceCar::setCamAndJpegConfig()
 {
 //    _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
-    _camera.setupDepthImage(RealSense::DepthRessolution::R_640x480, RealSense::DepthCamFps::F_30hz);
-//    _camera.setupInfraredImage(RealSense::InfrarFrameFormat::Y8, RealSense::InfrarRessolution::R_640x480, RealSense::InfrarCamFps::F_30hz, RealSense::InfrarCamera::LEFT);
+//    _camera.setupDepthImage(RealSense::DepthRessolution::R_640x480, RealSense::DepthCamFps::F_30hz);
+    _camera.setupInfraredImage(RealSense::InfrarFrameFormat::Y8, RealSense::InfrarRessolution::R_640x480, RealSense::InfrarCamFps::F_30hz, RealSense::InfrarCamera::LEFT);
     _camera.setupGyro();
     _camera.setupAccel();
-    _jpeg_comp.setParams(640,480,JpegCompressor::Format::RGB,100);
-    _image_format_to_remote = RaceCar::format_to_remote::DEPTH;
+
+//    _jpeg_comp.setParams(640,480,JpegCompressor::Format::RGB,100);
+    _jpeg_comp.setParams(640,480,JpegCompressor::Format::GREY_SCALE,100);
+
+//    _image_format_to_remote = RaceCar::format_to_remote::DEPTH;
+    _image_format_to_remote = RaceCar::format_to_remote::INFRARED;
 //    _image_format_to_remote = RaceCar::format_to_remote::COLOR;
 }
 

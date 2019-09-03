@@ -1,3 +1,23 @@
+/**
+  Interface to camera RealSense
+  *NOTES:
+  * 1). the camera adapt the ressolutions and the FPSs the she can provide
+  * acording the USB cable that connect the camera and the host
+  * (i.e. camera calculate the throughput that she can provide
+  * according the cable)
+  * all the iterface is assume that the camera connected with
+  * USB3 cable.
+  *
+  * 2). the general flow of use is:
+  * -turnon the camera (start camera)
+  * -setup wanted frames from the camera
+  * -capture the frame in any time u want it
+
+
+
+  */
+
+
 #ifndef REALSENSEAPI_H
 #define REALSENSEAPI_H
 
@@ -99,6 +119,7 @@ public:
             R_1280x720,
             R_848_480,
             R_640x480,
+            R_640x400,
             R_640x360,
             R_480x270,
             R_424x240
@@ -185,7 +206,7 @@ public:
          * @brief setupInfraredImage - setup one of 2 inferar cameras
          * notice that
          * 1). at ressolution 1280x800 camera can work only at 20/25/15 fps
-         * 2). format Y16 works only for resolutions: 1280x800 and 640x480 and only at rates 30/15/6
+         * 2). format Y16 works only for resolutions: 1280x800 and 640x400 and only at rates 25/15
          * *depth and infrared frames cant be setuped together (same sensors)
          * @param format:
          * Y8
