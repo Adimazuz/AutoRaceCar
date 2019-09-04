@@ -153,6 +153,8 @@ RaceCar &RaceCar::setIRToSend()
 RaceCar &RaceCar::setDepthToSend(){
     _camera.setupDepthImage(RealSense::DepthRessolution::R_640x480, RealSense::DepthCamFps::F_30hz);
     _image_format_to_remote = RaceCar::format_to_remote::DEPTH;
+    _jpeg_comp.setParams(640,480,JpegCompressor::Format::RGB,100);
+
 }
 
 void RaceCar::setCamAndJpegConfig()
@@ -164,8 +166,8 @@ void RaceCar::setCamAndJpegConfig()
     //Note that u can setup different frames to get from camera
     //and procces them but in this example we send only one type of frame
     //to remote
-//    setDepthToSend();
-    setColorToSend();
+    setDepthToSend();
+//    setColorToSend();
 //    setIRToSend();
 
 
@@ -338,6 +340,44 @@ Chaos::DepthPacket RaceCar::buildDepthPacket(const Camera::DepthImage &image, st
     return packet;
 }
 
+Chaos::DepthPacket RaceCar::buildDepthPacket_v2(const Camera::DepthImage &image){
+
+    Chaos::DepthPacket packet = {};
+
+    packet.accel_data = _camera.getAccelData();
+    packet.euler_angl = _camera.getEulerAngels();
+
+    _flow_mtx.lock();
+    packet.flow_data = _flow_data;
+    _flow_mtx.unlock();
+
+    packet.image.frame_num = image.frame_num;
+    packet.image.height = image.height;
+    packet.image.width = image.width;
+    packet.image.size = image.size;
+    packet.image.host_ts_ms = image.host_ts_ms;
+    packet.image.camera_ts_ms = image.camera_ts_ms;
+    packet.image.depth_scale = image.depth_scale;
+    packet.image.bytes_per_pixel = image.bytes_per_pixel;
+
+
+
+//    compress(compresed_image.data(), &len, image.data, len_orig); //compress with zlib!
+
+//    packet.image.compressed_size = len;
+//    packet.image.compresed_data = compresed_image.data();
+
+    //test to send non compresed data
+    packet.image.compressed_size = image.size;
+    packet.image.compresed_data = image.data;
+
+//    _jpeg_comp.compress(image.data); //compress with jpeg!!
+//    packet.image.compressed_size = _jpeg_comp.getCompressedSize();
+//    packet.image.comsizepresed_data = _jpeg_comp.getOutput();
+
+    return packet;
+}
+
 Chaos::header RaceCar::buildDepthHeader(){
     Chaos::header header = {};
     header.type_code = Chaos::DEPTH_HEADER;
@@ -351,39 +391,27 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
     std::cout << "enter Camera thread" <<std::endl;
     while (_is_running && _tcp_client->isConnected())
     {
-        //        std::cout << _is_running <<std::endl;
 
         _camera.captureFrame();
 
-        //test for color image
-        if (_image_format_to_remote != RaceCar::format_to_remote::DEPTH){
-            Camera::ColorImage image;
-            if (_image_format_to_remote == RaceCar::format_to_remote::COLOR){
-                image = _camera.getColorImage();
-            } else {
-                image = _camera.getInfraredImage();
-            }
-            Chaos::ColorPacket packet = buildColorPacket(image);
-            Chaos::header header = buildColorHeader();
+        Camera::ColorImage image;
 
-            _tcp_client->send(reinterpret_cast<char*>(&header), sizeof(header));
-            _tcp_client->send(reinterpret_cast<char*>(&packet), header.total_size);
-            _tcp_client->send(reinterpret_cast<char*>(packet.image.compresed_data), packet.image.compressed_size);
-
-        } else if (_image_format_to_remote == RaceCar::format_to_remote::DEPTH)
-        {
-            // if we send depth image we use zlib compressor
-            Camera::DepthImage d_image = _camera.getDepthImage();
-            std::vector<unsigned char> compresed_image(d_image.size);
-            Chaos::DepthPacket d_packet = buildDepthPacket(d_image, compresed_image);
-            Chaos::header d_header = buildDepthHeader();
-
-//            std::cout << "sending depth in size: "<< d_packet.image.compressed_size << std::endl;
-
-            _tcp_client->send(reinterpret_cast<char*>(&d_header), sizeof(d_header));
-            _tcp_client->send(reinterpret_cast<char*>(&d_packet), d_header.total_size);
-            _tcp_client->send(reinterpret_cast<char*>(d_packet.image.compresed_data), d_packet.image.compressed_size);
+        Chaos::ColorPacket packet;
+        Chaos::header header;
+        //only one type of frame can be sent (jpeg conpressor configurated to that type)
+        if (_image_format_to_remote == RaceCar::format_to_remote::COLOR){
+            image = _camera.getColorImage();
+        } else if (_image_format_to_remote == RaceCar::format_to_remote::INFRARED){
+            image = _camera.getInfraredImage();
+        } else {
+            image = _camera.getDepthColorizedImage();
         }
+        packet = buildColorPacket(image);
+        header = buildColorHeader();
+        _tcp_client->send(reinterpret_cast<char*>(&header), sizeof(header));
+        _tcp_client->send(reinterpret_cast<char*>(&packet), header.total_size);
+        _tcp_client->send(reinterpret_cast<char*>(packet.image.compresed_data), packet.image.compressed_size);
+
     }
     std::cout << "Camera thread finished" <<std::endl;
     return *this;

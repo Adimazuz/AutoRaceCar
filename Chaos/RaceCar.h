@@ -108,6 +108,8 @@ private: // methods
     * flow (bitcraze) data and compressed image data)
      */
     Chaos::DepthPacket buildDepthPacket(const Camera::DepthImage &image, std::vector<unsigned char> &compresed_image);
+
+    Chaos::DepthPacket buildDepthPacket_v2(const Camera::DepthImage &image);
     
     /**
     * build Depth header that need to send before the Depth Packer (remote user need to know witch
