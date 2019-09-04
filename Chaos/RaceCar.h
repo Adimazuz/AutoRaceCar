@@ -74,11 +74,15 @@ private: // methods
      * @brief setCamAndJpegConfig
      * setup camera ressolution and fps
      * setup jpeg compressor for same ressolution as from camera
+     * Note** that u can setup different frames to get from camera
+     * and procces them but in this example we send only one type of frame
+     * to remote
      */
     void setCamAndJpegConfig();
     /**
      *  build packet to remote user
      * data compressed with JPEG!
+     *
      * @param image - the color frame the we got from camera
      * @return color packet that rdy to be send, with all relevant data (Image description data, accel data, gyro data,
      * flow (bitcraze) data and compressed image data)
@@ -155,6 +159,25 @@ private: // methods
      * @return pointer to class
      */
     RaceCar &doDonuts();
+
+    /**
+     * @brief setColorToSend
+     * @return
+     */
+    RaceCar &setColorToSend();
+
+    /**
+     * @brief setIRToSend
+     * @return
+     */
+    RaceCar &setIRToSend();
+
+    /**
+     * @brief setDepthToSend
+     * @return
+     */
+    RaceCar &setDepthToSend();
+
 
 private: //members
     std::shared_ptr<MotorController> _motor_control;
