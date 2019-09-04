@@ -59,16 +59,10 @@ private:
     Chaos::header readHeader();
     Chaos::ColorPacket readColorPacket(std::vector<uint8> &compressed_image,
                                        const Chaos::header &header);
-    Chaos::DepthPacket readDepthPacket(std::vector<uint8> &compressed_image,
-                                       const Chaos::header &header);
     QImage makeImage(std::vector<uint8> &compressed_image,
                      const Chaos::ColorPacket &packet);
     void waitForConnection();
-    QColor distanceToColor(const unsigned short &min, const unsigned short &max, const unsigned short &dist);
-    void handleDepthPacket(std::vector<uint8> &compressed_image, const Chaos::DepthPacket &packet);
     void handleColorPacket(std::vector<uint8> &compressed_image, const Chaos::ColorPacket &packet);
-    std::vector<unsigned short> depthPacketToDistances(std::vector<uint8> &compressed_image, const Chaos::DepthPacket &packet);
-
 
 
 signals:
