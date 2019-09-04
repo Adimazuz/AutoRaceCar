@@ -136,17 +136,40 @@ RaceCar &RaceCar::run()
     }
 }
 
+RaceCar &RaceCar::setColorToSend()
+{
+    _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
+    _image_format_to_remote = RaceCar::format_to_remote::COLOR;
+    _jpeg_comp.setParams(640,480,JpegCompressor::Format::RGB,100);
+}
+
+RaceCar &RaceCar::setIRToSend()
+{
+    _camera.setupInfraredImage(RealSense::InfrarFrameFormat::Y8, RealSense::InfrarRessolution::R_640x480, RealSense::InfrarCamFps::F_30hz, RealSense::InfrarCamera::LEFT);
+    _image_format_to_remote = RaceCar::format_to_remote::INFRARED;
+    _jpeg_comp.setParams(640,480,JpegCompressor::Format::GREY_SCALE,100);
+}
+
+RaceCar &RaceCar::setDepthToSend(){
+    _camera.setupDepthImage(RealSense::DepthRessolution::R_640x480, RealSense::DepthCamFps::F_30hz);
+    _image_format_to_remote = RaceCar::format_to_remote::DEPTH;
+}
 
 void RaceCar::setCamAndJpegConfig()
 {
-//    _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
-    _camera.setupDepthImage(RealSense::DepthRessolution::R_640x480, RealSense::DepthCamFps::F_30hz);
-//    _camera.setupInfraredImage(RealSense::InfrarFrameFormat::Y8, RealSense::InfrarRessolution::R_640x480, RealSense::InfrarCamFps::F_30hz, RealSense::InfrarCamera::LEFT);
+
     _camera.setupGyro();
     _camera.setupAccel();
-    _jpeg_comp.setParams(640,480,JpegCompressor::Format::RGB,100);
-    _image_format_to_remote = RaceCar::format_to_remote::DEPTH;
-//    _image_format_to_remote = RaceCar::format_to_remote::COLOR;
+    //choose one to send to remote (depth, color or IR)
+    //Note that u can setup different frames to get from camera
+    //and procces them but in this example we send only one type of frame
+    //to remote
+//    setDepthToSend();
+    setColorToSend();
+//    setIRToSend();
+
+
+
 }
 
 
@@ -242,6 +265,8 @@ RaceCar &RaceCar::doDonuts()
 
     return *this;
 }
+
+
 
 
 Chaos::ColorPacket RaceCar::buildColorPacket(const Camera::ColorImage &image){

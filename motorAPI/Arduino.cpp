@@ -95,9 +95,9 @@ Arduino& Arduino::changeSpeedBy(const int &delta)
 {
     if (delta > 0)
 	{
-        if( m_current_speed>=0 && m_current_speed <10)
+        if( m_current_speed>=0 && m_current_speed <START_SPEED)
 		{
-			m_current_speed = 10;
+            m_current_speed = START_SPEED;
 		}
 		else if( m_current_speed + delta > TOP_SPEED )
 		{
@@ -107,9 +107,9 @@ Arduino& Arduino::changeSpeedBy(const int &delta)
     }
     else if (delta < 0)
 	{
-        if( m_current_speed<=0 && m_current_speed >-8)
+        if( m_current_speed<=0 && m_current_speed >-START_SPEED)
 		{
-			m_current_speed = -8;
+            m_current_speed = -START_SPEED;
 		}
         else if( m_current_speed + delta < -TOP_SPEED  )
 		{
