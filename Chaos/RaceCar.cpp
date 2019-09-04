@@ -166,8 +166,8 @@ void RaceCar::setCamAndJpegConfig()
     //Note that u can setup different frames to get from camera
     //and procces them but in this example we send only one type of frame
     //to remote
-    setDepthToSend();
-//    setColorToSend();
+//    setDepthToSend();
+    setColorToSend();
 //    setIRToSend();
 
 
