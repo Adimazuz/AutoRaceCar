@@ -2,7 +2,7 @@
 #include <vector>
 #include "Arduino.h"
 #include <thread>
-#include "zlib.h"
+
 
 
 #include "iostream"
@@ -305,85 +305,6 @@ Chaos::header RaceCar::buildColorHeader(){
     return header;
 }
 
-Chaos::DepthPacket RaceCar::buildDepthPacket(const Camera::DepthImage &image, std::vector<unsigned char> &compresed_image){
-    
-    Chaos::DepthPacket packet = {};
-    
-    packet.accel_data = _camera.getAccelData();
-    packet.euler_angl = _camera.getEulerAngels();
-    
-    _flow_mtx.lock();
-    packet.flow_data = _flow_data;
-    _flow_mtx.unlock();
-    
-    packet.image.frame_num = image.frame_num;
-    packet.image.height = image.height;
-    packet.image.width = image.width;
-    packet.image.size = image.size;
-    packet.image.host_ts_ms = image.host_ts_ms;
-    packet.image.camera_ts_ms = image.camera_ts_ms;
-    packet.image.depth_scale = image.depth_scale;
-    packet.image.bytes_per_pixel = image.bytes_per_pixel;
-    
-    auto len = image.size;
-    auto len_orig = len;
-
-    compress(compresed_image.data(), &len, image.data, len_orig); //compress with zlib!
-
-    packet.image.compressed_size = len;
-    packet.image.compresed_data = compresed_image.data();
-
-    //test to send non compresed data
-//    packet.image.compressed_size = image.size;
-//    packet.image.compresed_data = nullptr;
-    
-    return packet;
-}
-
-Chaos::DepthPacket RaceCar::buildDepthPacket_v2(const Camera::DepthImage &image){
-
-    Chaos::DepthPacket packet = {};
-
-    packet.accel_data = _camera.getAccelData();
-    packet.euler_angl = _camera.getEulerAngels();
-
-    _flow_mtx.lock();
-    packet.flow_data = _flow_data;
-    _flow_mtx.unlock();
-
-    packet.image.frame_num = image.frame_num;
-    packet.image.height = image.height;
-    packet.image.width = image.width;
-    packet.image.size = image.size;
-    packet.image.host_ts_ms = image.host_ts_ms;
-    packet.image.camera_ts_ms = image.camera_ts_ms;
-    packet.image.depth_scale = image.depth_scale;
-    packet.image.bytes_per_pixel = image.bytes_per_pixel;
-
-
-
-//    compress(compresed_image.data(), &len, image.data, len_orig); //compress with zlib!
-
-//    packet.image.compressed_size = len;
-//    packet.image.compresed_data = compresed_image.data();
-
-    //test to send non compresed data
-    packet.image.compressed_size = image.size;
-    packet.image.compresed_data = image.data;
-
-//    _jpeg_comp.compress(image.data); //compress with jpeg!!
-//    packet.image.compressed_size = _jpeg_comp.getCompressedSize();
-//    packet.image.comsizepresed_data = _jpeg_comp.getOutput();
-
-    return packet;
-}
-
-Chaos::header RaceCar::buildDepthHeader(){
-    Chaos::header header = {};
-    header.type_code = Chaos::DEPTH_HEADER;
-    header.total_size = sizeof(Chaos::DepthPacket)-sizeof(Chaos::DepthImage::compresed_data);
-    return header;
-}
 
 
 RaceCar &RaceCar::getCameraOutputAndSendToRemote()
