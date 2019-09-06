@@ -12,20 +12,20 @@
 
   example of opening connection, wait for client and receive data:
 
-        std::shared_ptr<ITcpServer> server = ITcpServer::create("127.0.0.1", 5555, 5);
+        std::shared_ptr<ITcpServer> server = ITcpServer::create();
+        server->bind("127.0.0.1", 5555, 5);
 
-        Socket new_client = server->waitForConnections();
-
-        if(server->hasConnectionWithSocket(new_client))
+        if(server->isBind())
         {
-            std::vector<char> rcv = server->receive(new_client, 10);
-            if(rcv.size() > 0)
+            Socket new_client = server->waitForConnections();
+
+            if(server->hasConnectionWithSocket(new_client))
             {
-                //do something
+                char *data = new char[10];
+                server->receive(new_client, data, 10);
             }
         }
-
-  */
+*/
 
 #include "TcpServer_types.h"
 

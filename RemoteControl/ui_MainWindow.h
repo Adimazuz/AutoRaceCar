@@ -44,33 +44,39 @@ public:
     QLineEdit *controller_ip;
     QLabel *lbl_img;
     QLineEdit *camera_ip;
+    QSpacerItem *verticalSpacer;
+    QComboBox *camera_request;
+    QLabel *controller;
+    QPushButton *connect;
     QGridLayout *gridLayout_2;
-    QLabel *psi;
-    QLabel *optical_flow;
+    QLabel *z;
+    QLabel *dt;
+    QLabel *label_2;
+    QLabel *dy;
     QLabel *lbl_dx;
     QLabel *range;
-    QLabel *lbl_dy;
+    QLabel *label_4;
+    QLabel *lbl_range;
+    QLabel *psi;
     QLabel *gyro;
     QLabel *theta;
-    QLabel *label_2;
     QLabel *lbl_phi;
-    QLabel *accelometer;
-    QLabel *dy;
-    QLabel *lbl_range;
     QLabel *lbl_psi;
     QLabel *phi;
     QLabel *lbl_theta;
     QLabel *dx;
-    QLabel *label_6;
-    QLabel *z;
-    QLabel *y;
-    QLabel *label_4;
-    QLabel *x;
     QSpacerItem *verticalSpacer_2;
-    QSpacerItem *verticalSpacer;
-    QLabel *controller;
-    QPushButton *connect;
-    QComboBox *camera_request;
+    QLabel *label_7;
+    QLabel *vx;
+    QLabel *optical_flow;
+    QLabel *label;
+    QLabel *label_3;
+    QLabel *x;
+    QLabel *lbl_dy;
+    QLabel *label_6;
+    QLabel *y;
+    QLabel *accelometer;
+    QLabel *vy;
     QMenuBar *menuBar;
     QMenu *menufile;
     QMenu *menusettings;
@@ -83,7 +89,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(808, 546);
+        MainWindow->resize(934, 665);
         acn_exit = new QAction(MainWindow);
         acn_exit->setObjectName(QStringLiteral("acn_exit"));
         actionshow = new QAction(MainWindow);
@@ -152,10 +158,85 @@ public:
 
         gridLayout->addWidget(camera_ip, 1, 0, 1, 1);
 
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout->addItem(verticalSpacer, 4, 3, 1, 1);
+
+        camera_request = new QComboBox(centralWidget);
+        camera_request->addItem(QString());
+        camera_request->addItem(QString());
+        camera_request->addItem(QString());
+        camera_request->setObjectName(QStringLiteral("camera_request"));
+
+        gridLayout->addWidget(camera_request, 2, 0, 1, 2);
+
+        controller = new QLabel(centralWidget);
+        controller->setObjectName(QStringLiteral("controller"));
+        controller->setAlignment(Qt::AlignCenter);
+
+        gridLayout->addWidget(controller, 0, 2, 1, 2);
+
+        connect = new QPushButton(centralWidget);
+        connect->setObjectName(QStringLiteral("connect"));
+
+        gridLayout->addWidget(connect, 2, 2, 1, 2);
+
         gridLayout_2 = new QGridLayout();
         gridLayout_2->setSpacing(6);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         gridLayout_2->setSizeConstraint(QLayout::SetDefaultConstraint);
+        z = new QLabel(centralWidget);
+        z->setObjectName(QStringLiteral("z"));
+        z->setFrameShape(QFrame::StyledPanel);
+        z->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(z, 7, 0, 1, 1);
+
+        dt = new QLabel(centralWidget);
+        dt->setObjectName(QStringLiteral("dt"));
+        dt->setFrameShape(QFrame::StyledPanel);
+        dt->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(dt, 22, 0, 1, 1);
+
+        label_2 = new QLabel(centralWidget);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(label_2, 1, 0, 1, 1);
+
+        dy = new QLabel(centralWidget);
+        dy->setObjectName(QStringLiteral("dy"));
+        dy->setFrameShape(QFrame::StyledPanel);
+        dy->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(dy, 17, 0, 1, 1);
+
+        lbl_dx = new QLabel(centralWidget);
+        lbl_dx->setObjectName(QStringLiteral("lbl_dx"));
+        lbl_dx->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(lbl_dx, 11, 0, 1, 1);
+
+        range = new QLabel(centralWidget);
+        range->setObjectName(QStringLiteral("range"));
+        range->setFrameShape(QFrame::StyledPanel);
+        range->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(range, 20, 0, 1, 1);
+
+        label_4 = new QLabel(centralWidget);
+        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(label_4, 3, 0, 1, 1);
+
+        lbl_range = new QLabel(centralWidget);
+        lbl_range->setObjectName(QStringLiteral("lbl_range"));
+        lbl_range->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(lbl_range, 19, 0, 1, 1);
+
         psi = new QLabel(centralWidget);
         psi->setObjectName(QStringLiteral("psi"));
         psi->setFrameShape(QFrame::StyledPanel);
@@ -163,46 +244,12 @@ public:
 
         gridLayout_2->addWidget(psi, 2, 1, 1, 1);
 
-        optical_flow = new QLabel(centralWidget);
-        optical_flow->setObjectName(QStringLiteral("optical_flow"));
-        QFont font;
-        font.setBold(true);
-        font.setUnderline(false);
-        font.setWeight(75);
-        font.setStrikeOut(false);
-        font.setKerning(true);
-        optical_flow->setFont(font);
-        optical_flow->setFrameShape(QFrame::NoFrame);
-        optical_flow->setFrameShadow(QFrame::Plain);
-        optical_flow->setAlignment(Qt::AlignCenter);
-
-        gridLayout_2->addWidget(optical_flow, 0, 0, 1, 1);
-
-        lbl_dx = new QLabel(centralWidget);
-        lbl_dx->setObjectName(QStringLiteral("lbl_dx"));
-        lbl_dx->setAlignment(Qt::AlignCenter);
-
-        gridLayout_2->addWidget(lbl_dx, 1, 0, 1, 1);
-
-        range = new QLabel(centralWidget);
-        range->setObjectName(QStringLiteral("range"));
-        range->setFrameShape(QFrame::StyledPanel);
-        range->setAlignment(Qt::AlignCenter);
-
-        gridLayout_2->addWidget(range, 7, 0, 1, 1);
-
-        lbl_dy = new QLabel(centralWidget);
-        lbl_dy->setObjectName(QStringLiteral("lbl_dy"));
-        lbl_dy->setAlignment(Qt::AlignCenter);
-
-        gridLayout_2->addWidget(lbl_dy, 3, 0, 1, 1);
-
         gyro = new QLabel(centralWidget);
         gyro->setObjectName(QStringLiteral("gyro"));
-        QFont font1;
-        font1.setBold(true);
-        font1.setWeight(75);
-        gyro->setFont(font1);
+        QFont font;
+        font.setBold(true);
+        font.setWeight(75);
+        gyro->setFont(font);
         gyro->setAlignment(Qt::AlignCenter);
 
         gridLayout_2->addWidget(gyro, 0, 1, 1, 1);
@@ -214,37 +261,11 @@ public:
 
         gridLayout_2->addWidget(theta, 4, 1, 1, 1);
 
-        label_2 = new QLabel(centralWidget);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setAlignment(Qt::AlignCenter);
-
-        gridLayout_2->addWidget(label_2, 10, 0, 1, 1);
-
         lbl_phi = new QLabel(centralWidget);
         lbl_phi->setObjectName(QStringLiteral("lbl_phi"));
         lbl_phi->setAlignment(Qt::AlignCenter);
 
         gridLayout_2->addWidget(lbl_phi, 5, 1, 1, 1);
-
-        accelometer = new QLabel(centralWidget);
-        accelometer->setObjectName(QStringLiteral("accelometer"));
-        accelometer->setFont(font1);
-        accelometer->setAlignment(Qt::AlignCenter);
-
-        gridLayout_2->addWidget(accelometer, 9, 0, 1, 1);
-
-        dy = new QLabel(centralWidget);
-        dy->setObjectName(QStringLiteral("dy"));
-        dy->setFrameShape(QFrame::StyledPanel);
-        dy->setAlignment(Qt::AlignCenter);
-
-        gridLayout_2->addWidget(dy, 4, 0, 1, 1);
-
-        lbl_range = new QLabel(centralWidget);
-        lbl_range->setObjectName(QStringLiteral("lbl_range"));
-        lbl_range->setAlignment(Qt::AlignCenter);
-
-        gridLayout_2->addWidget(lbl_range, 5, 0, 1, 1);
 
         lbl_psi = new QLabel(centralWidget);
         lbl_psi->setObjectName(QStringLiteral("lbl_psi"));
@@ -270,75 +291,99 @@ public:
         dx->setFrameShape(QFrame::StyledPanel);
         dx->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(dx, 2, 0, 1, 1);
+        gridLayout_2->addWidget(dx, 13, 0, 1, 1);
 
-        label_6 = new QLabel(centralWidget);
-        label_6->setObjectName(QStringLiteral("label_6"));
-        label_6->setAlignment(Qt::AlignCenter);
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-        gridLayout_2->addWidget(label_6, 14, 0, 1, 1);
+        gridLayout_2->addItem(verticalSpacer_2, 8, 0, 1, 1);
 
-        z = new QLabel(centralWidget);
-        z->setObjectName(QStringLiteral("z"));
-        z->setFrameShape(QFrame::StyledPanel);
-        z->setAlignment(Qt::AlignCenter);
+        label_7 = new QLabel(centralWidget);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        label_7->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(z, 15, 0, 1, 1);
+        gridLayout_2->addWidget(label_7, 25, 0, 1, 1);
 
-        y = new QLabel(centralWidget);
-        y->setObjectName(QStringLiteral("y"));
-        y->setFrameShape(QFrame::StyledPanel);
-        y->setAlignment(Qt::AlignCenter);
+        vx = new QLabel(centralWidget);
+        vx->setObjectName(QStringLiteral("vx"));
+        vx->setFrameShape(QFrame::StyledPanel);
+        vx->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(y, 13, 0, 1, 1);
+        gridLayout_2->addWidget(vx, 24, 0, 1, 1);
 
-        label_4 = new QLabel(centralWidget);
-        label_4->setObjectName(QStringLiteral("label_4"));
-        label_4->setAlignment(Qt::AlignCenter);
+        optical_flow = new QLabel(centralWidget);
+        optical_flow->setObjectName(QStringLiteral("optical_flow"));
+        QFont font1;
+        font1.setBold(true);
+        font1.setUnderline(false);
+        font1.setWeight(75);
+        font1.setStrikeOut(false);
+        font1.setKerning(true);
+        optical_flow->setFont(font1);
+        optical_flow->setFrameShape(QFrame::NoFrame);
+        optical_flow->setFrameShadow(QFrame::Plain);
+        optical_flow->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(label_4, 12, 0, 1, 1);
+        gridLayout_2->addWidget(optical_flow, 9, 0, 1, 1);
+
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
+        label->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(label, 21, 0, 1, 1);
+
+        label_3 = new QLabel(centralWidget);
+        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(label_3, 23, 0, 1, 1);
 
         x = new QLabel(centralWidget);
         x->setObjectName(QStringLiteral("x"));
         x->setFrameShape(QFrame::StyledPanel);
         x->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(x, 11, 0, 1, 1);
+        gridLayout_2->addWidget(x, 2, 0, 1, 1);
 
-        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        lbl_dy = new QLabel(centralWidget);
+        lbl_dy->setObjectName(QStringLiteral("lbl_dy"));
+        lbl_dy->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addItem(verticalSpacer_2, 8, 0, 1, 1);
+        gridLayout_2->addWidget(lbl_dy, 15, 0, 1, 1);
+
+        label_6 = new QLabel(centralWidget);
+        label_6->setObjectName(QStringLiteral("label_6"));
+        label_6->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(label_6, 5, 0, 1, 1);
+
+        y = new QLabel(centralWidget);
+        y->setObjectName(QStringLiteral("y"));
+        y->setFrameShape(QFrame::StyledPanel);
+        y->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(y, 4, 0, 1, 1);
+
+        accelometer = new QLabel(centralWidget);
+        accelometer->setObjectName(QStringLiteral("accelometer"));
+        accelometer->setFont(font);
+        accelometer->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(accelometer, 0, 0, 1, 1);
+
+        vy = new QLabel(centralWidget);
+        vy->setObjectName(QStringLiteral("vy"));
+        vy->setFrameShape(QFrame::StyledPanel);
+        vy->setAlignment(Qt::AlignCenter);
+
+        gridLayout_2->addWidget(vy, 26, 0, 1, 1);
 
 
         gridLayout->addLayout(gridLayout_2, 3, 3, 1, 1);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        gridLayout->addItem(verticalSpacer, 4, 3, 1, 1);
-
-        controller = new QLabel(centralWidget);
-        controller->setObjectName(QStringLiteral("controller"));
-        controller->setAlignment(Qt::AlignCenter);
-
-        gridLayout->addWidget(controller, 0, 2, 1, 2);
-
-        connect = new QPushButton(centralWidget);
-        connect->setObjectName(QStringLiteral("connect"));
-
-        gridLayout->addWidget(connect, 2, 2, 1, 2);
-
-        camera_request = new QComboBox(centralWidget);
-        camera_request->addItem(QString());
-        camera_request->addItem(QString());
-        camera_request->addItem(QString());
-        camera_request->setObjectName(QStringLiteral("camera_request"));
-
-        gridLayout->addWidget(camera_request, 2, 0, 1, 2);
-
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 808, 22));
+        menuBar->setGeometry(QRect(0, 0, 934, 22));
         menufile = new QMenu(menuBar);
         menufile->setObjectName(QStringLiteral("menufile"));
         menusettings = new QMenu(menuBar);
@@ -386,33 +431,39 @@ public:
         controller_ip->setPlaceholderText(QApplication::translate("MainWindow", "ip", nullptr));
         lbl_img->setText(QString());
         camera_ip->setPlaceholderText(QApplication::translate("MainWindow", "ip", nullptr));
-        psi->setText(QString());
-        optical_flow->setText(QApplication::translate("MainWindow", "optical flow", nullptr));
-        lbl_dx->setText(QApplication::translate("MainWindow", "dx [px]", nullptr));
-        range->setText(QString());
-        lbl_dy->setText(QApplication::translate("MainWindow", "dy [px]", nullptr));
-        gyro->setText(QApplication::translate("MainWindow", "gyro", nullptr));
-        theta->setText(QString());
-        label_2->setText(QApplication::translate("MainWindow", "x [m/sec^2]", nullptr));
-        lbl_phi->setText(QApplication::translate("MainWindow", "roll [rad/sec]", nullptr));
-        accelometer->setText(QApplication::translate("MainWindow", "accelometer", nullptr));
-        dy->setText(QString());
-        lbl_range->setText(QApplication::translate("MainWindow", "range [mm]", nullptr));
-        lbl_psi->setText(QApplication::translate("MainWindow", "pitch [rad/sec]", nullptr));
-        phi->setText(QString());
-        lbl_theta->setText(QApplication::translate("MainWindow", "yaw [rad/sec]", nullptr));
-        dx->setText(QString());
-        label_6->setText(QApplication::translate("MainWindow", "z [m/sec^2]", nullptr));
-        z->setText(QString());
-        y->setText(QString());
-        label_4->setText(QApplication::translate("MainWindow", "y [m/sec^2]", nullptr));
-        x->setText(QString());
-        controller->setText(QApplication::translate("MainWindow", "controller", nullptr));
-        connect->setText(QApplication::translate("MainWindow", "connect", nullptr));
         camera_request->setItemText(0, QApplication::translate("MainWindow", "ColorImage", nullptr));
         camera_request->setItemText(1, QApplication::translate("MainWindow", "DepthImage", nullptr));
         camera_request->setItemText(2, QApplication::translate("MainWindow", "InfraRed", nullptr));
 
+        controller->setText(QApplication::translate("MainWindow", "controller", nullptr));
+        connect->setText(QApplication::translate("MainWindow", "connect", nullptr));
+        z->setText(QString());
+        dt->setText(QString());
+        label_2->setText(QApplication::translate("MainWindow", "x [m/sec^2]", nullptr));
+        dy->setText(QString());
+        lbl_dx->setText(QApplication::translate("MainWindow", "dx [px]", nullptr));
+        range->setText(QString());
+        label_4->setText(QApplication::translate("MainWindow", "y [m/sec^2]", nullptr));
+        lbl_range->setText(QApplication::translate("MainWindow", "range [mm]", nullptr));
+        psi->setText(QString());
+        gyro->setText(QApplication::translate("MainWindow", "gyro", nullptr));
+        theta->setText(QString());
+        lbl_phi->setText(QApplication::translate("MainWindow", "roll [rad/sec]", nullptr));
+        lbl_psi->setText(QApplication::translate("MainWindow", "pitch [rad/sec]", nullptr));
+        phi->setText(QString());
+        lbl_theta->setText(QApplication::translate("MainWindow", "yaw [rad/sec]", nullptr));
+        dx->setText(QString());
+        label_7->setText(QApplication::translate("MainWindow", "Vy [mm/s]", nullptr));
+        vx->setText(QString());
+        optical_flow->setText(QApplication::translate("MainWindow", "optical flow", nullptr));
+        label->setText(QApplication::translate("MainWindow", "dt [ms]", nullptr));
+        label_3->setText(QApplication::translate("MainWindow", "Vx [mm/s]", nullptr));
+        x->setText(QString());
+        lbl_dy->setText(QApplication::translate("MainWindow", "dy [px]", nullptr));
+        label_6->setText(QApplication::translate("MainWindow", "z [m/sec^2]", nullptr));
+        y->setText(QString());
+        accelometer->setText(QApplication::translate("MainWindow", "accelometer", nullptr));
+        vy->setText(QString());
         menufile->setTitle(QApplication::translate("MainWindow", "file", nullptr));
         menusettings->setTitle(QApplication::translate("MainWindow", "settings", nullptr));
         menucamera->setTitle(QApplication::translate("MainWindow", "camera", nullptr));

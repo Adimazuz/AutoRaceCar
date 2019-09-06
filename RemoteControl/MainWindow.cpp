@@ -273,6 +273,13 @@ void MainWindow::updateOpticalFlow(const Flow &flow)
     ui->dx->setText(QString::number(flow.deltaX, 'f', 3));
     ui->dy->setText(QString::number(flow.deltaY, 'f', 3));
     ui->range->setText(QString::number(static_cast<real64>(flow.range), 'f', 3));
+    ui->dt->setText(QString::number(flow.dt, 'f', 3));
+
+    double vx = static_cast<double>(flow.range) * 42.0 * static_cast<double>(flow.deltaX) / (30.0 * flow.dt * 10e-3);
+    double vy = static_cast<double>(flow.range) * 42.0 * static_cast<double>(flow.deltaY) / (30.0 * flow.dt * 10e-3);
+
+    ui->vx->setText(QString::number(vx, 'f', 3));
+    ui->vy->setText(QString::number(vy, 'f', 3));
 }
 
 void MainWindow::updateEulerAngles(const Camera::EulerAngles &angles)
@@ -390,11 +397,8 @@ void MainWindow::on_connect_clicked()
     connectToConroller();
 }
 
-//TODO unblocking for server and client
-//TODO speed for optical flow
 //TODO record some data for barak
 //TODO arduino speed resolution
-//TODO serial timeout
 
 void MainWindow::on_camera_request_currentTextChanged(const QString &str)
 {
