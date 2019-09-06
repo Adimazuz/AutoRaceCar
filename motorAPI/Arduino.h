@@ -73,7 +73,7 @@ private:
     int m_current_speed=0;
     int m_current_angle=90;
     static constexpr int START_SPEED = 8;
-    static constexpr int TOP_SPEED = 15;
+    static constexpr int TOP_SPEED = 12;
     static constexpr int MIN_ANGLE = 30;
     static constexpr int MAX_ANGLE = 150;
     void sendDriveCommand();
