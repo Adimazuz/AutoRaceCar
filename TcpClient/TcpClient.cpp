@@ -98,7 +98,7 @@ void TcpClient::receive(char *dst, const uint &len)
 
     while(bytes_received < len)
     {
-        auto tmp_len = recv(_socket, dst + bytes_received, len - bytes_received, 0);
+        auto tmp_len = recv(_socket, dst + bytes_received, len - bytes_received, MSG_DONTWAIT);
 
         if(tmp_len == 0)
         {

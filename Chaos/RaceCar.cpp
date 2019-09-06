@@ -10,6 +10,21 @@
 //#define DEBUG_MODE
 #define SERVER_PORT 5556
 #define MAX_NUM_USERS 5
+
+
+
+
+#define COLORWIDTH 640
+#define COLORHEIGHT 480
+
+#define IRWIDTH 640
+#define IRHEIGHT 480
+
+#define DEPTHWIDTH 640
+#define DEPTHHEIGHT 480
+
+
+
 RaceCar::RaceCar()
 {
     _motor_control = std::make_shared<Arduino>();
@@ -79,6 +94,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     }
     if(_tcp_client->isConnected()){
         _is_tcp_client_connected = true;
+//        _tcp_client->setUnblocking(true);
         std::cout << "connected to sever" <<std::endl;
     } else {
         std::cout << "server NOT CONNECTED" <<std::endl;
@@ -136,24 +152,27 @@ RaceCar &RaceCar::run()
     }
 }
 
+
+
+
 RaceCar &RaceCar::setColorToSend()
 {
     _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
-    _image_format_to_remote = RaceCar::format_to_remote::COLOR;
-    _jpeg_comp.setParams(640,480,JpegCompressor::Format::RGB,100);
+//    _image_format_to_remote = RaceCar::format_to_remote::COLOR;
+//    _jpeg_comp.setParams(COLORWIDTH,COLORHEIGHT,JpegCompressor::Format::RGB,100);
 }
 
 RaceCar &RaceCar::setIRToSend()
 {
     _camera.setupInfraredImage(RealSense::InfrarFrameFormat::Y8, RealSense::InfrarRessolution::R_640x480, RealSense::InfrarCamFps::F_30hz, RealSense::InfrarCamera::LEFT);
-    _image_format_to_remote = RaceCar::format_to_remote::INFRARED;
-    _jpeg_comp.setParams(640,480,JpegCompressor::Format::GREY_SCALE,100);
+//    _image_format_to_remote = RaceCar::format_to_remote::INFRARED;
+//    _jpeg_comp.setParams(IRWIDTH,IRHEIGHT,JpegCompressor::Format::GREY_SCALE,100);
 }
 
 RaceCar &RaceCar::setDepthToSend(){
     _camera.setupDepthImage(RealSense::DepthRessolution::R_640x480, RealSense::DepthCamFps::F_30hz);
-    _image_format_to_remote = RaceCar::format_to_remote::DEPTH;
-    _jpeg_comp.setParams(640,480,JpegCompressor::Format::RGB,100);
+//    _image_format_to_remote = RaceCar::format_to_remote::DEPTH;
+//    _jpeg_comp.setParams(DEPTHWIDTH,DEPTHHEIGHT,JpegCompressor::Format::RGB,100);
 
 }
 
@@ -166,10 +185,9 @@ void RaceCar::setCamAndJpegConfig()
     //Note that u can setup different frames to get from camera
     //and procces them but in this example we send only one type of frame
     //to remote
-//    setDepthToSend();
+    setDepthToSend();
     setColorToSend();
-//    setIRToSend();
-
+    setIRToSend();
 
 
 }
@@ -310,8 +328,30 @@ Chaos::header RaceCar::buildColorHeader(){
 RaceCar &RaceCar::getCameraOutputAndSendToRemote()
 {
     std::cout << "enter Camera thread" <<std::endl;
+
+    bool new_settings_availible = true;
+
     while (_is_running && _tcp_client->isConnected())
     {
+
+
+        char cmd = ' ';
+        //non blocking receive if remote user didnt ask different frame stream
+        //the fuction return -1
+        _tcp_client->receive(&cmd, 1);
+        if (cmd == 'c')
+        {
+            _image_format_to_remote = RaceCar::format_to_remote::COLOR;
+            new_settings_availible = true;
+        }else if (cmd == 'i')
+        {
+            _image_format_to_remote = RaceCar::format_to_remote::INFRARED;
+            new_settings_availible = true;
+        }else if (cmd == 'd')
+        {
+            _image_format_to_remote = RaceCar::format_to_remote::DEPTH;
+            new_settings_availible = true;
+        }
 
         _camera.captureFrame();
 
@@ -320,13 +360,34 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
         Chaos::ColorPacket packet;
         Chaos::header header;
         //only one type of frame can be sent (jpeg conpressor configurated to that type)
-        if (_image_format_to_remote == RaceCar::format_to_remote::COLOR){
+        //if the remote user asked for different frame stream
+        //we need to setup jpeg compressor according the frames type
+        if (_image_format_to_remote == RaceCar::format_to_remote::COLOR)
+        {
             image = _camera.getColorImage();
-        } else if (_image_format_to_remote == RaceCar::format_to_remote::INFRARED){
+            if (new_settings_availible)
+            {
+                _jpeg_comp.setParams(COLORWIDTH,COLORHEIGHT,JpegCompressor::Format::RGB,100);
+                new_settings_availible = false;
+            }
+        } else if (_image_format_to_remote == RaceCar::format_to_remote::INFRARED)
+        {
             image = _camera.getInfraredImage();
-        } else {
+            if (new_settings_availible)
+            {
+                _jpeg_comp.setParams(IRWIDTH,IRHEIGHT,JpegCompressor::Format::GREY_SCALE,100);
+                new_settings_availible = false;
+            }
+        } else
+        {
             image = _camera.getDepthColorizedImage();
+            if (new_settings_availible)
+            {
+               _jpeg_comp.setParams(DEPTHWIDTH,DEPTHHEIGHT,JpegCompressor::Format::RGB,100);
+               new_settings_availible = false;
+            }
         }
+
         packet = buildColorPacket(image);
         header = buildColorHeader();
         _tcp_client->send(reinterpret_cast<char*>(&header), sizeof(header));
