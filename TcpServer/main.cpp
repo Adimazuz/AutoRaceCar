@@ -27,7 +27,6 @@ int main()
 
 
     auto sock = server->waitForConnections(1);
-//    server->setClientUnblocking(sock, true);
     if(sock > 0)
     {
         std::cout << "someone connected" << std::endl;
@@ -39,7 +38,7 @@ int main()
         if(server->hasConnectionWithSocket(sock))
         {
 //            std::cout << "receiving" << std::endl;
-//            server->receive(sock, name, 4);
+            server->receive(sock, name, 4, 0);
 //            server->send(sock, "asaf");
         }
         else

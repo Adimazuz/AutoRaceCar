@@ -14,23 +14,12 @@
 TcpClient::TcpClient() noexcept :
         _socket(-1),
         _address(),
-        _is_connected(false),
-        _is_unblocking(false),
-        _unblocking_flag(false)
+        _is_connected(false)
 {
 #ifdef _WIN32
     WSADATA wsa;
     WSAStartup(MAKEWORD(2, 0), &wsa);
 #endif
-
-//    try
-//    {
-//        createSocket();
-//    }
-//    catch(std::exception& e)
-//    {
-//        std::cout << e.what() << std::endl;
-//    }
 }
 
 void TcpClient::connect(const string& ip, const unsigned short& port)
@@ -53,32 +42,7 @@ void TcpClient::connect(const string& ip, const unsigned short& port)
     }
 
     _is_connected = true;
-//    if(_unblocking_flag)
-//    {
-//        setUnblocking(true);
-//    }
 }
-
-//void TcpClient::setUnblocking(const bool &new_val)
-//{
-//    if(_is_connected)
-//    {
-//        if(new_val)
-//        {
-//            int flags = fcntl(_socket, F_GETFL);
-//            fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
-//        }
-//        else
-//        {
-//            int flags = fcntl(_socket, F_GETFL);
-//            fcntl(_socket, F_SETFL, flags | !O_NONBLOCK);
-//        }
-
-//        _is_unblocking = new_val;
-//    }
-
-//    _unblocking_flag = new_val;
-//}
 
 TcpClient &TcpClient::createSocket()
 {
@@ -92,9 +56,9 @@ TcpClient &TcpClient::createSocket()
     return *this;
 }
 
-void TcpClient::receive(char *dst, const uint &len, const bool &is_blocking, const uint &timeout_sec)
+void TcpClient::receive(char *dst, const uint &len, const uint &timeout_sec)
 {
-    if(is_blocking)
+    if(timeout_sec > 0)
     {
         setTimeout(timeout_sec);
     }
@@ -105,13 +69,13 @@ void TcpClient::receive(char *dst, const uint &len, const bool &is_blocking, con
     {
         long tmp_len = 0;
 
-        if(is_blocking)
+        if(timeout_sec == 0)
         {
-            tmp_len = recv(_socket, dst + bytes_received, len - bytes_received, 0);
+            tmp_len = recv(_socket, dst + bytes_received, len - bytes_received, MSG_DONTWAIT);
         }
         else
         {
-            tmp_len = recv(_socket, dst + bytes_received, len - bytes_received, MSG_DONTWAIT);
+            tmp_len = recv(_socket, dst + bytes_received, len - bytes_received, 0);
         }
 
         if(tmp_len == 0)

@@ -32,9 +32,9 @@ int main()
         if(client->isConnected())
         {
 //            client->send("asaf");
-            client->receive(name, 4, false);
-            std::cout << name << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+//            client->receive(name, 4);
+//            std::cout << name << std::endl;
+//            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
         else
         {
