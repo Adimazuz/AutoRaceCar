@@ -93,13 +93,6 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="0" colspan="4">
-     <widget class="QPushButton" name="connect">
-      <property name="text">
-       <string>connect</string>
-      </property>
-     </widget>
-    </item>
     <item row="3" column="3">
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="sizeConstraint">
@@ -408,6 +401,32 @@
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
+     </widget>
+    </item>
+    <item row="2" column="2" colspan="2">
+     <widget class="QPushButton" name="connect">
+      <property name="text">
+       <string>connect</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QComboBox" name="camera_request">
+      <item>
+       <property name="text">
+        <string>ColorImage</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>DepthImage</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>InfraRed</string>
+       </property>
+      </item>
      </widget>
     </item>
    </layout>

@@ -35,6 +35,7 @@ private slots:
     bool isArrowKey(const int &key);
     void on_connect_clicked();
     void connectToConroller();
+    void on_camera_request_currentTextChanged(const QString &str);
 
 private:
     void info(const string &msg);
@@ -86,6 +87,7 @@ private:
     std::shared_ptr<std::thread> _camera_thread;
     JpegDecompressor _decompressor;
     bool _is_jpeg_decompressor_initialized;
+    QString _curr_camera_request;
 };
 
 #endif // MAINWINDOW_H

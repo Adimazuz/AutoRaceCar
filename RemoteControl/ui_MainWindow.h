@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -43,7 +44,6 @@ public:
     QLineEdit *controller_ip;
     QLabel *lbl_img;
     QLineEdit *camera_ip;
-    QPushButton *connect;
     QGridLayout *gridLayout_2;
     QLabel *psi;
     QLabel *optical_flow;
@@ -69,6 +69,8 @@ public:
     QSpacerItem *verticalSpacer_2;
     QSpacerItem *verticalSpacer;
     QLabel *controller;
+    QPushButton *connect;
+    QComboBox *camera_request;
     QMenuBar *menuBar;
     QMenu *menufile;
     QMenu *menusettings;
@@ -149,11 +151,6 @@ public:
         camera_ip->setAlignment(Qt::AlignCenter);
 
         gridLayout->addWidget(camera_ip, 1, 0, 1, 1);
-
-        connect = new QPushButton(centralWidget);
-        connect->setObjectName(QStringLiteral("connect"));
-
-        gridLayout->addWidget(connect, 2, 0, 1, 4);
 
         gridLayout_2 = new QGridLayout();
         gridLayout_2->setSpacing(6);
@@ -325,6 +322,19 @@ public:
 
         gridLayout->addWidget(controller, 0, 2, 1, 2);
 
+        connect = new QPushButton(centralWidget);
+        connect->setObjectName(QStringLiteral("connect"));
+
+        gridLayout->addWidget(connect, 2, 2, 1, 2);
+
+        camera_request = new QComboBox(centralWidget);
+        camera_request->addItem(QString());
+        camera_request->addItem(QString());
+        camera_request->addItem(QString());
+        camera_request->setObjectName(QStringLiteral("camera_request"));
+
+        gridLayout->addWidget(camera_request, 2, 0, 1, 2);
+
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -376,7 +386,6 @@ public:
         controller_ip->setPlaceholderText(QApplication::translate("MainWindow", "ip", nullptr));
         lbl_img->setText(QString());
         camera_ip->setPlaceholderText(QApplication::translate("MainWindow", "ip", nullptr));
-        connect->setText(QApplication::translate("MainWindow", "connect", nullptr));
         psi->setText(QString());
         optical_flow->setText(QApplication::translate("MainWindow", "optical flow", nullptr));
         lbl_dx->setText(QApplication::translate("MainWindow", "dx [px]", nullptr));
@@ -399,6 +408,11 @@ public:
         label_4->setText(QApplication::translate("MainWindow", "y [m/sec^2]", nullptr));
         x->setText(QString());
         controller->setText(QApplication::translate("MainWindow", "controller", nullptr));
+        connect->setText(QApplication::translate("MainWindow", "connect", nullptr));
+        camera_request->setItemText(0, QApplication::translate("MainWindow", "ColorImage", nullptr));
+        camera_request->setItemText(1, QApplication::translate("MainWindow", "DepthImage", nullptr));
+        camera_request->setItemText(2, QApplication::translate("MainWindow", "InfraRed", nullptr));
+
         menufile->setTitle(QApplication::translate("MainWindow", "file", nullptr));
         menusettings->setTitle(QApplication::translate("MainWindow", "settings", nullptr));
         menucamera->setTitle(QApplication::translate("MainWindow", "camera", nullptr));
