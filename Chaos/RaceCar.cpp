@@ -1,34 +1,30 @@
-#include "RaceCar.h"
-#include <vector>
-#include "Arduino.h"
 #include <thread>
+#include <vector>
 
-
-
+#include "RaceCar.h"
+#include "Arduino.h"
 #include "iostream"
 
-//#define DEBUG_MODE
+
 #define SERVER_PORT 5556
 #define MAX_NUM_USERS 5
 
+#define COLOR_WIDTH 640
+#define COLOR_HEIGHT 480
 
+#define IR_WIDTH 640
+#define IR_HEIGHT 480
 
+#define DEPTH_WIDTH 640
+#define DEPTH_HEIGHT 480
 
-#define COLORWIDTH 640
-#define COLORHEIGHT 480
-
-#define IRWIDTH 640
-#define IRHEIGHT 480
-
-#define DEPTHWIDTH 640
-#define DEPTHHEIGHT 480
+#define WAIT_AFTER_BC_FLUSH 3000
 
 
 
 RaceCar::RaceCar()
 {
     _motor_control = std::make_shared<Arduino>();
-//    _bitcraze = std::make_shared<Bitcraze>();
     _tcp_client = ITcpClient::create();
     _tcp_server = ITcpServer::create();
 
@@ -64,7 +60,6 @@ RaceCar::~RaceCar()
      }
     if (_bitcraze_thread){
         std::cout << "bitcraze destructor" <<std::endl;
-//        _bitcraze->stop();
 
         _bitcraze_thread->join();
         std::cout << "bitcraze destruction finished" <<std::endl;
@@ -94,7 +89,6 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     }
     if(_tcp_client->isConnected()){
         _is_tcp_client_connected = true;
-//        _tcp_client->setUnblocking(true);
         std::cout << "connected to sever" <<std::endl;
     } else {
         std::cout << "server NOT CONNECTED" <<std::endl;
@@ -110,18 +104,19 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     if(_bitcraze.connect()){
         _is_bitcraze_connected = true;
         _bitcraze.stopStream();
-        std::this_thread::sleep_for (std::chrono::milliseconds(1000));
+        _bitcraze.flush();
+        std::this_thread::sleep_for (std::chrono::milliseconds(WAIT_AFTER_BC_FLUSH));
         std::cout << "connected to Bitcraze" <<std::endl;
     } else {
         std::cout << "bitcraze NOT CONNECTED" <<std::endl;
     }
 
 
-
-    _tcp_server->bind(server_ip, SERVER_PORT, MAX_NUM_USERS); //to allow athers to connect
+    //to allow athers to connect
+    _tcp_server->bind(server_ip, SERVER_PORT, MAX_NUM_USERS);
     if(_tcp_server->isBind()){
         std::cout << "bind success" << std::endl;
-        _tcp_server->setUnblocking(true);
+//        _tcp_server->setUnblocking(true);
         _is_tcp_server_connected = true;
     } else {
         std::cout << "bind FAILED" <<std::endl;
@@ -147,7 +142,6 @@ RaceCar &RaceCar::run()
             _carcontrol_thread = std::make_shared<std::thread>(&RaceCar::getCarControlCommands,this);
 
     }
-//    _carcontrol_thread = std::make_shared<std::thread>(&RaceCar::doDonuts,this);
     if(_is_bitcraze_connected){
         std::cout << "connected to BitCraze" <<std::endl;
         _bitcraze_thread = std::make_shared<std::thread>(&RaceCar::getBitCrazeOutput,this);
@@ -160,21 +154,15 @@ RaceCar &RaceCar::run()
 RaceCar &RaceCar::setColorToSend()
 {
     _camera.setupColorImage(RealSense::ColorFrameFormat::RGB8,RealSense::ColorRessolution::R_640x480, RealSense::ColorCamFps::F_30hz);
-//    _image_format_to_remote = RaceCar::format_to_remote::COLOR;
-//    _jpeg_comp.setParams(COLORWIDTH,COLORHEIGHT,JpegCompressor::Format::RGB,100);
 }
 
 RaceCar &RaceCar::setIRToSend()
 {
     _camera.setupInfraredImage(RealSense::InfrarFrameFormat::Y8, RealSense::InfrarRessolution::R_640x480, RealSense::InfrarCamFps::F_30hz, RealSense::InfrarCamera::LEFT);
-//    _image_format_to_remote = RaceCar::format_to_remote::INFRARED;
-//    _jpeg_comp.setParams(IRWIDTH,IRHEIGHT,JpegCompressor::Format::GREY_SCALE,100);
 }
 
 RaceCar &RaceCar::setDepthToSend(){
     _camera.setupDepthImage(RealSense::DepthRessolution::R_640x480, RealSense::DepthCamFps::F_30hz);
-//    _image_format_to_remote = RaceCar::format_to_remote::DEPTH;
-//    _jpeg_comp.setParams(DEPTHWIDTH,DEPTHHEIGHT,JpegCompressor::Format::RGB,100);
 
 }
 
@@ -220,7 +208,7 @@ RaceCar &RaceCar::parseAndSendCmd(const char cmd)
         _motor_control->changeAngleBy(2);
         break;
     }
-    case 'q': {
+    case 'q': { //not supported
         _is_running=false;
         break;
     }
@@ -239,9 +227,8 @@ RaceCar &RaceCar::getCarControlCommands()
         if(_tcp_server->hasConnectionWithSocket(_socket))
         {
             char cmd = ' ';
-            _tcp_server->receive(_socket,&cmd, 1);
+            _tcp_server->receive(_socket,&cmd, 1, 0);
             parseAndSendCmd(cmd);
-
         }
 
         else
@@ -250,7 +237,7 @@ RaceCar &RaceCar::getCarControlCommands()
             std::cout << "wait to asafff" << std::endl;
             if(_socket > 0)
             {
-                _tcp_server->setClientUnblocking(_socket,true);
+//                _tcp_server->setClientUnblocking(_socket,true);
                 std::cout << "someone connected: " << std::endl;
             }
         }
@@ -300,6 +287,7 @@ Chaos::ColorPacket RaceCar::buildColorPacket(const Camera::ColorImage &image){
 
     _flow_mtx.lock();
     packet.flow_data = _flow_data;
+    _flow_data = {};
     _flow_mtx.unlock();
 
     packet.image.frame_num = image.frame_num;
@@ -340,7 +328,7 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
         char cmd = ' ';
         //non blocking receive if remote user didnt ask different frame stream
         //the fuction return -1
-        _tcp_client->receive(&cmd, 1);
+        _tcp_client->receive(&cmd, 1, 0);
         if (cmd == 'c')
         {
             _image_format_to_remote = RaceCar::format_to_remote::COLOR;
@@ -369,7 +357,7 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
             image = _camera.getColorImage();
             if (new_settings_availible)
             {
-                _jpeg_comp.setParams(COLORWIDTH,COLORHEIGHT,JpegCompressor::Format::RGB,100);
+                _jpeg_comp.setParams(COLOR_WIDTH,COLOR_HEIGHT,JpegCompressor::Format::RGB,100);
                 new_settings_availible = false;
             }
         } else if (_image_format_to_remote == RaceCar::format_to_remote::INFRARED)
@@ -377,7 +365,7 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
             image = _camera.getInfraredImage();
             if (new_settings_availible)
             {
-                _jpeg_comp.setParams(IRWIDTH,IRHEIGHT,JpegCompressor::Format::GREY_SCALE,100);
+                _jpeg_comp.setParams(IR_WIDTH,IR_HEIGHT,JpegCompressor::Format::GREY_SCALE,100);
                 new_settings_availible = false;
             }
         } else
@@ -385,7 +373,7 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
             image = _camera.getDepthColorizedImage();
             if (new_settings_availible)
             {
-               _jpeg_comp.setParams(DEPTHWIDTH,DEPTHHEIGHT,JpegCompressor::Format::RGB,100);
+               _jpeg_comp.setParams(DEPTH_WIDTH,DEPTH_HEIGHT,JpegCompressor::Format::RGB,100);
                new_settings_availible = false;
             }
         }
@@ -407,13 +395,17 @@ RaceCar &RaceCar::getBitCrazeOutput()
     std::cout << "enter BitCraze thread" << std::endl;
     _bitcraze.requestFlowData();
     while (_is_running) {
-        //TODO reset bitcrze arduino at start!
 
         Flow flow_data = _bitcraze.getFlowOutput();
 //        std::cout << flow_data.deltaX <<"..." << flow_data.deltaY << "..."<<flow_data.range << "..." <<flow_data.dt << std::endl;
 
         std::lock_guard<std::mutex> lock(_flow_mtx);
-        _flow_data = flow_data;
+        _flow_data.deltaX += flow_data.deltaX;
+        _flow_data.deltaY += flow_data.deltaY;
+        _flow_data.dt += flow_data.dt;
+        _flow_data.range = flow_data.range;
+//        _flow_data = flow_data;
+
     }
     _bitcraze.stopStream();
     std::cout << "BitCraze thread finished" << std::endl;

@@ -32,6 +32,8 @@ public:
      */
     virtual bool connect(const string &path = "/dev/ttyACM0") = 0;
 
+    virtual void flush() = 0;
+
     /**
      * @brief write string to the file descriptor
      * @param msg - the string to write
