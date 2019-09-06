@@ -24,9 +24,7 @@ public:
 
     virtual bool isConnected() const override {return _is_connected;}
 
-//    virtual void setUnblocking(const bool &new_val) override;
-
-    virtual void receive(char *dst, const uint &len, const bool &is_blocking, const uint &timeout_sec) override;
+    virtual void receive(char *dst, const uint &len, const uint &timeout_sec) override;
 
     virtual void send(const std::vector<char>& data) noexcept override;
 
@@ -47,8 +45,6 @@ private:
     Socket _socket;
     sockaddr_in _address;
     bool _is_connected;
-    bool _is_unblocking;
-    bool _unblocking_flag;
 };
 
 

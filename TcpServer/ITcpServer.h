@@ -79,8 +79,10 @@ public:
      * @param socket - the id of the client
      * @param dst - pointer for the data to be stored
      * @param len - the length of the data[bytes]
+     * @param timeout_sec - determine how much time in seconds wait for receive, in case of timeout_sec = 0,
+     * the function will be nonblocking
      */
-    virtual void receive(const Socket &socket, char *dst, const uint &len) = 0;
+    virtual void receive(const Socket &socket, char *dst, const uint &len, const uint &timeout_sec = 3) = 0;
 
     /**
      * @brief send data to a client
@@ -103,9 +105,6 @@ public:
      * @param len - the length of the data[bytes]
      */
     virtual void send(const Socket& socket, const char *data, const uint &len) noexcept = 0;
-
-    virtual void setUnblocking(const bool &new_val) = 0;
-    virtual void setClientUnblocking(const Socket &socket, const bool &new_val) = 0;
 
     /**
       * @brief destructor

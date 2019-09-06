@@ -119,7 +119,6 @@ void MainWindow::bindServer()
     if(_server->isBind())
     {
         info("bind success");
-        _server->setUnblocking(true);
     }
     else
     {
@@ -395,6 +394,7 @@ void MainWindow::on_connect_clicked()
 //TODO speed for optical flow
 //TODO record some data for barak
 //TODO arduino speed resolution
+//TODO serial timeout
 
 void MainWindow::on_camera_request_currentTextChanged(const QString &str)
 {
