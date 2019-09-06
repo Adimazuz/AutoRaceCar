@@ -392,6 +392,9 @@ void MainWindow::on_connect_clicked()
 }
 
 //TODO unblocking for server and client
+//TODO speed for optical flow
+//TODO record some data for barak
+//TODO arduino speed resolution
 
 void MainWindow::on_camera_request_currentTextChanged(const QString &str)
 {

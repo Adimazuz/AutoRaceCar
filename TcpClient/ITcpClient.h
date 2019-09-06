@@ -64,7 +64,7 @@ public:
 
     virtual bool isConnected() const = 0;
 
-    virtual void setUnblocking(const bool &new_val) = 0;
+//    virtual void setUnblocking(const bool &new_val) = 0;
 
     virtual void disconnect() = 0;
 
@@ -73,7 +73,7 @@ public:
      * @param len - the length of the data[bytes]
      * @return a vector of chars contains the data
      */
-    virtual void receive(char *dst, const uint &len) = 0;
+    virtual void receive(char *dst, const uint &len, const bool &is_blocking = true, const uint &timeout_sec = 3) = 0;
 
     /**
      * @brief send data to the server
