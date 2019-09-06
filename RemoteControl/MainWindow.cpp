@@ -18,7 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
     _controller(nullptr),
     _is_run(true),
     _camera_thread(nullptr),
-    _is_jpeg_decompressor_initialized(false)
+    _is_jpeg_decompressor_initialized(false),
+    _curr_camera_request("ColorImage")
 {
     ui->setupUi(this);
     init();
@@ -114,7 +115,7 @@ void MainWindow::info(const string &msg)
 void MainWindow::bindServer()
 {
     _server->bind("132.68.36.138", 5555, 5);
-//    _server->bind("192.168.1.75", 5555, 5);
+
     if(_server->isBind())
     {
         info("bind success");
@@ -171,7 +172,12 @@ void MainWindow::initThreads()
 
 void MainWindow::initJpegDecompressor(const Chaos::ColorPacket &packet)
 {
-    if(!_is_jpeg_decompressor_initialized)
+    if(_is_jpeg_decompressor_initialized && packet.image.bytes_per_pixel == _decompressor.getBytesPerPixel())
+    {
+        return;
+    }
+
+    else
     {
         if(packet.image.bytes_per_pixel == 3)
         {
@@ -383,4 +389,35 @@ void MainWindow::connectToConroller()
 void MainWindow::on_connect_clicked()
 {
     connectToConroller();
+}
+
+//TODO unblocking for server and client
+//TODO speed for optical flow
+//TODO record some data for barak
+//TODO arduino speed resolution
+
+void MainWindow::on_camera_request_currentTextChanged(const QString &str)
+{
+    if(_server->isBind() && _server->hasConnectionWithSocket(_client_sock))
+    {
+        if(str == "ColorImage")
+        {
+            _server->send(_client_sock, "c");
+        }
+        else if(str == "DepthImage")
+        {
+            _server->send(_client_sock, "d");
+        }
+        else if(str == "InfraRed")
+        {
+            _server->send(_client_sock, "i");
+        }
+
+        _curr_camera_request = str;
+    }
+    else
+    {
+        std::cout << "cannot send request, thers is no connection with the camera" << std::endl;
+        ui->camera_request->setCurrentText(_curr_camera_request);
+    }
 }
