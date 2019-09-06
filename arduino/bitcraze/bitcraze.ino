@@ -1,4 +1,4 @@
-#include "Arduino_types.h"
+#include "bitcraze_types.h"
 #include "bitcrazeArd.h"
 
 bitcraze motion_sensor;
@@ -19,6 +19,10 @@ void loop() {
     
     if( c == START_STREAMING ){
       motion_sensor.sendData();
+    }
+
+    if( c == STOP_STREAMING ){
+      Serial.flush();
     }
 
 }

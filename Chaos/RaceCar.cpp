@@ -109,6 +109,8 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
 
     if(_bitcraze.connect()){
         _is_bitcraze_connected = true;
+        _bitcraze.stopStream();
+        std::this_thread::sleep_for (std::chrono::milliseconds(1000));
         std::cout << "connected to Bitcraze" <<std::endl;
     } else {
         std::cout << "bitcraze NOT CONNECTED" <<std::endl;
@@ -390,6 +392,7 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
 
         packet = buildColorPacket(image);
         header = buildColorHeader();
+        //send to remote
         _tcp_client->send(reinterpret_cast<char*>(&header), sizeof(header));
         _tcp_client->send(reinterpret_cast<char*>(&packet), header.total_size);
         _tcp_client->send(reinterpret_cast<char*>(packet.image.compresed_data), packet.image.compressed_size);
