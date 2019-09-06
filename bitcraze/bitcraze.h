@@ -32,6 +32,8 @@ public:
      */
      Flow getFlowOutput() ;
 
+     Bitcraze &flush();
+
 
     ~Bitcraze()= default;
 

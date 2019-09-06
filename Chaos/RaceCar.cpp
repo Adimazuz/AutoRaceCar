@@ -18,7 +18,7 @@
 #define DEPTH_WIDTH 640
 #define DEPTH_HEIGHT 480
 
-#define WAIT_AFTER_BC_FLUSH 1000
+#define WAIT_AFTER_BC_FLUSH 3000
 
 
 
@@ -104,6 +104,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     if(_bitcraze.connect()){
         _is_bitcraze_connected = true;
         _bitcraze.stopStream();
+        _bitcraze.flush();
         std::this_thread::sleep_for (std::chrono::milliseconds(WAIT_AFTER_BC_FLUSH));
         std::cout << "connected to Bitcraze" <<std::endl;
     } else {
@@ -115,7 +116,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     _tcp_server->bind(server_ip, SERVER_PORT, MAX_NUM_USERS);
     if(_tcp_server->isBind()){
         std::cout << "bind success" << std::endl;
-        _tcp_server->setUnblocking(true);
+//        _tcp_server->setUnblocking(true);
         _is_tcp_server_connected = true;
     } else {
         std::cout << "bind FAILED" <<std::endl;
@@ -226,9 +227,8 @@ RaceCar &RaceCar::getCarControlCommands()
         if(_tcp_server->hasConnectionWithSocket(_socket))
         {
             char cmd = ' ';
-            _tcp_server->receive(_socket,&cmd, 1);
+            _tcp_server->receive(_socket,&cmd, 1, 0);
             parseAndSendCmd(cmd);
-
         }
 
         else
@@ -237,7 +237,7 @@ RaceCar &RaceCar::getCarControlCommands()
             std::cout << "wait to asafff" << std::endl;
             if(_socket > 0)
             {
-                _tcp_server->setClientUnblocking(_socket,true);
+//                _tcp_server->setClientUnblocking(_socket,true);
                 std::cout << "someone connected: " << std::endl;
             }
         }
@@ -287,6 +287,7 @@ Chaos::ColorPacket RaceCar::buildColorPacket(const Camera::ColorImage &image){
 
     _flow_mtx.lock();
     packet.flow_data = _flow_data;
+    _flow_data = {};
     _flow_mtx.unlock();
 
     packet.image.frame_num = image.frame_num;
@@ -327,7 +328,7 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
         char cmd = ' ';
         //non blocking receive if remote user didnt ask different frame stream
         //the fuction return -1
-        _tcp_client->receive(&cmd, 1);
+        _tcp_client->receive(&cmd, 1, 0);
         if (cmd == 'c')
         {
             _image_format_to_remote = RaceCar::format_to_remote::COLOR;
@@ -399,7 +400,12 @@ RaceCar &RaceCar::getBitCrazeOutput()
 //        std::cout << flow_data.deltaX <<"..." << flow_data.deltaY << "..."<<flow_data.range << "..." <<flow_data.dt << std::endl;
 
         std::lock_guard<std::mutex> lock(_flow_mtx);
-        _flow_data = flow_data;
+        _flow_data.deltaX += flow_data.deltaX;
+        _flow_data.deltaY += flow_data.deltaY;
+        _flow_data.dt += flow_data.dt;
+        _flow_data.range = flow_data.range;
+//        _flow_data = flow_data;
+
     }
     _bitcraze.stopStream();
     std::cout << "BitCraze thread finished" << std::endl;

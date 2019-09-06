@@ -40,6 +40,8 @@ bool Serial::connect(const string &path)
     cfsetispeed(&config, B9600)  < 0 || cfsetospeed(&config, B9600);
     tcsetattr(_fd, TCSAFLUSH, &config);
 
+
+
     usleep(ARDUINO_REBOOT_MS);
     _is_connected = true;
     return true;
@@ -128,6 +130,11 @@ void Serial::read(char *dst, const uint &len)
         }
         bytes_received += curr_byes;
     }
+}
+
+void Serial::flush()
+{
+    ioctl(_fd, TCFLSH, 0);
 }
 
 Serial::~Serial()

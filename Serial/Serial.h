@@ -13,6 +13,7 @@ public:
     virtual string read(const uint &len) override;
     virtual void read(char *dst, const uint &len) override;
     virtual bool isConnected() const override {return _is_connected;}
+    virtual void flush() override;
     virtual ~Serial() override;
 
 private:

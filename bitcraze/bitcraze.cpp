@@ -27,6 +27,7 @@ Bitcraze& Bitcraze::requestFlowData(){
 Bitcraze &Bitcraze::stopStream()
 {
     m_serial->write(STOP_STREAMING);
+
 }
 
 Flow Bitcraze::getFlowOutput()
@@ -36,6 +37,11 @@ Flow Bitcraze::getFlowOutput()
 	
 	//int x_distance = calcDistance(output.deltaX);
     return output;
+}
+
+Bitcraze &Bitcraze::flush()
+{
+    m_serial->flush();
 }
 
 //==========================private==================================
