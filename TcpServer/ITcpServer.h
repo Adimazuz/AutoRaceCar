@@ -12,20 +12,20 @@
 
   example of opening connection, wait for client and receive data:
 
-        std::shared_ptr<ITcpServer> server = ITcpServer::create("127.0.0.1", 5555, 5);
+        std::shared_ptr<ITcpServer> server = ITcpServer::create();
+        server->bind("127.0.0.1", 5555, 5);
 
-        Socket new_client = server->waitForConnections();
-
-        if(server->hasConnectionWithSocket(new_client))
+        if(server->isBind())
         {
-            std::vector<char> rcv = server->receive(new_client, 10);
-            if(rcv.size() > 0)
+            Socket new_client = server->waitForConnections();
+
+            if(server->hasConnectionWithSocket(new_client))
             {
-                //do something
+                char *data = new char[10];
+                server->receive(new_client, data, 10);
             }
         }
-
-  */
+*/
 
 #include "TcpServer_types.h"
 
@@ -79,8 +79,10 @@ public:
      * @param socket - the id of the client
      * @param dst - pointer for the data to be stored
      * @param len - the length of the data[bytes]
+     * @param timeout_sec - determine how much time in seconds wait for receive, in case of timeout_sec = 0,
+     * the function will be nonblocking
      */
-    virtual void receive(const Socket &socket, char *dst, const uint &len) = 0;
+    virtual void receive(const Socket &socket, char *dst, const uint &len, const uint &timeout_sec = 3) = 0;
 
     /**
      * @brief send data to a client
@@ -103,9 +105,6 @@ public:
      * @param len - the length of the data[bytes]
      */
     virtual void send(const Socket& socket, const char *data, const uint &len) noexcept = 0;
-
-    virtual void setUnblocking(const bool &new_val) = 0;
-    virtual void setClientUnblocking(const Socket &socket, const bool &new_val) = 0;
 
     /**
       * @brief destructor

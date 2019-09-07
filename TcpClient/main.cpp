@@ -20,7 +20,7 @@ int main()
     });
 
     auto client = ITcpClient::create();
-    client->setUnblocking(true);
+//    client->setUnblocking(true);
 
     client->connect("127.0.0.1", 5555);
 
@@ -31,8 +31,10 @@ int main()
     {
         if(client->isConnected())
         {
-            client->send("asaf");
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+//            client->send("asaf");
+//            client->receive(name, 4);
+//            std::cout << name << std::endl;
+//            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
         else
         {

@@ -35,6 +35,7 @@ private slots:
     bool isArrowKey(const int &key);
     void on_connect_clicked();
     void connectToConroller();
+    void on_camera_request_currentTextChanged(const QString &str);
 
 private:
     void info(const string &msg);
@@ -59,16 +60,10 @@ private:
     Chaos::header readHeader();
     Chaos::ColorPacket readColorPacket(std::vector<uint8> &compressed_image,
                                        const Chaos::header &header);
-    Chaos::DepthPacket readDepthPacket(std::vector<uint8> &compressed_image,
-                                       const Chaos::header &header);
     QImage makeImage(std::vector<uint8> &compressed_image,
                      const Chaos::ColorPacket &packet);
     void waitForConnection();
-    QColor distanceToColor(const unsigned short &min, const unsigned short &max, const unsigned short &dist);
-    void handleDepthPacket(std::vector<uint8> &compressed_image, const Chaos::DepthPacket &packet);
     void handleColorPacket(std::vector<uint8> &compressed_image, const Chaos::ColorPacket &packet);
-    std::vector<unsigned short> depthPacketToDistances(std::vector<uint8> &compressed_image, const Chaos::DepthPacket &packet);
-
 
 
 signals:
@@ -92,6 +87,7 @@ private:
     std::shared_ptr<std::thread> _camera_thread;
     JpegDecompressor _decompressor;
     bool _is_jpeg_decompressor_initialized;
+    QString _curr_camera_request;
 };
 
 #endif // MAINWINDOW_H

@@ -1035,16 +1035,18 @@ MainWindow.o: MainWindow.cpp ../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/QKeyEven
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtCore/qfiledevice.h \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qvector2d.h \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QColormap \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qcolormap.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qrgb.h \
 		MainWindow.h \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QMainWindow \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qmainwindow.h \
-		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
-		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qtwidgets-config.h \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qwidget.h \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qpaintdevice.h \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qpalette.h \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qcolor.h \
-		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qrgb.h \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qrgba64.h \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qbrush.h \
 		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qmatrix.h \
@@ -1075,6 +1077,62 @@ MainWindow.o: MainWindow.cpp ../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/QKeyEven
 		../cameraAPI/Camera_types.h \
 		../arduino/bitcraze/bitcraze_types.h \
 		ui_MainWindow.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtCore/QVariant \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QAction \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QApplication \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QButtonGroup \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qbuttongroup.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QGridLayout \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QHeaderView \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qheaderview.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qabstractitemview.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtCore/qitemselectionmodel.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qstyleoption.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtCore/qregularexpression.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qslider.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qabstractslider.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qstyle.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qtabbar.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qrubberband.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QLabel \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qlabel.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QLineEdit \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qpen.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QMenu \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QPushButton \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qpushbutton.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qabstractbutton.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QSpacerItem \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt5.10.1/5.10.1/gcc_64/include/QtWidgets/QWidget \
 		RemoteControl_types.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o MainWindow.cpp
 

@@ -272,6 +272,13 @@ public:
          */
         Camera::DepthImage getDepthImage();
 
+
+        /**
+         * @brief getDepthColorizedImage - gets depth image that can be
+         * drawn with simple RGB format (3 bytes per pixel)
+         * @return
+         */
+        Camera::ColorImage getDepthColorizedImage();
         /**
          * @brief get_depth_units
          *         //A Depth stream contains an image that is composed of pixels with depth information.
@@ -379,6 +386,9 @@ private:
 
       Camera::EulerAngles _last_euler_angles;
       Camera::AccelData _last_accel_data;
+
+      rs2::colorizer colorize;
+      rs2::decimation_filter decimate;
 
 };
 

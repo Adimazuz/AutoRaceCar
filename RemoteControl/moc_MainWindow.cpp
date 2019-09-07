@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[13];
-    char stringdata0[141];
+    QByteArrayData data[15];
+    char stringdata0[182];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -43,13 +43,17 @@ QT_MOC_LITERAL(8, 81, 6), // "string"
 QT_MOC_LITERAL(9, 88, 3), // "key"
 QT_MOC_LITERAL(10, 92, 10), // "isArrowKey"
 QT_MOC_LITERAL(11, 103, 18), // "on_connect_clicked"
-QT_MOC_LITERAL(12, 122, 18) // "connectToConroller"
+QT_MOC_LITERAL(12, 122, 18), // "connectToConroller"
+QT_MOC_LITERAL(13, 141, 36), // "on_camera_request_currentText..."
+QT_MOC_LITERAL(14, 178, 3) // "str"
 
     },
     "MainWindow\0imageReady\0\0QImage&\0image\0"
     "handleKey\0on_acn_exit_triggered\0"
     "keyToString\0string\0key\0isArrowKey\0"
-    "on_connect_clicked\0connectToConroller"
+    "on_connect_clicked\0connectToConroller\0"
+    "on_camera_request_currentTextChanged\0"
+    "str"
 };
 #undef QT_MOC_LITERAL
 
@@ -59,7 +63,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       8,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -67,15 +71,16 @@ static const uint qt_meta_data_MainWindow[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   49,    2, 0x06 /* Public */,
+       1,    1,   54,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    0,   52,    2, 0x0a /* Public */,
-       6,    0,   53,    2, 0x08 /* Private */,
-       7,    1,   54,    2, 0x08 /* Private */,
-      10,    1,   57,    2, 0x08 /* Private */,
-      11,    0,   60,    2, 0x08 /* Private */,
-      12,    0,   61,    2, 0x08 /* Private */,
+       5,    0,   57,    2, 0x0a /* Public */,
+       6,    0,   58,    2, 0x08 /* Private */,
+       7,    1,   59,    2, 0x08 /* Private */,
+      10,    1,   62,    2, 0x08 /* Private */,
+      11,    0,   65,    2, 0x08 /* Private */,
+      12,    0,   66,    2, 0x08 /* Private */,
+      13,    1,   67,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -87,6 +92,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Bool, QMetaType::Int,    9,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   14,
 
        0        // eod
 };
@@ -106,6 +112,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         case 5: _t->on_connect_clicked(); break;
         case 6: _t->connectToConroller(); break;
+        case 7: _t->on_camera_request_currentTextChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -145,13 +152,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 8)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 8;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 8)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 7;
+        _id -= 8;
     }
     return _id;
 }

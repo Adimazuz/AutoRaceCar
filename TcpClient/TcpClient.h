@@ -24,9 +24,7 @@ public:
 
     virtual bool isConnected() const override {return _is_connected;}
 
-    virtual void setUnblocking(const bool &new_val) override;
-
-    virtual void receive(char *dst, const uint &len) override;
+    virtual void receive(char *dst, const uint &len, const uint &timeout_sec) override;
 
     virtual void send(const std::vector<char>& data) noexcept override;
 
@@ -41,13 +39,12 @@ public:
 private: //functions
     TcpClient &createSocket();
     sockaddr_in buildAddress(const string &ip, const unsigned short &port) const noexcept;
+    TcpClient &setTimeout(const uint &timeout_sec);
 
 private:
     Socket _socket;
     sockaddr_in _address;
     bool _is_connected;
-    bool _is_unblocking;
-    bool _unblocking_flag;
 };
 
 

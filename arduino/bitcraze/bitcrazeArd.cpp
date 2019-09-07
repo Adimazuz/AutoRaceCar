@@ -2,7 +2,7 @@
 #include <Wire.h>
 #include <VL53L0X.h>
 #include "bitcrazeArd.h"
-#include "Arduino_types.h"
+#include "bitcraze_types.h"
 
 
 /**
@@ -53,10 +53,3 @@
     Flow data = {x, y, z, t2};
     return data;
 	}
-	/**
-	*stops sending data to computer
-	*/
- void bitcraze::stopstreaming(){
-  
-  
- }

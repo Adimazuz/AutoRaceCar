@@ -51,7 +51,7 @@ struct DepthImage
     uint32 height;
     real32 depth_scale;
     uint64 compressed_size;
-    unsigned char *compresed_data;
+    const unsigned char *compresed_data;
 };
 
 

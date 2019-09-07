@@ -2,7 +2,7 @@
 #define BITCRAZRE_HPP
 #include <VL53L0X.h>
 #include "Bitcraze_PMW3901.h"
-#include "Arduino_types.h"
+#include "bitcraze_types.h"
 
 
 class bitcraze {

@@ -57,6 +57,16 @@ void JpegDecompressor::decompress(uint8 *input, const uint64 &compressed_size)
     tjDestroy(_handle);
 }
 
+int32 JpegDecompressor::getBytesPerPixel()
+{
+    if(_format == Format::RGB)
+    {
+        return 3;
+    }
+
+    return 1;
+}
+
 uint32 JpegDecompressor::formatToInt(const JpegDecompressor::Format &format)
 {
     if(format == Format::RGB)

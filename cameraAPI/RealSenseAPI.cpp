@@ -2,8 +2,9 @@
 #include "Exceptions.h"
 #include <iostream>
 #include <string>
-#include "chrono"
 #include <thread>
+#include <chrono>
+#include <fstream>
 #define NUM_OF_RS_SENSORS 3
 
 //typedef enum rs2_format
@@ -313,6 +314,8 @@ void RealSense::setupDepthImage(RealSense::DepthRessolution ressolution, RealSen
     converDepthRessToInt(ressolution, w, h);
     convertDepthFPStoInt(fps,freq); //same fps as infra
     _config.enable_stream(RS2_STREAM_DEPTH,w,h,RS2_FORMAT_Z16,freq);
+//    _config.enable_stream(RS2_STREAM_DEPTH);
+
 
 }
 
@@ -330,7 +333,7 @@ void RealSense::setupAccel()
 
 
 
-
+;
 
 void RealSense::startCamera()
 {
@@ -395,24 +398,63 @@ Camera::ColorImage RealSense::getInfraredImage()
 
 Camera::DepthImage RealSense::getDepthImage()
 {
-    rs2::depth_frame depth_frame = _frames.get_depth_frame();
+
+    rs2::video_frame depth_frame = _frames.get_depth_frame();
+
     if (!depth_frame){
         throw IRealSenseBadSettingUse();
     }
+
     auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
     auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+
     uint32_t w = depth_frame.get_width();
     uint32_t h = depth_frame.get_height();
     uint32_t byte_per_pixel = depth_frame.get_bytes_per_pixel();
 
+
     uint64_t size = w*h*byte_per_pixel;
 
-    Camera::DepthImage cur_image = {depth_frame.get_frame_number(), size, depth_frame.get_bytes_per_pixel(),
+
+    Camera::DepthImage cur_image = {depth_frame.get_frame_number(), size, byte_per_pixel,
                                     host_time_stamp_ms,
                                     depth_frame.get_timestamp(),w, h,
-                                    getDepthUnits(),reinterpret_cast<const unsigned char*>(depth_frame.get_data())};
+                                    getDepthUnits(),
+                                    reinterpret_cast<const unsigned char*>(depth_frame.get_data())
+                                   };
 
     return cur_image;
+
+
+
+}
+
+Camera::ColorImage RealSense::getDepthColorizedImage()
+{
+
+        rs2::frame depth_frame =  _frames.first(RS2_STREAM_DEPTH);
+        if (!depth_frame){
+            throw IRealSenseBadSettingUse();
+        }
+
+        auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
+        auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
+
+        auto casted_d_frame = colorize.process(depth_frame).as<rs2::video_frame>();
+
+        uint32_t w = casted_d_frame.get_width();
+        uint32_t h = casted_d_frame.get_height();
+        uint32_t byte_per_pixel = casted_d_frame.get_bytes_per_pixel();
+
+        uint64_t size = w*h*byte_per_pixel;
+
+        Camera::ColorImage cur_image = {depth_frame.get_frame_number(), size, byte_per_pixel,
+                                        host_time_stamp_ms,
+                                        depth_frame.get_timestamp(),w, h,
+                                        reinterpret_cast<const unsigned char*>(casted_d_frame.get_data())
+                                       };
+
+        return cur_image;
 
 }
 

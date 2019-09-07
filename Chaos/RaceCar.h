@@ -108,6 +108,7 @@ private: // methods
     * flow (bitcraze) data and compressed image data)
      */
     Chaos::DepthPacket buildDepthPacket(const Camera::DepthImage &image, std::vector<unsigned char> &compresed_image);
+
     
     /**
     * build Depth header that need to send before the Depth Packer (remote user need to know witch
@@ -180,29 +181,33 @@ private: // methods
 
 
 private: //members
+    //sensors
     std::shared_ptr<MotorController> _motor_control;
     Bitcraze _bitcraze;
     RealSense _camera;
+
+    //communication
     std::shared_ptr<ITcpClient> _tcp_client;
-    Flow _flow_data;
+    std::shared_ptr<ITcpServer> _tcp_server;
+    Socket _socket; //many can be connected to the server, socket tells the server who is the client
     std::mutex _flow_mtx;
 
-    std::shared_ptr<ITcpServer> _tcp_server;
+    //shared data between threads
+    Flow _flow_data;
+
+    //treads
     std::shared_ptr<std::thread> _camera_thread;
     std::shared_ptr<std::thread> _carcontrol_thread;
     std::shared_ptr<std::thread> _bitcraze_thread;
-    Socket _socket;
 
+    //flags
     bool _is_tcp_client_connected;
     bool _is_cammera_connected;
     bool _is_motor_control_connected;
     bool _is_tcp_server_connected;
     bool _is_bitcraze_connected;
-
     RaceCar::format_to_remote _image_format_to_remote;
 
+    //compressor to send to remote faster
     JpegCompressor _jpeg_comp;
-	
-
-
 };

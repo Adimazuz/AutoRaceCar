@@ -20,8 +20,8 @@
         {
             char *data = new char[10];
             client->send(data, 10);
+            delete[] data;
         }
-
 
   example of receiving data:
 
@@ -31,7 +31,8 @@
 
         if(client->isConnected())
         {
-            std::vector<char> rcv = client->receive(10);
+            char *data = new char[10];
+            std::vector<char> rcv = client->receive(data, 10, true, 3);
             if(rcv.size() > 0)
             {
                 //do something
@@ -61,19 +62,20 @@ public:
      * @brief isConnected - check if client is connected
      * @return true if client is connected, otherwise return false
      */
-
     virtual bool isConnected() const = 0;
 
-    virtual void setUnblocking(const bool &new_val) = 0;
-
+    /**
+     * @brief disconnect - disconnect from server
+     */
     virtual void disconnect() = 0;
 
     /**
      * @brief receive data from the server
      * @param len - the length of the data[bytes]
-     * @return a vector of chars contains the data
+     * @param timeout_sec - determine how much time in seconds wait for receive, in case of timeout_sec = 0,
+     * the function will be nonblocking
      */
-    virtual void receive(char *dst, const uint &len) = 0;
+    virtual void receive(char *dst, const uint &len, const uint &timeout_sec = 3) = 0;
 
     /**
      * @brief send data to the server
