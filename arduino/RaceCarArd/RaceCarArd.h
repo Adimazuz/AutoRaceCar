@@ -3,9 +3,9 @@
 
 //#define DEBUG_MODE
 
-//speed between -30 to 30
-//min speed for forword 10
-//angle between -50 to 140
+//speed between -500 to 500
+//min speed for forword 80
+//angle between 50 to 140
 String getValue(String data, char separator, int index)
 {
     int found = 0;
@@ -27,7 +27,8 @@ class RaceCarArd {
 	static constexpr int TOP_SPEED = 30;
 	static constexpr int MIN_ANGLE = 65;
 	static constexpr int MAX_ANGLE = 125;
-	static constexpr int NATURAL_SPEED = 90;
+	static constexpr int NUTRALE_SPEED_IN_MILI = 1500;
+  static constexpr int NUTRALE_SPEED = 90;
 	static constexpr int COMMAND_DELAY = 0;
 	
 	String command;
@@ -56,7 +57,7 @@ class RaceCarArd {
 	*sends command to motor and to steering to drive and speed and angle set in class
 	*/
 	void drive(){
-		engine.write(NATURAL_SPEED + speed);
+		engine.writeMicroseconds(NUTRALE_SPEED_IN_MILI + speed);
 		steering.write(angle);
 		//delay(10);
 	}
@@ -73,12 +74,15 @@ class RaceCarArd {
 	*before changing speed use this function
 	*/
 	void neutral() {
+    engine.write(NUTRALE_SPEED);
+    delay(300);
+    
 		for(int i=91;i<95;i++)
 		{
 			engine.write(i);
 			delay(15);
 		}
-		speed =0;
+		speed = 0;
 	}
 
 	/**
@@ -117,9 +121,6 @@ class RaceCarArd {
 			//if we need to put in reverse
 			if(speed >= 0 && wanted_speed < 0 )
 			{
-				speed=0;
-				drive();
-				delay(40);
 				neutral();
 			}
 			speed=wanted_speed;
