@@ -29,7 +29,7 @@ class RaceCarArd {
 	static constexpr int MAX_ANGLE = 125;
 	static constexpr int NUTRALE_SPEED_IN_MILI = 1500;
 	static constexpr int ZERO_ANGLE_IN_MILI = 1000;
-	static constexpr int STRIGHT_ANGLE = 1500
+	static constexpr int STRIGHT_ANGLE = 1500;
 	static constexpr int NUTRALE_SPEED = 90;
 	static constexpr int COMMAND_DELAY = 0;
 	
