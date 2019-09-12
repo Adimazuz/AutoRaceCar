@@ -95,7 +95,7 @@ Arduino& Arduino::changeSpeedBy(const int &delta)
 {
     if (delta > 0)
 	{
-        if( m_current_speed>=0 && m_current_speed <START_SPEED)
+        if( m_current_speed>=0 && m_current_speed < START_SPEED)
 		{
             m_current_speed = START_SPEED;
 		}
@@ -149,17 +149,13 @@ void Arduino::sendDriveCommand(){
     m_serial->write(cmd_string);
 }
 
-//int Arduino::calcDistance(int sensor_value,int range){
-//	return ( (sensor_value * range) / (SENSOR_RESULUTION * SCALAR ) ) * 2 * tan(FIELD_OF_VIEW/2);
-//}
+
 
 //int main() {
 //    Arduino car;
 //    bool flage=car.connect();
-//    car.changeAngleBy(40);
-//    car.changeAngleBy(-70);
-//    car.changeSpeedBy(15);
-//    car.changeSpeedBy(20);
-//    car.changeSpeedBy(-40);
+//    car.changeSpeed(0);
+//    car.changeSpeedBy(-1);
+
 //    return 0;
 // }

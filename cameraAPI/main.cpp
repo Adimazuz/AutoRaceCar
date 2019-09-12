@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
     cout << "Hello World!" << endl;
-    RealSense camera;
+        RealSense camera;
     camera.connectCamera();
     cout << "camera connected" << endl;
     camera.setupDepthImage(RealSense::DepthRessolution::R_640x480,RealSense::DepthCamFps::F_15hz);
