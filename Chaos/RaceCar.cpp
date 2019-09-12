@@ -193,19 +193,19 @@ RaceCar &RaceCar::parseAndSendCmd(const char cmd)
         break;
     }
     case 'u': {
-        _motor_control->changeSpeedBy(1);
+        _motor_control->changeSpeedBy(5);
         break;
     }
     case 'd': {
-        _motor_control->changeSpeedBy(-1);
+        _motor_control->changeSpeedBy(-5);
         break;
     }
     case 'l': {
-        _motor_control->changeAngleBy(-2);
+        _motor_control->changeAngleBy(-4);
         break;
     }
     case 'r': {
-        _motor_control->changeAngleBy(2);
+        _motor_control->changeAngleBy(4);
         break;
     }
     case 'q': { //not supported
