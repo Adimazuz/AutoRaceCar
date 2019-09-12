@@ -74,8 +74,8 @@ private:
     int m_current_angle=90;
     static constexpr int START_SPEED = 70;
     static constexpr int TOP_SPEED = 500;
-    static constexpr int MIN_ANGLE = 30;
-    static constexpr int MAX_ANGLE = 150;
+    static constexpr int MIN_ANGLE = 0;
+    static constexpr int MAX_ANGLE = 1000;
     void sendDriveCommand();
     bool _is_connected = false;
     std::string createCommandMsg(int speed,int angle);

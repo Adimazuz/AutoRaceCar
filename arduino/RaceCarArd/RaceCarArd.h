@@ -28,7 +28,9 @@ class RaceCarArd {
 	static constexpr int MIN_ANGLE = 65;
 	static constexpr int MAX_ANGLE = 125;
 	static constexpr int NUTRALE_SPEED_IN_MILI = 1500;
-  static constexpr int NUTRALE_SPEED = 90;
+	static constexpr int ZERO_ANGLE_IN_MILI = 1000;
+	static constexpr int STRIGHT_ANGLE = 1500
+	static constexpr int NUTRALE_SPEED = 90;
 	static constexpr int COMMAND_DELAY = 0;
 	
 	String command;
@@ -41,7 +43,7 @@ class RaceCarArd {
 	public:
 
 
-	RaceCarArd():speed(0),angle(90){}
+	RaceCarArd():speed(0),angle(STRIGHT_ANGLE){}
 
 	//attach PWM's and arm engine. engine(5),steering(6)
 	void setup(){
@@ -58,7 +60,7 @@ class RaceCarArd {
 	*/
 	void drive(){
 		engine.writeMicroseconds(NUTRALE_SPEED_IN_MILI + speed);
-		steering.write(angle);
+		steering.writeMicroseconds(ZERO_ANGLE_IN_MILI  + angle);
 		//delay(10);
 	}
 	/**
@@ -66,7 +68,7 @@ class RaceCarArd {
 	*/
     void stop(){
      speed = 0;
-     angle = 90;
+     angle = 500;
      drive();
   }
 	/**
