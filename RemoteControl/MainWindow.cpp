@@ -275,8 +275,10 @@ void MainWindow::updateOpticalFlow(const Flow &flow)
     ui->range->setText(QString::number(static_cast<real64>(flow.range), 'f', 3));
     ui->dt->setText(QString::number(flow.dt, 'f', 3));
 
-    double vx = static_cast<double>(flow.range) * 42.0 * static_cast<double>(flow.deltaX) / (30.0 * flow.dt * 10e-3);
-    double vy = static_cast<double>(flow.range) * 42.0 * static_cast<double>(flow.deltaY) / (30.0 * flow.dt * 10e-3);
+    double vx = static_cast<double>(flow.range) * 42.0 * M_PI /
+            180.0 * static_cast<double>(flow.deltaX) / (30.0 * flow.dt * 10e-3);
+    double vy = static_cast<double>(flow.range) * 42.0 * M_PI /
+            180.0 * static_cast<double>(flow.deltaY) / (30.0 * flow.dt * 10e-3);
 
     ui->vx->setText(QString::number(vx, 'f', 3));
     ui->vy->setText(QString::number(vy, 'f', 3));
