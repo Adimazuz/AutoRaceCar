@@ -73,7 +73,7 @@ Arduino &Arduino::changeAngle(const int &wanted_angle)
 Arduino &Arduino::stop()
 {
     m_current_speed = 0;
-    m_current_angle = 90;
+    m_current_angle = 500;
     sendDriveCommand();
 }
 Arduino& Arduino::changeAngleBy(const int &delta)
@@ -133,7 +133,7 @@ Arduino::~Arduino()
 {
     if(_is_connected)
     {
-        drive(0,90);
+        drive(0,500);
     }
 }
 

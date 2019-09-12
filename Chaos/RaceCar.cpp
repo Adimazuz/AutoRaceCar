@@ -201,11 +201,11 @@ RaceCar &RaceCar::parseAndSendCmd(const char cmd)
         break;
     }
     case 'l': {
-        _motor_control->changeAngleBy(-4);
+        _motor_control->changeAngleBy(-30);
         break;
     }
     case 'r': {
-        _motor_control->changeAngleBy(4);
+        _motor_control->changeAngleBy(30);
         break;
     }
     case 'q': { //not supported
