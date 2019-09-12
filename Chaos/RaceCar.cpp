@@ -386,6 +386,7 @@ RaceCar &RaceCar::getCameraOutputAndSendToRemote()
         _tcp_client->send(reinterpret_cast<char*>(packet.image.compresed_data), packet.image.compressed_size);
 
     }
+    _is_running = false;
     std::cout << "Camera thread finished" <<std::endl;
     return *this;
 }

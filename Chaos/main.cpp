@@ -10,7 +10,7 @@
 
 int main() {
     RaceCar car;
-    car.connect("132.68.36.138",5555,"132.68.36.107");
+    car.connect("192.168.1.75",5555,"192.168.1.114");
     car.run();
 
     std::cout << " ok" << std::endl;
@@ -18,7 +18,7 @@ int main() {
 
     std::thread thread([&car]()
     {
-        while(true)
+        while(car._is_running)
         {
             char ch;
             std::cin >> ch;
