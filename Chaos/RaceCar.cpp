@@ -112,7 +112,7 @@ RaceCar &RaceCar::connect(const string& ip, const unsigned short& port,const str
     }
 
 
-    //to allow athers to connect
+    //to allow others to connect
     _tcp_server->bind(server_ip, SERVER_PORT, MAX_NUM_USERS);
     if(_tcp_server->isBind()){
         std::cout << "bind success" << std::endl;
