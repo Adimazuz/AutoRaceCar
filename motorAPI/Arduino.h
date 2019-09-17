@@ -25,14 +25,14 @@ public:
     virtual Arduino &changeSpeed(const int &wanted_speed) override;
     /**
      * sends command to drive at <current_speed> <angle>
-     * @param wanted_angle should be in [30,150]
+     * @param wanted_angle should be in [0,1000]
      * @return this
      */
     virtual Arduino &changeAngle(const int &wanted_angle) override;
     /**
      * sends command to drive at <speed> <angle>
      * @param speed should be [-500,500]
-     * @param angle should be in [30,150]
+     * @param angle should be in [0,1000]
      * @return
      */
     virtual Arduino &drive(const int &speed, const int &angle) override;
