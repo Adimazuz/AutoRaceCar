@@ -567,7 +567,7 @@ Camera::Extrinsics RealSense::getExtrinsics(RealSense::Stream from_stream, RealS
     return my_extrins;
 }
 
-Camera::EulerAngles RealSense::getEulerAngels()
+Camera::AngularVelocities RealSense::getAngularVelocities()
 {
     auto time_stamp = std::chrono::high_resolution_clock::now().time_since_epoch();
     auto host_time_stamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_stamp).count();
@@ -577,7 +577,7 @@ Camera::EulerAngles RealSense::getEulerAngels()
         auto motion = motion_frame.as<rs2::motion_frame>();
         /** 3D vector in Euclidean coordinate space */
         rs2_vector gyro_data = motion.get_motion_data();
-        Camera::EulerAngles cur_angels = {gyro_data.x, gyro_data.y, gyro_data.z, host_time_stamp_ms,
+        Camera::AngularVelocities cur_angels = {gyro_data.x, gyro_data.y, gyro_data.z, host_time_stamp_ms,
                                          motion_frame.get_timestamp()};
         _last_euler_angles = cur_angels;
         return cur_angels;

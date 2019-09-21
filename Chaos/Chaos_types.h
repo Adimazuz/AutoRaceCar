@@ -57,7 +57,7 @@ struct DepthImage
 
 struct ColorPacket
 {
-    Camera::EulerAngles euler_angl;
+    Camera::AngularVelocities euler_angl;
     Camera::AccelData accel_data;
     Flow flow_data;
     ColorImage image;
@@ -66,7 +66,7 @@ struct ColorPacket
 
 struct DepthPacket
 {
-    Camera::EulerAngles euler_angl;
+    Camera::AngularVelocities euler_angl;
     Camera::AccelData accel_data;
     Flow flow_data;
     DepthImage image;

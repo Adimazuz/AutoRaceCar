@@ -283,7 +283,7 @@ Chaos::ColorPacket RaceCar::buildColorPacket(const Camera::ColorImage &image){
     Chaos::ColorPacket packet = {};
 
     packet.accel_data = _camera.getAccelData();
-    packet.euler_angl = _camera.getEulerAngels();
+    packet.euler_angl = _camera.getAngularVelocities();
 
     _flow_mtx.lock();
     packet.flow_data = _flow_data;
