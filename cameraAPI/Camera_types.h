@@ -41,7 +41,7 @@ struct DepthImage
     const unsigned char *data;
 };
 
-struct EulerAngles
+struct AngularVelocities
 {
     real32 x_pitch;
     real32 y_yaw;

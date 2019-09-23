@@ -340,13 +340,13 @@ public:
 
 
         /**
-         * @brief getEulerAngels -
+         * @brief getAngularVelocities -
          * Call only after startCamera.
          * @return struct   x_pitch;
                             y_yaw;
                             z_roll;
          */
-        Camera::EulerAngles getEulerAngels();
+        Camera::AngularVelocities getAngularVelocities();
 
         /**
          * @brief getAccelData
