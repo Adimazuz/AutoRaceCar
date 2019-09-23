@@ -10,7 +10,7 @@
 
 int main() {
     RaceCar car;
-    car.connect("192.168.1.75",5555,"192.168.1.114");
+    car.connect("10.42.0.1",5555,"10.42.0.205");
     car.run();
 
     std::cout << " ok" << std::endl;
