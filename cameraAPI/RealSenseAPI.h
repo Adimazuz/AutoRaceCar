@@ -384,7 +384,7 @@ private:
 
       rs2::frameset _frames;
 
-      Camera::EulerAngles _last_euler_angles;
+      Camera::AngularVelocities _last_euler_angles;
       Camera::AccelData _last_accel_data;
 
       rs2::colorizer colorize;
